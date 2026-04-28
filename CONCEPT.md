@@ -28,13 +28,12 @@ The system consists of three main components:
 ## Major Choices & Alternatives
 ### Choice 1: Emulation Framework
 - **Option A: Renode (Selected)** - Highly flexible, supports RP2040, easy to integrate with CI.
-- **Option B: QEMU** - Limited RP2040 support compared to Renode.
-- **Option C: Wokwi** - Excellent for web/UI, but harder to integrate into local CLI-based CI/CD workflows for some use cases.
 
 ### Choice 2: Build System
 - **Option A: PlatformIO (Selected)** - Industry standard for embedded development, excellent package management.
-- **Option B: CMake (Pico SDK)** - Native for RP2040, but requires more manual configuration for library management.
-- **Option C: Arduino IDE** - Not suitable for professional CI/CD and complex project structures.
 
 ## Discarded Alternatives
-- (Stored here as per requirements when choices are finalized)
+- **Choice 1: Option B: QEMU** - Limited RP2040 support compared to Renode.
+- **Choice 1: Option C: Wokwi** - Excellent for web/UI, but harder to integrate into local CLI-based CI/CD workflows for some use cases.
+- **Choice 2: Option B: CMake (Pico SDK)** - Native for RP2040, but requires more manual configuration for library management.
+- **Choice 2: Option C: Arduino IDE** - Not suitable for professional CI/CD and complex project structures.
