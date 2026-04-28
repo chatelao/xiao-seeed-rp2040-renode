@@ -1,5 +1,5 @@
 # Goal
-Create a setup for the XIAO Seed RP2040 able to run the UART, the ADC and the PWM on Renode over PlatformIO.
+Create a setup for the XIAO Seeed RP2040 able to run the UART, the ADC and the PWM on Renode over PlatformIO.
 
 # Structure
 - `CONCEPT.md`: The overall structure of the product, including Business & Use Cases as well as the High-Level Architecture.
