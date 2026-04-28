@@ -3,11 +3,11 @@
 The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top goal.
 
 ## Phase 1: Foundation
-- [x] Setup Project Structure (specification, src, test) [2025-05-22]
-- [x] Initialize Documentation (CONCEPT, DESIGN, ROADMAP, TECHNICAL_DEBTS) [2025-05-22]
-- [x] Define Business & Use Cases in `CONCEPT.md` [2025-05-22]
-- [x] Define High-Level Architecture in `CONCEPT.md` [2025-05-22]
-- [ ] Select Technological Choices in `DESIGN.md`
+- [x] Setup Project Structure (specification, src, test) [2026-04-28]
+- [x] Initialize Documentation (CONCEPT, DESIGN, ROADMAP, TECHNICAL_DEBTS) [2026-04-28]
+- [x] Define Business & Use Cases in `CONCEPT.md` [2026-04-28]
+- [x] Define High-Level Architecture in `CONCEPT.md` [2026-04-28]
+- [x] Select Technological Choices in `DESIGN.md` [2026-04-28]
 
 ## Phase 2: Environment Setup
 - [ ] Create `src/install.sh` for build tools
