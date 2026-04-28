@@ -1,0 +1,32 @@
+# Roadmap
+
+The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top goal.
+
+## Phase 1: Foundation
+- [x] Setup Project Structure (specification, src, test) [2025-05-22]
+- [x] Initialize Documentation (CONCEPT, DESIGN, ROADMAP, TECHNICAL_DEBTS) [2025-05-22]
+- [x] Define Business & Use Cases in `CONCEPT.md` [2025-05-22]
+- [x] Define High-Level Architecture in `CONCEPT.md` [2025-05-22]
+- [ ] Select Technological Choices in `DESIGN.md`
+
+## Phase 2: Environment Setup
+- [ ] Create `src/install.sh` for build tools
+- [ ] Create `test/install.sh` for test tools
+- [ ] Setup CI/CD Pipeline (Github Actions)
+- [ ] Verify CI/CD Pipeline with a dummy test
+
+## Phase 3: PlatformIO & Renode Integration
+- [ ] Extract necessary parts from `Renode_RP2040` repository
+- [ ] Configure PlatformIO for XIAO Seeed RP2040
+- [ ] Create Renode script for XIAO Seeed RP2040
+- [ ] Verify basic PlatformIO build and Renode execution
+
+## Phase 4: Peripheral Implementation
+- [ ] Implement UART support in Renode/PlatformIO
+- [ ] Implement ADC support in Renode/PlatformIO
+- [ ] Implement PWM support in Renode/PlatformIO
+
+## Phase 5: Verification & Documentation
+- [ ] Finalize test cases for UART, ADC, and PWM
+- [ ] Run full CI/CD suite
+- [ ] Update documentation with final design and usage instructions
