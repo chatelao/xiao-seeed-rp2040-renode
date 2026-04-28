@@ -46,7 +46,7 @@ jobs:
     - name: Verify Installations
       run: |
         pio --version
-        robot --version
+        robot --version || [[ $? -eq 251 ]]
         ls -l test/renode/renode
 
     - name: Run Dummy Test
