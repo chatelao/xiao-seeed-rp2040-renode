@@ -1,0 +1,22 @@
+# Renode
+test/renode/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# PlatformIO
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# Build
+build/
+
+# Robot Framework
+report.html
+log.html
+output.xml
