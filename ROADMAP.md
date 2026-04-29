@@ -12,8 +12,8 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 ## Phase 2: Environment Setup
 - [x] Create `src/install.sh` for build tools [2026-04-28]
 - [x] Create `test/install.sh` for test tools [2026-04-28]
-- [ ] Setup CI/CD Pipeline (Github Actions)
-- [ ] Verify CI/CD Pipeline with a dummy test
+- [x] Setup CI/CD Pipeline (Github Actions) [2026-04-28]
+- [x] Verify CI/CD Pipeline with a dummy test [2026-04-28]
 
 ## Phase 3: PlatformIO & Renode Integration
 - [ ] Extract necessary parts from `Renode_RP2040` repository
