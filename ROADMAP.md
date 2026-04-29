@@ -16,9 +16,9 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Verify CI/CD Pipeline with a dummy test [2026-04-28]
 
 ## Phase 3: PlatformIO & Renode Integration
-- [ ] Extract necessary parts from `Renode_RP2040` repository
-- [ ] Configure PlatformIO for XIAO Seeed RP2040
-- [ ] Create Renode script for XIAO Seeed RP2040
+- [x] Extract necessary parts from `Renode_RP2040` repository [2026-04-29]
+- [x] Configure PlatformIO for XIAO Seeed RP2040 [2026-04-29]
+- [x] Create Renode script for XIAO Seeed RP2040 [2026-04-29]
 - [ ] Verify basic PlatformIO build and Renode execution
 
 ## Phase 4: Peripheral Implementation
