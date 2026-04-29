@@ -1,0 +1,4 @@
+17:35:47.7613 [INFO] Loaded monitor commands from: /app/test/renode/scripts/monitor.py
+17:35:47.8037 [INFO] Monitor available in telnet mode on port 1234
+17:35:47.8657 [INFO] Including script(s): /app/test/xiao_rp2040.resc
+17:35:47.9093 [INFO] System bus created.

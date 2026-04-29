@@ -1,0 +1,12 @@
+Processing pico (platform: raspberrypi; board: pico; framework: raspberrypi)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/raspberrypi/pico.html
+PLATFORM: Raspberry Pi RP2040 (1.19.0) > Raspberry Pi Pico
+HARDWARE: RP2040 133MHz, 264KB RAM, 2MB Flash
+DEBUG: Current (cmsis-dap) External (cmsis-dap, jlink, raspberrypi-swd)
+PACKAGES:
+ - tool-rp2040tools @ 1.0.2
+ - toolchain-gccarmnoneeabi @ 1.90201.191206 (9.2.1)
+Error: This board doesn't support raspberrypi framework!
+========================== [FAILED] Took 0.65 seconds ==========================

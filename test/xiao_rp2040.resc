@@ -1,0 +1,20 @@
+$name?="XIAO-RP2040"
+$bin?=@.pio/build/pico/firmware.elf
+
+using sysbus
+mach create $name
+
+# Load peripherals from source
+include $ORIGIN/renode-rp2040/cores/initialize_peripherals_source.resc
+
+# Load board
+machine LoadPlatformDescription $ORIGIN/renode-rp2040/boards/xiao_rp2040.repl
+
+# Set up UART0 analyzer to log to file
+# Use standard UART if RP2040Uart fails
+# uart0 CreateFileBackend @renode_uart0.log
+
+sysbus LoadELF $bin
+
+# Start simulation
+# start
