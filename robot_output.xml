@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Rebot 6.1 (Python 3.12.13 on linux)" generated="20260430 13:30:25.041" rpa="false" schemaversion="4">
+<suite id="s1" name="Test Suite" source="/app/test/verify_uart.robot">
+<kw name="Setup" type="SETUP">
+<msg timestamp="20260430 13:30:25.000" level="TRACE">Arguments: [  ]</msg>
+<kw name="Set Variable" library="BuiltIn">
+<var>${RENODE_PATH}</var>
+<arg>/app/test/renode/renode</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20260430 13:30:25.000" level="TRACE">Arguments: [ '/app/test/renode/renode' ]</msg>
+<msg timestamp="20260430 13:30:25.000" level="TRACE">Return: '/app/test/renode/renode'</msg>
+<msg timestamp="20260430 13:30:25.000" level="INFO">${RENODE_PATH} = /app/test/renode/renode</msg>
+<status status="PASS" starttime="20260430 13:30:25.000" endtime="20260430 13:30:25.000"/>
+</kw>
+<kw name="Setup Renode" library="renode-keywords">
+<arg>${RENODE_PATH}</arg>
+<msg timestamp="20260430 13:30:25.001" level="FAIL">Keyword 'renode-keywords.Setup Renode' expected 0 arguments, got 1.</msg>
+<status status="FAIL" starttime="20260430 13:30:25.001" endtime="20260430 13:30:25.001"/>
+</kw>
+<status status="FAIL" starttime="20260430 13:30:25.000" endtime="20260430 13:30:25.001"/>
+</kw>
+<test id="s1-t1" name="Should Print Hello World" line="12">
+<status status="FAIL" starttime="20260430 13:30:25.001" endtime="20260430 13:30:25.002">Parent suite setup failed:
+Keyword 'renode-keywords.Setup Renode' expected 0 arguments, got 1.
+
+Also parent suite teardown failed:
+No keyword with name 'Teardown Renode' found. Did you try using keyword 'Teardown' or 'renode-keywords.Teardown' and forgot to use enough whitespace between keyword and arguments?</status>
+</test>
+<kw name="Teardown" type="TEARDOWN">
+<msg timestamp="20260430 13:30:25.003" level="TRACE">Arguments: [  ]</msg>
+<kw name="Teardown Renode">
+<msg timestamp="20260430 13:30:25.007" level="FAIL">No keyword with name 'Teardown Renode' found. Did you try using keyword 'Teardown' or 'renode-keywords.Teardown' and forgot to use enough whitespace between keyword and arguments?</msg>
+<status status="FAIL" starttime="20260430 13:30:25.007" endtime="20260430 13:30:25.007"/>
+</kw>
+<msg timestamp="20260430 13:30:25.007" level="TRACE">Return: None</msg>
+<status status="FAIL" starttime="20260430 13:30:25.003" endtime="20260430 13:30:25.007">No keyword with name 'Teardown Renode' found. Did you try using keyword 'Teardown' or 'renode-keywords.Teardown' and forgot to use enough whitespace between keyword and arguments?</status>
+</kw>
+<meta name="HotSpot_Action">-</meta>
+<status status="FAIL" starttime="20260430 13:30:24.925" endtime="20260430 13:30:25.007">Suite setup failed:
+Keyword 'renode-keywords.Setup Renode' expected 0 arguments, got 1.
+
+Also suite teardown failed:
+No keyword with name 'Teardown Renode' found. Did you try using keyword 'Teardown' or 'renode-keywords.Teardown' and forgot to use enough whitespace between keyword and arguments?</status>
+</suite>
+<statistics>
+<total>
+<stat pass="0" fail="1" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="0" fail="1" skip="0" id="s1" name="Test Suite">Test Suite</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
