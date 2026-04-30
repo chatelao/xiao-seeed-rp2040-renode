@@ -1,0 +1,43 @@
+17:21:02.9825 [INFO] Including script(s): /app/test/renode-config/run_xiao.resc
+17:21:03.0926 [INFO] System bus created.
+17:21:06.7145 [INFO] Including script(s): /app/test/renode-config/cores/initialize_peripherals_source.resc
+17:21:10.4472 [INFO] Including script(s): /app/test/renode-config/cores/initialize_peripherals_source.resc
+17:21:13.4553 [INFO] Including script(s): /app/test/renode-config/cores/initialize_peripherals_source.resc
+17:21:17.4827 [INFO] Including script(s): /app/test/renode-config/cores/initialize_peripherals_source.resc
+17:21:20.9837 [INFO] Including script(s): /app/test/renode-config/cores/initialize_peripherals_source.resc
+17:21:24.5068 [INFO] Including script(s): /app/test/renode-config/cores/initialize_peripherals_source.resc
+17:21:27.1623 [WARNING] Using alias 'id' for parameter 'cpuId'
+17:21:27.5194 [WARNING] Using alias 'id' for parameter 'cpuId' (3)
+17:21:28.4157 [INFO] [no-name]: Setting ROSC frequency to: 6MHz
+17:21:28.5027 [INFO] [no-name]: PIO0 successfuly created!
+17:21:28.5203 [INFO] [no-name]: PIO1 successfuly created!
+17:21:28.7039 [WARNING] Transmission finished in unexpected state: RecognizeOperation
+17:21:28.7983 [INFO] Reading cache
+17:21:29.8208 [INFO] sysbus: Loaded SVD: /tmp/renode-218004/ca2aac2e-00b7-4d41-b89b-f7274aa9b891.tmp. Name: RP2040. Description:
+        Dual-core Arm Cortex-M0+ processor, flexible clock running up to 133 MHz\n
+        264KB on-chip SRAM\n
+        2 x UART, 2 x SPI controllers, 2 x I2C controllers, 16 x PWM channels\n
+        1 x USB 1.1 controller and PHY, with host and device support\n
+        8 x Programmable I/O (PIO) state machines for custom peripheral support\n
+        Supported input power 1.8-5.5V DC\n
+        Operating temperature -20C to +85C\n
+        Drag-and-drop programming using mass storage over USB\n
+        Low-power sleep and dormant modes\n
+        Accurate on-chip clock\n
+        Temperature sensor\n
+        Accelerated integer and floating-point libraries on-chip
+      .
+17:21:31.7853 [INFO] sysbus: Loading block of 71456 bytes length at 0x10000000.
+17:21:31.8228 [INFO] sysbus: Loading block of 9252 bytes length at 0x10011720.
+17:21:31.8230 [INFO] sysbus: Loading block of 192 bytes length at 0x20000000.
+17:21:31.8231 [INFO] sysbus: Loading block of 252700 bytes length at 0x200024E4.
+17:21:31.8232 [INFO] sysbus: Loading block of 2048 bytes length at 0x20040000.
+17:21:32.0063 [INFO] piocpu0: Setting PC value to 0x100030D5.
+17:21:32.0072 [INFO] piocpu1: Setting PC value to 0x100030D5.
+17:21:32.0398 [INFO] cpu0: Guessing VectorTableOffset value to be 0x10000000.
+17:21:32.1351 [ERROR] cpu0: PC does not lay in memory or PC and SP are equal to zero. CPU was halted.
+17:21:32.1352 [INFO] cpu1: Guessing VectorTableOffset value to be 0x10000000.
+17:21:32.1713 [ERROR] cpu1: PC does not lay in memory or PC and SP are equal to zero. CPU was halted.
+17:21:32.1766 [INFO] seeed_xiao_rp2040: Machine started.
+17:21:47.4949 [INFO] seeed_xiao_rp2040: Machine paused.
+17:21:49.4697 [INFO] seeed_xiao_rp2040: Machine resumed.
