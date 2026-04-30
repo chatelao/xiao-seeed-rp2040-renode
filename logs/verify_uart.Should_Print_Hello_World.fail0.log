@@ -1,0 +1,111 @@
+15:07:22.6472 [INFO] Including script(s): /app/test/renode-config/run_xiao.resc
+15:07:22.6999 [INFO] System bus created.
+15:07:25.7517 [INFO] Including script(s): /app/test/renode-config/emulation/peripherals/clocks/rp2040_xosc.cs
+15:07:28.7752 [INFO] Including script(s): /app/test/renode-config/cores/initialize_peripherals_source.resc
+15:07:32.1176 [INFO] Including script(s): /app/test/renode-config/cores/initialize_peripherals_source.resc
+15:07:35.1274 [INFO] Including script(s): /app/test/renode-config/cores/initialize_peripherals_source.resc
+15:07:38.6396 [INFO] Including script(s): /app/test/renode-config/cores/initialize_peripherals_source.resc
+15:07:41.6558 [INFO] Including script(s): /app/test/renode-config/cores/initialize_peripherals_source.resc
+15:07:43.5883 [WARNING] Using alias 'id' for parameter 'cpuId'
+15:07:43.6569 [WARNING] Using alias 'id' for parameter 'cpuId' (3)
+15:07:45.6016 [INFO] [no-name]: Setting ROSC frequency to: 6MHz
+15:07:45.7711 [INFO] [no-name]: PIO0 successfuly created!
+15:07:45.7900 [INFO] [no-name]: PIO1 successfuly created!
+15:07:46.0098 [WARNING] Transmission finished in unexpected state: RecognizeOperation
+15:07:46.1251 [INFO] Reading cache
+15:07:47.2435 [INFO] sysbus: Loaded SVD: /tmp/renode-182711/f908bee5-792e-44a4-9d31-06d02ef015f4.tmp. Name: RP2040. Description:
+        Dual-core Arm Cortex-M0+ processor, flexible clock running up to 133 MHz\n
+        264KB on-chip SRAM\n
+        2 x UART, 2 x SPI controllers, 2 x I2C controllers, 16 x PWM channels\n
+        1 x USB 1.1 controller and PHY, with host and device support\n
+        8 x Programmable I/O (PIO) state machines for custom peripheral support\n
+        Supported input power 1.8-5.5V DC\n
+        Operating temperature -20C to +85C\n
+        Drag-and-drop programming using mass storage over USB\n
+        Low-power sleep and dormant modes\n
+        Accurate on-chip clock\n
+        Temperature sensor\n
+        Accelerated integer and floating-point libraries on-chip
+      .
+15:07:49.3931 [INFO] sysbus: Loading block of 16384 bytes length at 0x0.
+15:07:49.4277 [INFO] sysbus: Loading block of 3052 bytes length at 0x50100400.
+15:07:49.5250 [INFO] piocpu0: Setting PC value to 0x0.
+15:07:49.5267 [INFO] piocpu1: Setting PC value to 0x0.
+15:07:49.5269 [INFO] Including script(s): /app/test/renode-config/run_xiao.resc
+15:07:49.5658 [INFO] sysbus: Loading block of 71456 bytes length at 0x10000000.
+15:07:49.5794 [INFO] sysbus: Loading block of 9252 bytes length at 0x10011720.
+15:07:49.5805 [INFO] sysbus: Loading block of 192 bytes length at 0x20000000.
+15:07:49.5833 [INFO] sysbus: Loading block of 252700 bytes length at 0x200024E4.
+15:07:49.6002 [INFO] sysbus: Loading block of 2048 bytes length at 0x20040000.
+15:07:49.8450 [INFO] piocpu0: Setting PC value to 0x100030D5.
+15:07:49.8451 [INFO] piocpu1: Setting PC value to 0x100030D5.
+15:07:50.0861 [INFO] cpu1: Guessing VectorTableOffset value to be 0x10000000.
+15:07:50.1809 [ERROR] cpu1: PC does not lay in memory or PC and SP are equal to zero. CPU was halted.
+15:07:50.1903 [INFO] seeed_xiao_rp2040: Machine started.
+15:07:50.4548 [WARNING] sysbus: [cpu0: 0x10006642] WriteDoubleWord to non existing peripheral at 0x4000E000, value 0xFEFBCDBF.
+15:07:50.4549 [WARNING] sysbus: [cpu0: 0x10006648] WriteDoubleWord to non existing peripheral at 0x4000F000, value 0x3C7FFE.
+15:07:50.4673 [WARNING] sysbus: [cpu0: 0x1000664C] (tag: 'RESET_DONE') ReadDoubleWord from non existing peripheral at 0x4000C008, returning 0xFFFFFFFF.
+15:07:50.4685 [WARNING] sysbus: [cpu0: 0x1000666A] ReadDoubleWord from an unimplemented register USBCTRL_REGS:SIE_CTRL (0x5011004C), returning a value from SVD: 0x0
+15:07:50.4686 [WARNING] sysbus: [cpu0: 0x10006676] WriteDoubleWord to non existing peripheral at 0x5011204C, value 0x40000.
+15:07:50.4889 [WARNING] sysbus: [cpu0: 0x100051A0] WriteDoubleWord to non existing peripheral at 0x4000E000, value 0x1000.
+15:07:50.4890 [WARNING] sysbus: [cpu0: 0x100051A4] WriteDoubleWord to non existing peripheral at 0x4000F000, value 0x1000.
+15:07:50.4890 [WARNING] sysbus: [cpu0: 0x100051A8] (tag: 'RESET_DONE') ReadDoubleWord from non existing peripheral at 0x4000C008, returning 0xFFFFFFFF.
+15:07:50.4901 [WARNING] sysbus: [cpu0: 0x100051A0] WriteDoubleWord to non existing peripheral at 0x4000E000, value 0x2000.
+15:07:50.4901 [WARNING] sysbus: [cpu0: 0x100051A4] WriteDoubleWord to non existing peripheral at 0x4000F000, value 0x2000.
+15:07:50.4901 [WARNING] sysbus: [cpu0: 0x100051A8] (tag: 'RESET_DONE') ReadDoubleWord from non existing peripheral at 0x4000C008, returning 0xFFFFFFFF.
+15:07:50.5063 [WARNING] clocks: Unhandled write to offset 0x30. Unhandled bits: [11] when writing value 0x802. Tags: RESERVED (0x10).
+15:07:50.5070 [WARNING] clocks: Unhandled write to offset 0x3C. Unhandled bits: [11] when writing value 0x801. Tags: RESERVED (0x8).
+15:07:50.5200 [WARNING] clocks: Unhandled read from offset 0x4C (CLK_PERI_CTRL+0x4).
+15:07:50.5203 [WARNING] clocks: Unhandled write to offset 0x4C (CLK_PERI_CTRL+0x4), value 0x100.
+15:07:50.5217 [WARNING] clocks: Unhandled write to offset 0x4C (CLK_PERI_CTRL+0x4), value 0x100.
+15:07:50.5217 [WARNING] sysbus: [cpu0: 0x10006688] WriteDoubleWord to non existing peripheral at 0x4000F000, value 0x1FFFFFF.
+15:07:50.5218 [WARNING] sysbus: [cpu0: 0x1000668C] (tag: 'RESET_DONE') ReadDoubleWord from non existing peripheral at 0x4000C008, returning 0xFFFFFFFF.
+15:07:50.5219 [WARNING] pads: Unhandled read from offset 0x78 (unknown).
+15:07:50.5219 [WARNING] pads: Unhandled write to offset 0x78 (unknown), value 0x0.
+15:07:50.5220 [WARNING] pads: Unhandled read from offset 0x74 (unknown).
+15:07:50.5220 [WARNING] pads: Unhandled write to offset 0x74 (unknown), value 0x0.
+15:07:50.5220 [WARNING] pads: Unhandled read from offset 0x70 (unknown).
+15:07:50.5220 [WARNING] pads: Unhandled write to offset 0x70 (unknown), value 0x0.
+15:07:50.5221 [WARNING] pads: Unhandled read from offset 0x6C (unknown).
+15:07:50.5221 [WARNING] pads: Unhandled write to offset 0x6C (unknown), value 0x0.
+15:07:50.5814 [WARNING] sysbus: [cpu0: 0x198] WriteDoubleWord to non existing peripheral at 0x4000E000, value 0x240.
+15:07:50.5815 [WARNING] sysbus: [cpu0: 0x19E] WriteDoubleWord to non existing peripheral at 0x4000F000, value 0x240.
+15:07:50.5815 [WARNING] sysbus: [cpu0: 0x1A0] (tag: 'RESET_DONE') ReadDoubleWord from non existing peripheral at 0x4000C008, returning 0xFFFFFFFF.
+15:07:50.5839 [WARNING] xip_ssi.xip_flash: Transmission finished in unexpected state: RecognizeOperation
+15:07:50.6132 [WARNING] xip_ssi.xip_flash: Transmission finished in unexpected state: RecognizeOperation
+15:07:50.6132 [WARNING] xip_ssi.xip_flash: Unhandled operation: 0x0
+15:07:50.6138 [WARNING] xip_ssi.xip_flash: Unhandled operation while processing byte: 0x0
+15:07:50.6623 [WARNING] xip_ssi.xip_flash: Unhandled operation while processing byte: 0x0 (6)
+15:07:50.6623 [WARNING] xip_ssi.xip_flash: Unhandled operation: 0xFF
+15:07:50.6624 [WARNING] xip_ssi.xip_flash: Unhandled operation while processing byte: 0x0
+15:07:50.6761 [WARNING] xip_ssi.xip_flash: Unhandled operation: 0x4B
+15:07:50.6761 [WARNING] xip_ssi.xip_flash: Unhandled operation while processing byte: 0x0
+15:07:50.6781 [WARNING] xip_ssi.xip_flash: Unhandled operation while processing byte: 0x0 (7)
+15:07:50.6781 [WARNING] sysbus: [cpu0: 0x2358] WriteDoubleWord of value 0x1 to an unimplemented register XIP_CTRL:FLUSH (0x14000004) generated from SVD
+15:07:50.6781 [WARNING] sysbus: [cpu0: 0x235A] ReadDoubleWord from an unimplemented register XIP_CTRL:FLUSH (0x14000004), returning a value from SVD: 0x0
+15:07:50.6782 [WARNING] sysbus: [cpu0: 0x2360] WriteDoubleWord to non existing peripheral at 0x14002000, value 0x1.
+15:07:50.6794 [WARNING] qspi_pads: Unhandled write to offset 0x4. Unhandled bits: [0] when writing value 0x21. Tags: SLEWFAST (0x1).
+15:07:50.6795 [WARNING] xip_ssi.xip_flash: Transmission finished in unexpected state: RecognizeOperation
+15:07:50.7145 [WARNING] xip_ssi.xip_flash: Unhandled operation while processing byte: 0x7
+15:07:50.9701 [WARNING] xip_ssi.xip_flash: Unhandled operation while processing byte: 0x7 (6)
+15:07:50.9701 [WARNING] clocks: Unhandled write to offset 0x3C. Unhandled bits: [11] when writing value 0x821. Tags: RESERVED (0x8).
+15:07:50.9707 [WARNING] sysbus: [cpu0: 0x100051A0] WriteDoubleWord to non existing peripheral at 0x4000E000, value 0x1000.
+15:07:50.9708 [WARNING] sysbus: [cpu0: 0x100051A4] WriteDoubleWord to non existing peripheral at 0x4000F000, value 0x1000.
+15:07:50.9708 [WARNING] sysbus: [cpu0: 0x100051A8] (tag: 'RESET_DONE') ReadDoubleWord from non existing peripheral at 0x4000C008, returning 0xFFFFFFFF.
+15:07:50.9718 [WARNING] clocks: Unhandled write to offset 0x30. Unhandled bits: [11] when writing value 0x802. Tags: RESERVED (0x10).
+15:07:50.9724 [WARNING] clocks: Unhandled write to offset 0x3C. Unhandled bits: [11] when writing value 0x801. Tags: RESERVED (0x8).
+15:07:50.9732 [WARNING] clocks: Unhandled read from offset 0x4C (CLK_PERI_CTRL+0x4).
+15:07:50.9733 [WARNING] clocks: Unhandled write to offset 0x4C (CLK_PERI_CTRL+0x4), value 0x100.
+15:07:50.9971 [WARNING] clocks: Unhandled write to offset 0x4C (CLK_PERI_CTRL+0x4), value 0x100.
+15:07:50.9972 [WARNING] sysbus: [cpu0: 0x10008CC0] WriteDoubleWord to non existing peripheral at 0x4000E000, value 0x1000000.
+15:07:50.9972 [WARNING] sysbus: [cpu0: 0x10008CC6] WriteDoubleWord to non existing peripheral at 0x4000F000, value 0x1000000.
+15:07:50.9972 [WARNING] sysbus: [cpu0: 0x10008CCA] (tag: 'RESET_DONE') ReadDoubleWord from non existing peripheral at 0x4000C008, returning 0xFFFFFFFF.
+15:07:50.9978 [WARNING] sysbus: [cpu0: 0x10008CDE] WriteDoubleWord of value 0x9 to an unimplemented register USBCTRL_REGS:USB_MUXING (0x50110074) generated from SVD
+15:07:50.9978 [WARNING] sysbus: [cpu0: 0x10008B58] WriteDoubleWord of value 0xC to an unimplemented register USBCTRL_REGS:USB_PWR (0x50110078) generated from SVD
+15:07:51.0091 [WARNING] sysbus: [cpu0: 0x10008B86] WriteDoubleWord of value 0x1 to an unimplemented register USBCTRL_REGS:MAIN_CTRL (0x50110040) generated from SVD
+15:07:51.0091 [WARNING] sysbus: [cpu0: 0x10008B8E] WriteDoubleWord of value 0x20000000 to an unimplemented register USBCTRL_REGS:SIE_CTRL (0x5011004C) generated from SVD
+15:07:51.0092 [WARNING] sysbus: [cpu0: 0x10008B94] WriteDoubleWord of value 0x1D010 to an unimplemented register USBCTRL_REGS:INTE (0x50110090) generated from SVD
+15:07:51.0092 [WARNING] sysbus: [cpu0: 0x10008B9A] WriteDoubleWord to non existing peripheral at 0x5011204C, value 0x10000.
+15:07:51.0277 [WARNING] sio: Unhandled write to offset 0x50. Unhandled bits: [4-7] when writing value 0xFF. Tags: RESERVED (0xF).
+15:08:58.3715 [INFO] seeed_xiao_rp2040: Machine paused.
+15:09:00.6767 [INFO] seeed_xiao_rp2040: Machine resumed.

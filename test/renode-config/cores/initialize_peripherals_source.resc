@@ -1,4 +1,4 @@
-mach create $machine_name
+# mach create $machine_name
 
 # Compile from source (development mode - slower but allows live editing)
 # For production mode (pre-built DLL), use initialize_peripherals.resc instead

@@ -22,8 +22,8 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Verify basic PlatformIO build and Renode execution [2026-04-30]
 
 ## Phase 4: Peripheral Implementation
-- [ ] Implement UART support in Renode/PlatformIO
-- [ ] Implement ADC support in Renode/PlatformIO
+- [x] Implement UART support in Renode/PlatformIO [2026-04-30]
+- [x] Implement ADC support in Renode/PlatformIO [2026-04-30]
 - [ ] Implement PWM support in Renode/PlatformIO
 
 ## Phase 5: Verification & Documentation

@@ -5,8 +5,13 @@ include $ORIGIN/boards/initialize_custom_board.resc
 sysbus LoadELF $global.FIRMWARE
 
 # The bootrom is already loaded by initialize_custom_board.resc
-# We just need to make sure the vector table is correct if needed,
-# but LoadELF usually handles the entry point.
+
+# Set VectorTableOffset to the start of vectors
+cpu0 VectorTableOffset 0x10003000
+
+# Initialize PC and SP from the vector table at 0x10003000
+cpu0 PC `sysbus ReadDoubleWord 0x10003004`
+cpu0 SP `sysbus ReadDoubleWord 0x10003000`
 
 showAnalyzer sysbus.uart0
 start
