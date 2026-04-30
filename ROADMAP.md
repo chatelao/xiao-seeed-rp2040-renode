@@ -22,9 +22,20 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Verify basic PlatformIO build and Renode execution [2026-04-30]
 
 ## Phase 4: Peripheral Implementation
-- [ ] Implement UART support in Renode/PlatformIO
-- [ ] Implement ADC support in Renode/PlatformIO
-- [ ] Implement PWM support in Renode/PlatformIO
+### UART Support
+- [x] Verify basic UART output in Renode [2026-04-30]
+- [ ] Implement UART input handling in simulation
+- [ ] Add Robot Framework tests for UART bidirectional communication
+
+### ADC Support
+- [ ] Configure ADC in PlatformIO (Arduino/Pico SDK)
+- [ ] Map ADC pins in Renode `.repl` file
+- [ ] Create Robot Framework test for ADC reading with simulated analog values
+
+### PWM Support
+- [ ] Configure PWM in PlatformIO
+- [ ] Map PWM pins in Renode `.repl` file
+- [ ] Create Robot Framework test for PWM frequency and duty cycle verification
 
 ## Phase 5: Verification & Documentation
 - [ ] Finalize test cases for UART, ADC, and PWM

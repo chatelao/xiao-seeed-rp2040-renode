@@ -20,3 +20,6 @@ build/
 report.html
 log.html
 output.xml
+robot_output.xml
+logs/
+snapshots/
