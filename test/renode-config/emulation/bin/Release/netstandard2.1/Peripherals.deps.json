@@ -1,0 +1,767 @@
+{
+  "runtimeTarget": {
+    "name": ".NETStandard,Version=v2.1/",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETStandard,Version=v2.1": {},
+    ".NETStandard,Version=v2.1/": {
+      "Peripherals/1.0.0": {
+        "dependencies": {
+          "AntShell": "1.0.9543.16919",
+          "AsyncIO": "0.1.69.0",
+          "CookComputing.XmlRpcV2": "2.5.0.0",
+          "CxxDemangler": "1.0.9543.16917",
+          "Dynamitey": "2.0.10.189",
+          "ELFSharp": "0.1.1.0",
+          "FdtSharp": "0.1.0.0",
+          "Infrastructure": "1.0.0.0",
+          "IronPython": "2.7.12.0",
+          "IronPython.Modules": "2.7.12.0",
+          "libtftp": "1.0.0.0",
+          "Microsoft.Dynamic": "1.3.5.0",
+          "Microsoft.Scripting": "1.3.5.0",
+          "Microsoft.Scripting.Metadata": "1.3.5.0",
+          "Migrant": "0.14.0.0",
+          "Mono.Cecil": "0.11.3.0",
+          "NetMQ": "4.0.1.12",
+          "Nini": "1.1.0.0",
+          "OptionsParser": "0.1.0.0",
+          "PacketDotNet": "0.13.0.0",
+          "SampleCommandPlugin": "1.0.0.0",
+          "Sprache": "2.1.0.0",
+          "TermSharp": "0.0.0.0",
+          "TracePlugin": "1.0.0.0",
+          "WiresharkPlugin": "1.0.0.0",
+          "Xwt": "0.1.0.0"
+        },
+        "runtime": {
+          "Peripherals.dll": {}
+        }
+      },
+      "AntShell/1.0.9543.16919": {
+        "runtime": {
+          "AntShell.dll": {
+            "assemblyVersion": "1.0.9543.16919",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "AsyncIO/0.1.69.0": {
+        "runtime": {
+          "AsyncIO.dll": {
+            "assemblyVersion": "0.1.69.0",
+            "fileVersion": "0.1.69.0"
+          }
+        }
+      },
+      "CookComputing.XmlRpcV2/2.5.0.0": {
+        "runtime": {
+          "CookComputing.XmlRpcV2.dll": {
+            "assemblyVersion": "2.5.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "CxxDemangler/1.0.9543.16917": {
+        "runtime": {
+          "CxxDemangler.dll": {
+            "assemblyVersion": "1.0.9543.16917",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Dynamitey/2.0.10.189": {
+        "runtime": {
+          "Dynamitey.dll": {
+            "assemblyVersion": "2.0.10.189",
+            "fileVersion": "2.0.10.189"
+          }
+        }
+      },
+      "ELFSharp/0.1.1.0": {
+        "runtime": {
+          "ELFSharp.dll": {
+            "assemblyVersion": "0.1.1.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "FdtSharp/0.1.0.0": {
+        "runtime": {
+          "FdtSharp.dll": {
+            "assemblyVersion": "0.1.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Infrastructure/1.0.0.0": {
+        "runtime": {
+          "Infrastructure.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "IronPython/2.7.12.0": {
+        "runtime": {
+          "IronPython.dll": {
+            "assemblyVersion": "2.7.12.0",
+            "fileVersion": "2.7.12.1000"
+          }
+        }
+      },
+      "IronPython.Modules/2.7.12.0": {
+        "runtime": {
+          "IronPython.Modules.dll": {
+            "assemblyVersion": "2.7.12.0",
+            "fileVersion": "2.7.12.1000"
+          }
+        }
+      },
+      "libtftp/1.0.0.0": {
+        "runtime": {
+          "libtftp.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Microsoft.Dynamic/1.3.5.0": {
+        "runtime": {
+          "Microsoft.Dynamic.dll": {
+            "assemblyVersion": "1.3.5.0",
+            "fileVersion": "1.3.5.1000"
+          }
+        }
+      },
+      "Microsoft.Scripting/1.3.5.0": {
+        "runtime": {
+          "Microsoft.Scripting.dll": {
+            "assemblyVersion": "1.3.5.0",
+            "fileVersion": "1.3.5.1000"
+          }
+        }
+      },
+      "Microsoft.Scripting.Metadata/1.3.5.0": {
+        "runtime": {
+          "Microsoft.Scripting.Metadata.dll": {
+            "assemblyVersion": "1.3.5.0",
+            "fileVersion": "1.3.5.1000"
+          }
+        }
+      },
+      "Migrant/0.14.0.0": {
+        "runtime": {
+          "Migrant.dll": {
+            "assemblyVersion": "0.14.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Mono.Cecil/0.11.3.0": {
+        "runtime": {
+          "Mono.Cecil.dll": {
+            "assemblyVersion": "0.11.3.0",
+            "fileVersion": "0.11.3.0"
+          }
+        }
+      },
+      "NetMQ/4.0.1.12": {
+        "runtime": {
+          "NetMQ.dll": {
+            "assemblyVersion": "4.0.1.12",
+            "fileVersion": "4.0.1.12"
+          }
+        }
+      },
+      "Nini/1.1.0.0": {
+        "runtime": {
+          "Nini.dll": {
+            "assemblyVersion": "1.1.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "OptionsParser/0.1.0.0": {
+        "runtime": {
+          "OptionsParser.dll": {
+            "assemblyVersion": "0.1.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "PacketDotNet/0.13.0.0": {
+        "runtime": {
+          "PacketDotNet.dll": {
+            "assemblyVersion": "0.13.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "SampleCommandPlugin/1.0.0.0": {
+        "runtime": {
+          "SampleCommandPlugin.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Sprache/2.1.0.0": {
+        "runtime": {
+          "Sprache.dll": {
+            "assemblyVersion": "2.1.0.0",
+            "fileVersion": "2.1.0.0"
+          }
+        }
+      },
+      "TermSharp/0.0.0.0": {
+        "runtime": {
+          "TermSharp.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "TracePlugin/1.0.0.0": {
+        "runtime": {
+          "TracePlugin.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "WiresharkPlugin/1.0.0.0": {
+        "runtime": {
+          "WiresharkPlugin.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Xwt/0.1.0.0": {
+        "runtime": {
+          "Xwt.dll": {
+            "assemblyVersion": "0.1.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "System.CodeDom/8.0.0.0": {
+        "runtime": {
+          "System.CodeDom.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.0.23.53103"
+          }
+        }
+      },
+      "Mono.Unix/7.1.0.0": {
+        "runtime": {
+          "Mono.Unix.dll": {
+            "assemblyVersion": "7.1.0.0",
+            "fileVersion": "7.100.21.45801"
+          }
+        }
+      },
+      "NaCl/0.1.13.0": {
+        "runtime": {
+          "NaCl.dll": {
+            "assemblyVersion": "0.1.13.0",
+            "fileVersion": "0.1.13.0"
+          }
+        }
+      },
+      "Microsoft.VisualStudio.TestPlatform.ObjectModel/15.0.0.0": {
+        "runtime": {
+          "Microsoft.VisualStudio.TestPlatform.ObjectModel.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "15.0.0.0"
+          }
+        }
+      },
+      "FlatBuffers/0.0.0.0": {
+        "runtime": {
+          "FlatBuffers.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "GLibSharp/3.24.24.95": {
+        "runtime": {
+          "GLibSharp.dll": {
+            "assemblyVersion": "3.24.24.95",
+            "fileVersion": "3.24.24.95"
+          }
+        }
+      },
+      "System.Drawing.Common/5.0.0.2": {
+        "runtime": {
+          "System.Drawing.Common.dll": {
+            "assemblyVersion": "5.0.0.2",
+            "fileVersion": "5.0.1221.52207"
+          }
+        }
+      },
+      "Microsoft.CodeAnalysis.CSharp/3.9.0.0": {
+        "runtime": {
+          "Microsoft.CodeAnalysis.CSharp.dll": {
+            "assemblyVersion": "3.9.0.0",
+            "fileVersion": "3.900.21.12420"
+          }
+        }
+      },
+      "Microsoft.CodeAnalysis/3.9.0.0": {
+        "runtime": {
+          "Microsoft.CodeAnalysis.dll": {
+            "assemblyVersion": "3.9.0.0",
+            "fileVersion": "3.900.21.12420"
+          }
+        }
+      },
+      "BigGustave/1.0.0.0": {
+        "runtime": {
+          "BigGustave.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "BitMiracle.LibJpeg.NET/1.5.0.0": {
+        "runtime": {
+          "BitMiracle.LibJpeg.NET.dll": {
+            "assemblyVersion": "1.5.0.0",
+            "fileVersion": "1.5.0.0"
+          }
+        }
+      },
+      "crypto/1.9.0.0": {
+        "runtime": {
+          "crypto.dll": {
+            "assemblyVersion": "1.9.0.0",
+            "fileVersion": "1.9.21290.1"
+          }
+        }
+      },
+      "Gst-1.0/0.7.0.0": {
+        "runtime": {
+          "Gst-1.0.dll": {
+            "assemblyVersion": "0.7.0.0",
+            "fileVersion": "0.7.0.0"
+          }
+        }
+      },
+      "GstApp-1.0/0.7.0.0": {
+        "runtime": {
+          "GstApp-1.0.dll": {
+            "assemblyVersion": "0.7.0.0",
+            "fileVersion": "0.7.0.0"
+          }
+        }
+      },
+      "protobuf-net/2.4.0.0": {
+        "runtime": {
+          "protobuf-net.dll": {
+            "assemblyVersion": "2.4.0.0",
+            "fileVersion": "2.4.7.18"
+          }
+        }
+      },
+      "Xwt.Gtk3/0.1.0.0": {
+        "runtime": {
+          "Xwt.Gtk3.dll": {
+            "assemblyVersion": "0.1.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "GdkSharp/3.24.24.95": {
+        "runtime": {
+          "GdkSharp.dll": {
+            "assemblyVersion": "3.24.24.95",
+            "fileVersion": "3.24.24.95"
+          }
+        }
+      },
+      "K4os.Compression.LZ4/1.3.8.0": {
+        "runtime": {
+          "K4os.Compression.LZ4.dll": {
+            "assemblyVersion": "1.3.8.0",
+            "fileVersion": "1.3.8.0"
+          }
+        }
+      },
+      "GObject-2.0/0.7.0.0": {
+        "runtime": {
+          "GObject-2.0.dll": {
+            "assemblyVersion": "0.7.0.0",
+            "fileVersion": "0.7.0.0"
+          }
+        }
+      },
+      "Microsoft.TestPlatform.PlatformAbstractions/15.0.0.0": {
+        "runtime": {
+          "Microsoft.TestPlatform.PlatformAbstractions.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "15.0.0.0"
+          }
+        }
+      },
+      "NuGet.Frameworks/5.0.0.6": {
+        "runtime": {
+          "NuGet.Frameworks.dll": {
+            "assemblyVersion": "5.0.0.6",
+            "fileVersion": "5.0.0.5923"
+          }
+        }
+      },
+      "Microsoft.TestPlatform.CoreUtilities/15.0.0.0": {
+        "runtime": {
+          "Microsoft.TestPlatform.CoreUtilities.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "15.0.0.0"
+          }
+        }
+      },
+      "GLib-2.0/0.7.0.0": {
+        "runtime": {
+          "GLib-2.0.dll": {
+            "assemblyVersion": "0.7.0.0",
+            "fileVersion": "0.7.0.0"
+          }
+        }
+      },
+      "GstBase-1.0/0.7.0.0": {
+        "runtime": {
+          "GstBase-1.0.dll": {
+            "assemblyVersion": "0.7.0.0",
+            "fileVersion": "0.7.0.0"
+          }
+        }
+      },
+      "CairoSharp/3.24.24.95": {
+        "runtime": {
+          "CairoSharp.dll": {
+            "assemblyVersion": "3.24.24.95",
+            "fileVersion": "3.24.24.95"
+          }
+        }
+      },
+      "PangoSharp/3.24.24.95": {
+        "runtime": {
+          "PangoSharp.dll": {
+            "assemblyVersion": "3.24.24.95",
+            "fileVersion": "3.24.24.95"
+          }
+        }
+      },
+      "GtkSharp/3.24.24.95": {
+        "runtime": {
+          "GtkSharp.dll": {
+            "assemblyVersion": "3.24.24.95",
+            "fileVersion": "3.24.24.95"
+          }
+        }
+      },
+      "AtkSharp/3.24.24.95": {
+        "runtime": {
+          "AtkSharp.dll": {
+            "assemblyVersion": "3.24.24.95",
+            "fileVersion": "3.24.24.95"
+          }
+        }
+      },
+      "GioSharp/3.24.24.95": {
+        "runtime": {
+          "GioSharp.dll": {
+            "assemblyVersion": "3.24.24.95",
+            "fileVersion": "3.24.24.95"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Peripherals/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "AntShell/1.0.9543.16919": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "AsyncIO/0.1.69.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CookComputing.XmlRpcV2/2.5.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CxxDemangler/1.0.9543.16917": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Dynamitey/2.0.10.189": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ELFSharp/0.1.1.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "FdtSharp/0.1.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Infrastructure/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "IronPython/2.7.12.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "IronPython.Modules/2.7.12.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "libtftp/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Dynamic/1.3.5.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Scripting/1.3.5.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Scripting.Metadata/1.3.5.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Migrant/0.14.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Mono.Cecil/0.11.3.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "NetMQ/4.0.1.12": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Nini/1.1.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "OptionsParser/0.1.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "PacketDotNet/0.13.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "SampleCommandPlugin/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Sprache/2.1.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "TermSharp/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "TracePlugin/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "WiresharkPlugin/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Xwt/0.1.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "System.CodeDom/8.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Mono.Unix/7.1.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "NaCl/0.1.13.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.VisualStudio.TestPlatform.ObjectModel/15.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "FlatBuffers/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GLibSharp/3.24.24.95": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "System.Drawing.Common/5.0.0.2": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.CodeAnalysis.CSharp/3.9.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.CodeAnalysis/3.9.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "BigGustave/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "BitMiracle.LibJpeg.NET/1.5.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "crypto/1.9.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Gst-1.0/0.7.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GstApp-1.0/0.7.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "protobuf-net/2.4.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Xwt.Gtk3/0.1.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GdkSharp/3.24.24.95": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "K4os.Compression.LZ4/1.3.8.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GObject-2.0/0.7.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.TestPlatform.PlatformAbstractions/15.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "NuGet.Frameworks/5.0.0.6": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.TestPlatform.CoreUtilities/15.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GLib-2.0/0.7.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GstBase-1.0/0.7.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CairoSharp/3.24.24.95": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "PangoSharp/3.24.24.95": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GtkSharp/3.24.24.95": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "AtkSharp/3.24.24.95": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GioSharp/3.24.24.95": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
