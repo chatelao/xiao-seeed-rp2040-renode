@@ -1,12 +1,9 @@
 $machine_name?="seeed_xiao_rp2040"
 $platform_file?=$ORIGIN/boards/seeed_xiao_rp2040.repl
-include $ORIGIN/boards/initialize_custom_board.resc
+$board_initialization_file=$ORIGIN/boards/initialize_custom_board.resc
+include $ORIGIN/tests/prepare.resc
 
-sysbus LoadELF $global.FIRMWARE
-
-# The bootrom is already loaded by initialize_custom_board.resc
-# We just need to make sure the vector table is correct if needed,
-# but LoadELF usually handles the entry point.
+# Arduino firmware entry point
+sysbus.cpu0 PC 0x100030d5
 
 showAnalyzer sysbus.uart0
-start
