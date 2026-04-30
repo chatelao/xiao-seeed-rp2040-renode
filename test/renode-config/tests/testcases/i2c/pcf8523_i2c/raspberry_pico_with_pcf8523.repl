@@ -1,0 +1,3 @@
+using "../../../../boards/raspberry_pico.repl"
+
+pcf8523: I2C.PCF8523 @ i2c0 0x68

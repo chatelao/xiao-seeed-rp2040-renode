@@ -1,0 +1,12 @@
+using "../cores/rp2040.repl"
+
+led_red: Miscellaneous.LED @ gpio 17
+led_green: Miscellaneous.LED @ gpio 16
+led_blue: Miscellaneous.LED @ gpio 25
+led_rgb: Miscellaneous.LED @ gpio 12
+
+gpio:
+    17 -> led_red@0
+    16 -> led_green@0
+    25 -> led_blue@0
+    12 -> led_rgb@0

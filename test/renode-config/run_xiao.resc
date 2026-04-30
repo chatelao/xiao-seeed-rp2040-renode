@@ -1,0 +1,12 @@
+$machine_name?="seeed_xiao_rp2040"
+$platform_file?=$ORIGIN/boards/seeed_xiao_rp2040.repl
+include $ORIGIN/boards/initialize_custom_board.resc
+
+sysbus LoadELF $global.FIRMWARE
+
+# The bootrom is already loaded by initialize_custom_board.resc
+# We just need to make sure the vector table is correct if needed,
+# but LoadELF usually handles the entry point.
+
+showAnalyzer sysbus.uart0
+start
