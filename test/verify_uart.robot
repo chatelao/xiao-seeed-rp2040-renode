@@ -1,7 +1,7 @@
 *** Settings ***
 Suite Setup                   Setup
 Suite Teardown                Teardown
-Resource                      ${CURDIR}/renode-config/tests/common.resource
+Test Teardown                 Test Teardown
 
 *** Variables ***
 ${UART}                       sysbus.uart0
@@ -15,13 +15,7 @@ Should Print Hello World
     Wait For Line On Uart     Hello from XIAO RP2040!
 
 *** Keywords ***
-Setup
-    ${RENODE_PATH}=           Set Variable    ${CURDIR}/renode/renode
-    Setup Renode              ${RENODE_PATH}
-
-Teardown
-    Teardown Renode
-
 Create Machine
-    Execute Command           $global.FIRMWARE = @${FIRMWARE}
+    Execute Command           $global.TEST_FILE = @${FIRMWARE}
     Execute Command           include @${RESC}
+    Create Terminal Tester    ${UART}

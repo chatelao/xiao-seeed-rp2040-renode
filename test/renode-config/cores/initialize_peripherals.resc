@@ -1,5 +1,5 @@
-mach create $machine_name
+# mach create $machine_name
 
 # Load peripherals from the precompiled DLL. For live source compilation during
 # development, include initialize_peripherals_source.resc instead.
-include $ORIGIN/load_peripherals.py
+include $ORIGIN/initialize_peripherals_source.resc
