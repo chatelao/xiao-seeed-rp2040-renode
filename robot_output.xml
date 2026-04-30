@@ -1,46 +1,786 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generator="Rebot 6.1 (Python 3.12.13 on linux)" generated="20260430 13:30:25.041" rpa="false" schemaversion="4">
-<suite id="s1" name="Test Suite" source="/app/test/verify_uart.robot">
-<kw name="Setup" type="SETUP">
-<msg timestamp="20260430 13:30:25.000" level="TRACE">Arguments: [  ]</msg>
-<kw name="Set Variable" library="BuiltIn">
-<var>${RENODE_PATH}</var>
-<arg>/app/test/renode/renode</arg>
-<doc>Returns the given values which can then be assigned to a variables.</doc>
-<msg timestamp="20260430 13:30:25.000" level="TRACE">Arguments: [ '/app/test/renode/renode' ]</msg>
-<msg timestamp="20260430 13:30:25.000" level="TRACE">Return: '/app/test/renode/renode'</msg>
-<msg timestamp="20260430 13:30:25.000" level="INFO">${RENODE_PATH} = /app/test/renode/renode</msg>
-<status status="PASS" starttime="20260430 13:30:25.000" endtime="20260430 13:30:25.000"/>
+<robot generator="Rebot 6.1 (Python 3.12.13 on linux)" generated="20260430 15:14:43.913" rpa="false" schemaversion="4">
+<suite id="s1" name="Test Suite" source="/app/test/verify_adc.robot">
+<kw name="Setup" library="renode-keywords" type="SETUP">
+<msg timestamp="20260430 15:12:59.432" level="TRACE">Arguments: [  ]</msg>
+<kw name="Evaluate" library="BuiltIn">
+<var>${SYSTEM}</var>
+<arg>platform.system()</arg>
+<arg>modules=platform</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20260430 15:12:59.433" level="TRACE">Arguments: [ 'platform.system()' | modules='platform' ]</msg>
+<msg timestamp="20260430 15:12:59.433" level="TRACE">Return: 'Linux'</msg>
+<msg timestamp="20260430 15:12:59.433" level="INFO">${SYSTEM} = Linux</msg>
+<status status="PASS" starttime="20260430 15:12:59.432" endtime="20260430 15:12:59.433"/>
 </kw>
+<kw name="Set Variable If" library="BuiltIn">
+<var>${CONFIGURATION}</var>
+<arg>not ${SKIP_RUNNING_SERVER} and ${SERVER_REMOTE_DEBUG}</arg>
+<arg>Debug</arg>
+<arg>${CONFIGURATION}</arg>
+<doc>Sets variable based on the given condition.</doc>
+<msg timestamp="20260430 15:12:59.434" level="TRACE">Arguments: [ 'not True and False' | 'Debug' | '${CONFIGURATION}' ]</msg>
+<msg timestamp="20260430 15:12:59.434" level="TRACE">Return: 'Release'</msg>
+<msg timestamp="20260430 15:12:59.434" level="INFO">${CONFIGURATION} = Release</msg>
+<status status="PASS" starttime="20260430 15:12:59.433" endtime="20260430 15:12:59.434"/>
+</kw>
+<kw name="Create List" library="BuiltIn">
+<var>@{PARAMS}</var>
+<arg>--robot-server-port</arg>
+<arg>${PORT_NUMBER}</arg>
+<arg>--hide-log</arg>
+<doc>Returns a list containing given items.</doc>
+<msg timestamp="20260430 15:12:59.435" level="TRACE">Arguments: [ '--robot-server-port' | '49152' | '--hide-log' ]</msg>
+<msg timestamp="20260430 15:12:59.435" level="TRACE">Return: ['--robot-server-port', '49152', '--hide-log']</msg>
+<msg timestamp="20260430 15:12:59.435" level="INFO">@{PARAMS} = [ --robot-server-port | 49152 | --hide-log ]</msg>
+<status status="PASS" starttime="20260430 15:12:59.434" endtime="20260430 15:12:59.435"/>
+</kw>
+<if>
+<branch type="IF" condition="${DISABLE_GUI}">
+<kw name="Insert Into List" library="Collections">
+<arg>${PARAMS}</arg>
+<arg>0</arg>
+<arg>--disable-gui</arg>
+<doc>Inserts ``value`` into ``list`` to the position specified with ``index``.</doc>
+<status status="NOT RUN" starttime="20260430 15:12:59.435" endtime="20260430 15:12:59.435"/>
+</kw>
+<status status="NOT RUN" starttime="20260430 15:12:59.435" endtime="20260430 15:12:59.435"/>
+</branch>
+<status status="PASS" starttime="20260430 15:12:59.435" endtime="20260430 15:12:59.435"/>
+</if>
+<if>
+<branch type="IF" condition="not ${SKIP_RUNNING_SERVER}">
+<kw name="File Should Exist" library="OperatingSystem">
+<arg>${DIRECTORY}/${BINARY_NAME}</arg>
+<arg>msg=Robot Framework remote server binary not found (${DIRECTORY}/${BINARY_NAME}). Did you forget to build it in ${CONFIGURATION} configuration?</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="NOT RUN" starttime="20260430 15:12:59.436" endtime="20260430 15:12:59.436"/>
+</kw>
+<status status="NOT RUN" starttime="20260430 15:12:59.435" endtime="20260430 15:12:59.436"/>
+</branch>
+<status status="PASS" starttime="20260430 15:12:59.435" endtime="20260430 15:12:59.436"/>
+</if>
+<if>
+<branch type="IF" condition="not ${SKIP_RUNNING_SERVER} and not ${SERVER_REMOTE_DEBUG} and not '${SYSTEM}' == 'Windows' and not ${NET_PLATFORM}">
+<kw name="Start Process" library="Process">
+<arg>mono</arg>
+<arg>${BINARY_NAME}</arg>
+<arg>@{PARAMS}</arg>
+<arg>cwd=${DIRECTORY}</arg>
+<doc>Starts a new process on background.</doc>
+<status status="NOT RUN" starttime="20260430 15:12:59.436" endtime="20260430 15:12:59.436"/>
+</kw>
+<status status="NOT RUN" starttime="20260430 15:12:59.436" endtime="20260430 15:12:59.436"/>
+</branch>
+<status status="PASS" starttime="20260430 15:12:59.436" endtime="20260430 15:12:59.436"/>
+</if>
+<if>
+<branch type="IF" condition="not ${SKIP_RUNNING_SERVER} and not ${SERVER_REMOTE_DEBUG} and '${SYSTEM}' == 'Windows'">
+<kw name="Start Process" library="Process">
+<arg>${BINARY_NAME}</arg>
+<arg>@{PARAMS}</arg>
+<arg>cwd=${DIRECTORY}</arg>
+<arg>shell=true</arg>
+<doc>Starts a new process on background.</doc>
+<status status="NOT RUN" starttime="20260430 15:12:59.437" endtime="20260430 15:12:59.437"/>
+</kw>
+<status status="NOT RUN" starttime="20260430 15:12:59.436" endtime="20260430 15:12:59.437"/>
+</branch>
+<status status="PASS" starttime="20260430 15:12:59.436" endtime="20260430 15:12:59.437"/>
+</if>
+<if>
+<branch type="IF" condition="not ${SKIP_RUNNING_SERVER} and not ${SERVER_REMOTE_DEBUG} and ${NET_PLATFORM}">
+<kw name="Start Process" library="Process">
+<arg>dotnet ${BINARY_NAME}</arg>
+<arg>@{PARAMS}</arg>
+<arg>cwd=${DIRECTORY}</arg>
+<arg>shell=true</arg>
+<doc>Starts a new process on background.</doc>
+<status status="NOT RUN" starttime="20260430 15:12:59.437" endtime="20260430 15:12:59.437"/>
+</kw>
+<status status="NOT RUN" starttime="20260430 15:12:59.437" endtime="20260430 15:12:59.437"/>
+</branch>
+<status status="PASS" starttime="20260430 15:12:59.437" endtime="20260430 15:12:59.437"/>
+</if>
+<if>
+<branch type="IF" condition="not ${SKIP_RUNNING_SERVER} and ${SERVER_REMOTE_DEBUG} and not '${SYSTEM}' == 'Windows' and not ${NET_PLATFORM}">
+<kw name="Start Process" library="Process">
+<arg>mono</arg>
+<arg>--debug</arg>
+<arg>--debugger-agent\=transport\=dt_socket,address\=0.0.0.0:${SERVER_REMOTE_PORT},server\=y,suspend\=${SERVER_REMOTE_SUSPEND}</arg>
+<arg>${BINARY_NAME}</arg>
+<arg>@{PARAMS}</arg>
+<arg>cwd=${DIRECTORY}</arg>
+<doc>Starts a new process on background.</doc>
+<status status="NOT RUN" starttime="20260430 15:12:59.438" endtime="20260430 15:12:59.438"/>
+</kw>
+<status status="NOT RUN" starttime="20260430 15:12:59.437" endtime="20260430 15:12:59.438"/>
+</branch>
+<status status="PASS" starttime="20260430 15:12:59.437" endtime="20260430 15:12:59.438"/>
+</if>
+<if>
+<branch type="IF" condition="not ${SKIP_RUNNING_SERVER} and ${SERVER_REMOTE_DEBUG} and '${SYSTEM}' == 'Windows'">
+<kw name="Fatal Error" library="BuiltIn">
+<arg>Windows doesn't support server remote debug option.</arg>
+<doc>Stops the whole test execution.</doc>
+<status status="NOT RUN" starttime="20260430 15:12:59.439" endtime="20260430 15:12:59.439"/>
+</kw>
+<status status="NOT RUN" starttime="20260430 15:12:59.438" endtime="20260430 15:12:59.439"/>
+</branch>
+<status status="PASS" starttime="20260430 15:12:59.438" endtime="20260430 15:12:59.439"/>
+</if>
+<if>
+<branch type="IF" condition="not '${SYSTEM}' == 'Windows'">
+<kw name="Wait Until Keyword Succeeds" library="BuiltIn">
+<arg>60s</arg>
+<arg>1s</arg>
+<arg>Import Library</arg>
+<arg>Remote</arg>
+<arg>http://127.0.0.1:${PORT_NUMBER}/</arg>
+<doc>Runs the specified keyword and retries if it fails.</doc>
+<msg timestamp="20260430 15:12:59.439" level="TRACE">Arguments: [ '60s' | '1s' | 'Import Library' | 'Remote' | 'http://127.0.0.1:${PORT_NUMBER}/' ]</msg>
+<kw name="Import Library" library="BuiltIn">
+<arg>Remote</arg>
+<arg>http://127.0.0.1:${PORT_NUMBER}/</arg>
+<doc>Imports a library with the given name and optional arguments.</doc>
+<msg timestamp="20260430 15:12:59.440" level="TRACE">Arguments: [ 'Remote' | 'http://127.0.0.1:${PORT_NUMBER}/' ]</msg>
+<msg timestamp="20260430 15:13:00.333" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:12:59.440" endtime="20260430 15:13:00.333"/>
+</kw>
+<msg timestamp="20260430 15:13:00.333" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:12:59.439" endtime="20260430 15:13:00.333"/>
+</kw>
+<status status="PASS" starttime="20260430 15:12:59.439" endtime="20260430 15:13:00.333"/>
+</branch>
+<status status="PASS" starttime="20260430 15:12:59.439" endtime="20260430 15:13:00.334"/>
+</if>
+<if>
+<branch type="IF" condition="'${SYSTEM}' == 'Windows'">
+<kw name="Wait Until Keyword Succeeds" library="BuiltIn">
+<arg>60s</arg>
+<arg>1s</arg>
+<arg>Import Library</arg>
+<arg>Remote</arg>
+<arg>http://localhost:${PORT_NUMBER}/</arg>
+<doc>Runs the specified keyword and retries if it fails.</doc>
+<status status="NOT RUN" starttime="20260430 15:13:00.334" endtime="20260430 15:13:00.334"/>
+</kw>
+<status status="NOT RUN" starttime="20260430 15:13:00.334" endtime="20260430 15:13:00.334"/>
+</branch>
+<status status="PASS" starttime="20260430 15:13:00.334" endtime="20260430 15:13:00.334"/>
+</if>
 <kw name="Setup Renode" library="renode-keywords">
-<arg>${RENODE_PATH}</arg>
-<msg timestamp="20260430 13:30:25.001" level="FAIL">Keyword 'renode-keywords.Setup Renode' expected 0 arguments, got 1.</msg>
-<status status="FAIL" starttime="20260430 13:30:25.001" endtime="20260430 13:30:25.001"/>
+<msg timestamp="20260430 15:13:00.335" level="TRACE">Arguments: [  ]</msg>
+<kw name="Set Default Uart Timeout" library="Remote">
+<arg>${DEFAULT_UART_TIMEOUT}</arg>
+<msg timestamp="20260430 15:13:00.335" level="TRACE">Arguments: [ '8' ]</msg>
+<msg timestamp="20260430 15:13:00.375" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260430 15:13:00.335" endtime="20260430 15:13:00.375"/>
 </kw>
-<status status="FAIL" starttime="20260430 13:30:25.000" endtime="20260430 13:30:25.001"/>
+<if>
+<branch type="IF" condition="${SAVE_LOGS}">
+<kw name="Enable Logging To Cache" library="Remote">
+<msg timestamp="20260430 15:13:00.376" level="TRACE">Arguments: [  ]</msg>
+<msg timestamp="20260430 15:13:00.386" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260430 15:13:00.376" endtime="20260430 15:13:00.386"/>
 </kw>
-<test id="s1-t1" name="Should Print Hello World" line="12">
-<status status="FAIL" starttime="20260430 13:30:25.001" endtime="20260430 13:30:25.002">Parent suite setup failed:
-Keyword 'renode-keywords.Setup Renode' expected 0 arguments, got 1.
+<status status="PASS" starttime="20260430 15:13:00.376" endtime="20260430 15:13:00.386"/>
+</branch>
+<status status="PASS" starttime="20260430 15:13:00.375" endtime="20260430 15:13:00.386"/>
+</if>
+<kw name="Set Variable" library="BuiltIn">
+<var>${allowed_chars}</var>
+<arg>abcdefghijklmnopqrstuvwxyz01234567890_-</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20260430 15:13:00.387" level="TRACE">Arguments: [ 'abcdefghijklmnopqrstuvwxyz01234567890_-' ]</msg>
+<msg timestamp="20260430 15:13:00.387" level="TRACE">Return: 'abcdefghijklmnopqrstuvwxyz01234567890_-'</msg>
+<msg timestamp="20260430 15:13:00.387" level="INFO">${allowed_chars} = abcdefghijklmnopqrstuvwxyz01234567890_-</msg>
+<status status="PASS" starttime="20260430 15:13:00.386" endtime="20260430 15:13:00.387"/>
+</kw>
+<kw name="Convert To Lower Case" library="String">
+<var>${metrics_fname}</var>
+<arg>${SUITE_NAME}</arg>
+<doc>Converts string to lower case.</doc>
+<msg timestamp="20260430 15:13:00.387" level="TRACE">Arguments: [ 'verify_adc' ]</msg>
+<msg timestamp="20260430 15:13:00.387" level="TRACE">Return: 'verify_adc'</msg>
+<msg timestamp="20260430 15:13:00.387" level="INFO">${metrics_fname} = verify_adc</msg>
+<status status="PASS" starttime="20260430 15:13:00.387" endtime="20260430 15:13:00.387"/>
+</kw>
+<kw name="Replace String" library="String">
+<var>${metrics_fname}</var>
+<arg>${metrics_fname}</arg>
+<arg>${SPACE}</arg>
+<arg>_</arg>
+<doc>Replaces ``search_for`` in the given ``string`` with ``replace_with``.</doc>
+<msg timestamp="20260430 15:13:00.388" level="TRACE">Arguments: [ 'verify_adc' | ' ' | '_' ]</msg>
+<msg timestamp="20260430 15:13:00.388" level="TRACE">Return: 'verify_adc'</msg>
+<msg timestamp="20260430 15:13:00.388" level="INFO">${metrics_fname} = verify_adc</msg>
+<status status="PASS" starttime="20260430 15:13:00.387" endtime="20260430 15:13:00.388"/>
+</kw>
+<kw name="Replace String Using Regexp" library="String">
+<var>${metrics_fname}</var>
+<arg>${metrics_fname}</arg>
+<arg>[^${allowed_chars}]+</arg>
+<arg>${EMPTY}</arg>
+<doc>Replaces ``pattern`` in the given ``string`` with ``replace_with``.</doc>
+<msg timestamp="20260430 15:13:00.389" level="TRACE">Arguments: [ 'verify_adc' | '[^abcdefghijklmnopqrstuvwxyz01234567890_-]+' | '' ]</msg>
+<msg timestamp="20260430 15:13:00.389" level="TRACE">Return: 'verify_adc'</msg>
+<msg timestamp="20260430 15:13:00.389" level="INFO">${metrics_fname} = verify_adc</msg>
+<status status="PASS" starttime="20260430 15:13:00.388" endtime="20260430 15:13:00.389"/>
+</kw>
+<kw name="Join Path" library="OperatingSystem">
+<var>${metrics_path}</var>
+<arg>${RESULTS_DIRECTORY}</arg>
+<arg>profiler-${metrics_fname}</arg>
+<doc>Joins the given path part(s) to the given base path.</doc>
+<msg timestamp="20260430 15:13:00.389" level="TRACE">Arguments: [ '/app/' | 'profiler-verify_adc' ]</msg>
+<msg timestamp="20260430 15:13:00.390" level="TRACE">Return: '/app/profiler-verify_adc'</msg>
+<msg timestamp="20260430 15:13:00.390" level="INFO">${metrics_path} = /app/profiler-verify_adc</msg>
+<status status="PASS" starttime="20260430 15:13:00.389" endtime="20260430 15:13:00.390"/>
+</kw>
+<if>
+<branch type="IF" condition="${CREATE_EXECUTION_METRICS}">
+<kw name="Execute Command" library="Remote">
+<arg>EnableProfilerGlobally "${metrics_path}"</arg>
+<status status="NOT RUN" starttime="20260430 15:13:00.390" endtime="20260430 15:13:00.390"/>
+</kw>
+<status status="NOT RUN" starttime="20260430 15:13:00.390" endtime="20260430 15:13:00.390"/>
+</branch>
+<status status="PASS" starttime="20260430 15:13:00.390" endtime="20260430 15:13:00.390"/>
+</if>
+<kw name="Reset Emulation" library="Remote">
+<msg timestamp="20260430 15:13:00.391" level="TRACE">Arguments: [  ]</msg>
+<msg timestamp="20260430 15:13:00.426" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260430 15:13:00.391" endtime="20260430 15:13:00.426"/>
+</kw>
+<msg timestamp="20260430 15:13:00.427" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:13:00.335" endtime="20260430 15:13:00.427"/>
+</kw>
+<msg timestamp="20260430 15:13:00.427" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:12:59.432" endtime="20260430 15:13:00.427"/>
+</kw>
+<test id="s1-t1" name="Should Report Correct ADC Value" line="10">
+<kw name="Reset Emulation" library="Remote" type="SETUP">
+<msg timestamp="20260430 15:13:00.428" level="TRACE">Arguments: [  ]</msg>
+<msg timestamp="20260430 15:13:00.437" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260430 15:13:00.427" endtime="20260430 15:13:00.438"/>
+</kw>
+<kw name="Create Machine">
+<msg timestamp="20260430 15:13:00.438" level="TRACE">Arguments: [  ]</msg>
+<kw name="Execute Command" library="Remote">
+<arg>$global.FIRMWARE = @${FIRMWARE}</arg>
+<msg timestamp="20260430 15:13:00.438" level="TRACE">Arguments: [ '$global.FIRMWARE = @/app/test/../.pio/build/seeed-xiao-rp2040/firmware.elf' ]</msg>
+<msg timestamp="20260430 15:13:00.465" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260430 15:13:00.438" endtime="20260430 15:13:00.465"/>
+</kw>
+<kw name="Execute Command" library="Remote">
+<arg>include @${RESC}</arg>
+<msg timestamp="20260430 15:13:00.466" level="TRACE">Arguments: [ 'include @/app/test/renode-config/run_xiao.resc' ]</msg>
+<msg timestamp="20260430 15:13:28.437" level="TRACE">Return: 'Starting emulation...\n\n'</msg>
+<status status="PASS" starttime="20260430 15:13:00.465" endtime="20260430 15:13:28.438"/>
+</kw>
+<msg timestamp="20260430 15:13:28.438" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:13:00.438" endtime="20260430 15:13:28.438"/>
+</kw>
+<kw name="Create Terminal Tester" library="Remote">
+<arg>${UART}</arg>
+<msg timestamp="20260430 15:13:28.438" level="TRACE">Arguments: [ 'sysbus.uart0' ]</msg>
+<msg timestamp="20260430 15:13:28.464" level="TRACE">Return: 0</msg>
+<status status="PASS" starttime="20260430 15:13:28.438" endtime="20260430 15:13:28.464"/>
+</kw>
+<kw name="Start Emulation" library="Remote">
+<msg timestamp="20260430 15:13:28.465" level="TRACE">Arguments: [  ]</msg>
+<msg timestamp="20260430 15:13:28.569" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260430 15:13:28.464" endtime="20260430 15:13:28.569"/>
+</kw>
+<kw name="Execute Command" library="Remote">
+<arg>sysbus.adc FeedVoltageSampleToChannel 0 1.65 5</arg>
+<msg timestamp="20260430 15:13:28.570" level="TRACE">Arguments: [ 'sysbus.adc FeedVoltageSampleToChannel 0 1.65 5' ]</msg>
+<msg timestamp="20260430 15:13:29.234" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260430 15:13:28.570" endtime="20260430 15:13:29.234"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>ADC Raw: 2047, Voltage: 1.65</arg>
+<msg timestamp="20260430 15:13:29.235" level="TRACE">Arguments: [ 'ADC Raw: 2047, Voltage: 1.65' ]</msg>
+<msg timestamp="20260430 15:14:41.440" level="FAIL">InvalidOperationException: Terminal tester failed!
 
-Also parent suite teardown failed:
-No keyword with name 'Teardown Renode' found. Did you try using keyword 'Teardown' or 'renode-keywords.Teardown' and forgot to use enough whitespace between keyword and arguments?</status>
-</test>
-<kw name="Teardown" type="TEARDOWN">
-<msg timestamp="20260430 13:30:25.003" level="TRACE">Arguments: [  ]</msg>
-<kw name="Teardown Renode">
-<msg timestamp="20260430 13:30:25.007" level="FAIL">No keyword with name 'Teardown Renode' found. Did you try using keyword 'Teardown' or 'renode-keywords.Teardown' and forgot to use enough whitespace between keyword and arguments?</msg>
-<status status="FAIL" starttime="20260430 13:30:25.007" endtime="20260430 13:30:25.007"/>
+Full report:
+([host: 04/30/2026 15:13:28, virt:       0] Attached to UART event: success)
+[host: 04/30/2026 15:13:29, virt:       1] ADC Raw: 0, Voltage: 0.00
+[host: 04/30/2026 15:13:38, virt:    1001] ADC Raw: 2048, Voltage: 1.65
+[host: 04/30/2026 15:13:47, virt:    2001] ADC Raw: 2048, Voltage: 1.65
+[host: 04/30/2026 15:13:56, virt:    3001] ADC Raw: 2048, Voltage: 1.65
+[host: 04/30/2026 15:14:05, virt:    4001] ADC Raw: 2048, Voltage: 1.65
+[host: 04/30/2026 15:14:14, virt:    5001] ADC Raw: 2048, Voltage: 1.65
+[host: 04/30/2026 15:14:23, virt:    6001] ADC Raw: 0, Voltage: 0.00
+[host: 04/30/2026 15:14:32, virt:    7002] ADC Raw: 0, Voltage: 0.00
+[host: 04/30/2026 15:14:41, virt:    8002] ADC Raw: 0, Voltage: 0.00
+ [[no newline]]
+([host: 04/30/2026 15:14:41, virt:    8012] Line containing &gt;&gt;ADC Raw: 2047, Voltage: 1.65&lt;&lt; event: failure)
+
+</msg>
+<msg timestamp="20260430 15:14:41.440" level="DEBUG">InvalidOperationException:   at (wrapper managed-to-native) System.Reflection.MonoMethod.InternalInvoke(System.Reflection.MonoMethod,object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in &lt;aeea2e33ea654cfabae63b60ba0e127a&gt;:0
+</msg>
+<status status="FAIL" starttime="20260430 15:13:29.235" endtime="20260430 15:14:41.441"/>
 </kw>
-<msg timestamp="20260430 13:30:25.007" level="TRACE">Return: None</msg>
-<status status="FAIL" starttime="20260430 13:30:25.003" endtime="20260430 13:30:25.007">No keyword with name 'Teardown Renode' found. Did you try using keyword 'Teardown' or 'renode-keywords.Teardown' and forgot to use enough whitespace between keyword and arguments?</status>
+<kw name="Execute Command" library="Remote">
+<arg>sysbus.adc FeedVoltageSampleToChannel 0 3.3 5</arg>
+<status status="NOT RUN" starttime="20260430 15:14:41.441" endtime="20260430 15:14:41.441"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>ADC Raw: 4095, Voltage: 3.30</arg>
+<status status="NOT RUN" starttime="20260430 15:14:41.441" endtime="20260430 15:14:41.441"/>
+</kw>
+<kw name="Execute Command" library="Remote">
+<arg>sysbus.adc FeedVoltageSampleToChannel 0 0.0 5</arg>
+<status status="NOT RUN" starttime="20260430 15:14:41.441" endtime="20260430 15:14:41.441"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>ADC Raw: 0, Voltage: 0.00</arg>
+<status status="NOT RUN" starttime="20260430 15:14:41.441" endtime="20260430 15:14:41.441"/>
+</kw>
+<kw name="Test Teardown" library="renode-keywords" type="TEARDOWN">
+<msg timestamp="20260430 15:14:41.442" level="TRACE">Arguments: [  ]</msg>
+<kw name="Stop Profiler" library="renode-keywords">
+<msg timestamp="20260430 15:14:41.443" level="TRACE">Arguments: [  ]</msg>
+<if>
+<branch type="IF" condition="${PROFILER_PROCESS}">
+<kw name="Terminate Process" library="Process">
+<arg>${PROFILER_PROCESS}</arg>
+<doc>Stops the process gracefully or forcefully.</doc>
+<status status="NOT RUN" starttime="20260430 15:14:41.443" endtime="20260430 15:14:41.443"/>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<arg>${PROFILER_PROCESS}</arg>
+<arg>None</arg>
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<status status="NOT RUN" starttime="20260430 15:14:41.443" endtime="20260430 15:14:41.443"/>
+</kw>
+<status status="NOT RUN" starttime="20260430 15:14:41.443" endtime="20260430 15:14:41.443"/>
+</branch>
+<status status="PASS" starttime="20260430 15:14:41.443" endtime="20260430 15:14:41.443"/>
+</if>
+<msg timestamp="20260430 15:14:41.443" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:14:41.443" endtime="20260430 15:14:41.444"/>
+</kw>
+<kw name="Run Keyword If Test Failed" library="BuiltIn">
+<var>${failed}</var>
+<arg>Set Variable</arg>
+<arg>True</arg>
+<doc>Runs the given keyword with the given arguments, if the test failed.</doc>
+<msg timestamp="20260430 15:14:41.444" level="TRACE">Arguments: [ 'Set Variable' | 'True' ]</msg>
+<kw name="Set Variable" library="BuiltIn">
+<arg>True</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20260430 15:14:41.444" level="TRACE">Arguments: [ 'True' ]</msg>
+<msg timestamp="20260430 15:14:41.444" level="TRACE">Return: 'True'</msg>
+<status status="PASS" starttime="20260430 15:14:41.444" endtime="20260430 15:14:41.444"/>
+</kw>
+<msg timestamp="20260430 15:14:41.444" level="TRACE">Return: 'True'</msg>
+<msg timestamp="20260430 15:14:41.444" level="INFO">${failed} = True</msg>
+<status status="PASS" starttime="20260430 15:14:41.444" endtime="20260430 15:14:41.444"/>
+</kw>
+<if>
+<branch type="IF" condition="${failed}">
+<kw name="Strip String" library="String">
+<var>${message}</var>
+<arg>${TEST_MESSAGE}</arg>
+<arg>mode=right</arg>
+<doc>Remove leading and/or trailing whitespaces from the given string.</doc>
+<msg timestamp="20260430 15:14:41.445" level="TRACE">Arguments: [ 'InvalidOperationException: Terminal tester failed!\n\nFull report:\n([host: 04/30/2026 15:13:28, virt:       0] Attached to UART event: success)\n[host: 04/30/2026 15:13:29, virt:       1] ADC Raw: 0, Voltage: 0.00\n[host: 04/30/2026 15:13:38, virt:    1001] ADC Raw: 2048, Voltage: 1.65\n[host: 04/30/2026 15:13:47, virt:    2001] ADC Raw: 2048, Voltage: 1.65\n[host: 04/30/2026 15:13:56, virt:    3001] ADC Raw: 2048, Voltage: 1.65\n[host: 04/30/2026 15:14:05, virt:    4001] ADC Raw: 2048, Voltage: 1.65\n[host: 04/30/2026 15:14:14, virt:    5001] ADC Raw: 2048, Voltage: 1.65\n[host: 04/30/2026 15:14:23, virt:    6001] ADC Raw: 0, Voltage: 0.00\n[host: 04/30/2026 15:14:32, virt:    7002] ADC Raw: 0, Voltage: 0.00\n[host: 04/30/2026 15:14:41, virt:    8002] ADC Raw: 0, Voltage: 0.00\n [[no newline]]\n([host: 04/30/2026 15:14:41, virt:    8012] Line containing &gt;&gt;ADC Raw: 2047, Voltage: 1.65&lt;&lt; event: failure)\n\n' | mode='right' ]</msg>
+<msg timestamp="20260430 15:14:41.445" level="TRACE">Return: 'InvalidOperationException: Terminal tester failed!\n\nFull report:\n([host: 04/30/2026 15:13:28, virt:       0] Attached to UART event: success)\n[host: 04/30/2026 15:13:29, virt:       1] ADC Raw: 0, Voltage: 0.00\n[host: 04/30/2026 15:13:38, virt:    1001] ADC Raw: 2048, Voltage: 1.65\n[host: 04/30/2026 15:13:47, virt:    2001] ADC Raw: 2048, Voltage: 1.65\n[host: 04/30/2026 15:13:56, virt:    3001] ADC Raw: 2048, Voltage: 1.65\n[host: 04/30/2026 15:14:05, virt:    4001] ADC Raw: 2048, Voltage: 1.65\n[host: 04/30/2026 15:14:14, virt:    5001] ADC Raw: 2048, Voltage: 1.65\n[host: 04/30/2026 15:14:23, virt:    6001] ADC Raw: 0, Voltage: 0.00\n[host: 04/30/2026 15:14:32, virt:    7002] ADC Raw: 0, Voltage: 0.00\n[host: 04/30/2026 15:14:41, virt:    8002] ADC Raw: 0, Voltage: 0.00\n [[no newline]]\n([host: 04/30/2026 15:14:41, virt:    8012] Line containing &gt;&gt;ADC Raw: 2047, Voltage: 1.65&lt;&lt; event: failure)'</msg>
+<msg timestamp="20260430 15:14:41.445" level="INFO">${message} = InvalidOperationException: Terminal tester failed!
+
+Full report:
+([host: 04/30/2026 15:13:28, virt:       0] Attached to UART event: success)
+[host: 04/30/2026 15:13:29, virt:       1] ADC Raw: 0, Vol...</msg>
+<status status="PASS" starttime="20260430 15:14:41.445" endtime="20260430 15:14:41.445"/>
+</kw>
+<kw name="Set Test Message" library="BuiltIn">
+<arg>${message}</arg>
+<doc>Sets message for the current test case.</doc>
+<msg timestamp="20260430 15:14:41.445" level="TRACE">Arguments: [ 'InvalidOperationException: Terminal tester failed!\n\nFull report:\n([host: 04/30/2026 15:13:28, virt:       0] Attached to UART event: success)\n[host: 04/30/2026 15:13:29, virt:       1] ADC Raw: 0, Voltage: 0.00\n[host: 04/30/2026 15:13:38, virt:    1001] ADC Raw: 2048, Voltage: 1.65\n[host: 04/30/2026 15:13:47, virt:    2001] ADC Raw: 2048, Voltage: 1.65\n[host: 04/30/2026 15:13:56, virt:    3001] ADC Raw: 2048, Voltage: 1.65\n[host: 04/30/2026 15:14:05, virt:    4001] ADC Raw: 2048, Voltage: 1.65\n[host: 04/30/2026 15:14:14, virt:    5001] ADC Raw: 2048, Voltage: 1.65\n[host: 04/30/2026 15:14:23, virt:    6001] ADC Raw: 0, Voltage: 0.00\n[host: 04/30/2026 15:14:32, virt:    7002] ADC Raw: 0, Voltage: 0.00\n[host: 04/30/2026 15:14:41, virt:    8002] ADC Raw: 0, Voltage: 0.00\n [[no newline]]\n([host: 04/30/2026 15:14:41, virt:    8012] Line containing &gt;&gt;ADC Raw: 2047, Voltage: 1.65&lt;&lt; event: failure)' ]</msg>
+<msg timestamp="20260430 15:14:41.446" level="INFO">Set test message to:
+InvalidOperationException: Terminal tester failed!
+
+Full report:
+([host: 04/30/2026 15:13:28, virt:       0] Attached to UART event: success)
+[host: 04/30/2026 15:13:29, virt:       1] ADC Raw: 0, Voltage: 0.00
+[host: 04/30/2026 15:13:38, virt:    1001] ADC Raw: 2048, Voltage: 1.65
+[host: 04/30/2026 15:13:47, virt:    2001] ADC Raw: 2048, Voltage: 1.65
+[host: 04/30/2026 15:13:56, virt:    3001] ADC Raw: 2048, Voltage: 1.65
+[host: 04/30/2026 15:14:05, virt:    4001] ADC Raw: 2048, Voltage: 1.65
+[host: 04/30/2026 15:14:14, virt:    5001] ADC Raw: 2048, Voltage: 1.65
+[host: 04/30/2026 15:14:23, virt:    6001] ADC Raw: 0, Voltage: 0.00
+[host: 04/30/2026 15:14:32, virt:    7002] ADC Raw: 0, Voltage: 0.00
+[host: 04/30/2026 15:14:41, virt:    8002] ADC Raw: 0, Voltage: 0.00
+ [[no newline]]
+([host: 04/30/2026 15:14:41, virt:    8012] Line containing &gt;&gt;ADC Raw: 2047, Voltage: 1.65&lt;&lt; event: failure)</msg>
+<msg timestamp="20260430 15:14:41.446" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:14:41.445" endtime="20260430 15:14:41.446"/>
+</kw>
+<status status="PASS" starttime="20260430 15:14:41.444" endtime="20260430 15:14:41.446"/>
+</branch>
+<status status="PASS" starttime="20260430 15:14:41.444" endtime="20260430 15:14:41.446"/>
+</if>
+<kw name="Run Keyword If Timeout Occurred" library="BuiltIn">
+<var>${timed_out}</var>
+<arg>Set Variable</arg>
+<arg>True</arg>
+<doc>Runs the given keyword if either a test or a keyword timeout has occurred.</doc>
+<msg timestamp="20260430 15:14:41.446" level="TRACE">Arguments: [ 'Set Variable' | 'True' ]</msg>
+<msg timestamp="20260430 15:14:41.446" level="TRACE">Return: None</msg>
+<msg timestamp="20260430 15:14:41.446" level="INFO">${timed_out} = None</msg>
+<status status="PASS" starttime="20260430 15:14:41.446" endtime="20260430 15:14:41.446"/>
+</kw>
+<if>
+<branch type="IF" condition="${timed_out}">
+<return>
+<status status="NOT RUN" starttime="20260430 15:14:41.447" endtime="20260430 15:14:41.447"/>
+</return>
+<status status="NOT RUN" starttime="20260430 15:14:41.446" endtime="20260430 15:14:41.447"/>
+</branch>
+<status status="PASS" starttime="20260430 15:14:41.446" endtime="20260430 15:14:41.447"/>
+</if>
+<if>
+<branch type="IF" condition="${CREATE_SNAPSHOT_ON_FAIL}">
+<kw name="Run Keyword If Test Failed" library="BuiltIn">
+<arg>Create Snapshot Of Failed Test</arg>
+<doc>Runs the given keyword with the given arguments, if the test failed.</doc>
+<msg timestamp="20260430 15:14:41.447" level="TRACE">Arguments: [ 'Create Snapshot Of Failed Test' ]</msg>
+<kw name="Create Snapshot Of Failed Test" library="renode-keywords">
+<msg timestamp="20260430 15:14:41.448" level="TRACE">Arguments: [  ]</msg>
+<kw name="Return From Keyword If" library="BuiltIn">
+<arg>'skipped' in @{TEST TAGS}</arg>
+<doc>Returns from the enclosing user keyword if ``condition`` is true.</doc>
+<msg timestamp="20260430 15:14:41.448" level="TRACE">Arguments: [ "'skipped' in []" ]</msg>
+<msg timestamp="20260430 15:14:41.448" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:14:41.448" endtime="20260430 15:14:41.448"/>
+</kw>
+<kw name="Get Variable Value" library="BuiltIn">
+<var>${retry_index}</var>
+<arg>\${RETRYFAILED_RETRY_INDEX}</arg>
+<arg>0</arg>
+<doc>Returns variable value or ``default`` if the variable does not exist.</doc>
+<msg timestamp="20260430 15:14:41.448" level="TRACE">Arguments: [ '\\${RETRYFAILED_RETRY_INDEX}' | '0' ]</msg>
+<msg timestamp="20260430 15:14:41.449" level="TRACE">Return: '0'</msg>
+<msg timestamp="20260430 15:14:41.450" level="INFO">${retry_index} = 0</msg>
+<status status="PASS" starttime="20260430 15:14:41.448" endtime="20260430 15:14:41.450"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${test_name}</var>
+<arg>${SUITE NAME}.${TEST NAME}.fail${retry_index}.save</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20260430 15:14:41.450" level="TRACE">Arguments: [ 'verify_adc.Should Report Correct ADC Value.fail0.save' ]</msg>
+<msg timestamp="20260430 15:14:41.450" level="TRACE">Return: 'verify_adc.Should Report Correct ADC Value.fail0.save'</msg>
+<msg timestamp="20260430 15:14:41.450" level="INFO">${test_name} = verify_adc.Should Report Correct ADC Value.fail0.save</msg>
+<status status="PASS" starttime="20260430 15:14:41.450" endtime="20260430 15:14:41.450"/>
+</kw>
+<kw name="Sanitize Test Name" library="renode-keywords">
+<var>${test_name}</var>
+<arg>${test_name}</arg>
+<msg timestamp="20260430 15:14:41.451" level="TRACE">Arguments: [ ${test_name}='verify_adc.Should Report Correct ADC Value.fail0.save' ]</msg>
+<kw name="Replace String" library="String">
+<var>${test_name}</var>
+<arg>${test_name}</arg>
+<arg>${SPACE}</arg>
+<arg>_</arg>
+<doc>Replaces ``search_for`` in the given ``string`` with ``replace_with``.</doc>
+<msg timestamp="20260430 15:14:41.451" level="TRACE">Arguments: [ 'verify_adc.Should Report Correct ADC Value.fail0.save' | ' ' | '_' ]</msg>
+<msg timestamp="20260430 15:14:41.451" level="TRACE">Return: 'verify_adc.Should_Report_Correct_ADC_Value.fail0.save'</msg>
+<msg timestamp="20260430 15:14:41.451" level="INFO">${test_name} = verify_adc.Should_Report_Correct_ADC_Value.fail0.save</msg>
+<status status="PASS" starttime="20260430 15:14:41.451" endtime="20260430 15:14:41.451"/>
+</kw>
+<kw name="Replace String Using Regexp" library="String">
+<var>${test_name}</var>
+<arg>${test_name}</arg>
+<arg>[/""]</arg>
+<arg>-</arg>
+<doc>Replaces ``pattern`` in the given ``string`` with ``replace_with``.</doc>
+<msg timestamp="20260430 15:14:41.451" level="TRACE">Arguments: [ 'verify_adc.Should_Report_Correct_ADC_Value.fail0.save' | '[/""]' | '-' ]</msg>
+<msg timestamp="20260430 15:14:41.452" level="TRACE">Return: 'verify_adc.Should_Report_Correct_ADC_Value.fail0.save'</msg>
+<msg timestamp="20260430 15:14:41.452" level="INFO">${test_name} = verify_adc.Should_Report_Correct_ADC_Value.fail0.save</msg>
+<status status="PASS" starttime="20260430 15:14:41.451" endtime="20260430 15:14:41.452"/>
+</kw>
+<return>
+<value>${test_name}</value>
+<status status="PASS" starttime="20260430 15:14:41.452" endtime="20260430 15:14:41.452"/>
+</return>
+<msg timestamp="20260430 15:14:41.452" level="TRACE">Return: 'verify_adc.Should_Report_Correct_ADC_Value.fail0.save'</msg>
+<msg timestamp="20260430 15:14:41.452" level="INFO">${test_name} = verify_adc.Should_Report_Correct_ADC_Value.fail0.save</msg>
+<status status="PASS" starttime="20260430 15:14:41.450" endtime="20260430 15:14:41.452"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${snapshots_dir}</var>
+<arg>${RESULTS_DIRECTORY}/snapshots</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20260430 15:14:41.452" level="TRACE">Arguments: [ '/app//snapshots' ]</msg>
+<msg timestamp="20260430 15:14:41.452" level="TRACE">Return: '/app//snapshots'</msg>
+<msg timestamp="20260430 15:14:41.452" level="INFO">${snapshots_dir} = /app//snapshots</msg>
+<status status="PASS" starttime="20260430 15:14:41.452" endtime="20260430 15:14:41.452"/>
+</kw>
+<kw name="Create Directory" library="OperatingSystem">
+<arg>${snapshots_dir}</arg>
+<doc>Creates the specified directory.</doc>
+<msg timestamp="20260430 15:14:41.453" level="TRACE">Arguments: [ '/app//snapshots' ]</msg>
+<msg timestamp="20260430 15:14:41.453" level="INFO" html="true">Directory '&lt;a href="file:///app/snapshots"&gt;/app/snapshots&lt;/a&gt;' already exists.</msg>
+<msg timestamp="20260430 15:14:41.453" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:14:41.453" endtime="20260430 15:14:41.453"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${snapshot_path}</var>
+<arg>"${snapshots_dir}/${test_name}"</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20260430 15:14:41.453" level="TRACE">Arguments: [ '"/app//snapshots/verify_adc.Should_Report_Correct_ADC_Value.fail0.save"' ]</msg>
+<msg timestamp="20260430 15:14:41.453" level="TRACE">Return: '"/app//snapshots/verify_adc.Should_Report_Correct_ADC_Value.fail0.save"'</msg>
+<msg timestamp="20260430 15:14:41.453" level="INFO">${snapshot_path} = "/app//snapshots/verify_adc.Should_Report_Correct_ADC_Value.fail0.save"</msg>
+<status status="PASS" starttime="20260430 15:14:41.453" endtime="20260430 15:14:41.453"/>
+</kw>
+<kw name="Execute Command" library="Remote">
+<arg>Save ${snapshot_path}</arg>
+<msg timestamp="20260430 15:14:41.454" level="TRACE">Arguments: [ 'Save "/app//snapshots/verify_adc.Should_Report_Correct_ADC_Value.fail0.save"' ]</msg>
+<msg timestamp="20260430 15:14:43.526" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260430 15:14:41.453" endtime="20260430 15:14:43.527"/>
+</kw>
+<kw name="Log To Console" library="BuiltIn">
+<arg>!!!!! Emulation's state saved to ${snapshot_path}</arg>
+<doc>Logs the given message to the console.</doc>
+<msg timestamp="20260430 15:14:43.527" level="TRACE">Arguments: [ '!!!!! Emulation\'s state saved to "/app//snapshots/verify_adc.Should_Report_Correct_ADC_Value.fail0.save"' ]</msg>
+<msg timestamp="20260430 15:14:43.527" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:14:43.527" endtime="20260430 15:14:43.527"/>
+</kw>
+<msg timestamp="20260430 15:14:43.527" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:14:41.447" endtime="20260430 15:14:43.527"/>
+</kw>
+<msg timestamp="20260430 15:14:43.527" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:14:41.447" endtime="20260430 15:14:43.528"/>
+</kw>
+<status status="PASS" starttime="20260430 15:14:41.447" endtime="20260430 15:14:43.528"/>
+</branch>
+<status status="PASS" starttime="20260430 15:14:41.447" endtime="20260430 15:14:43.528"/>
+</if>
+<if>
+<branch type="IF" condition="${SAVE_LOGS}">
+<if>
+<branch type="IF" condition="&quot;${SAVE_LOGS_WHEN}&quot; == &quot;Always&quot;">
+<kw name="Save Test Log" library="renode-keywords">
+<status status="NOT RUN" starttime="20260430 15:14:43.528" endtime="20260430 15:14:43.528"/>
+</kw>
+<status status="NOT RUN" starttime="20260430 15:14:43.528" endtime="20260430 15:14:43.528"/>
+</branch>
+<branch type="ELSE IF" condition="&quot;${SAVE_LOGS_WHEN}&quot; == &quot;Fail&quot;">
+<kw name="Run Keyword If Test Failed" library="BuiltIn">
+<arg>Save Test Log</arg>
+<doc>Runs the given keyword with the given arguments, if the test failed.</doc>
+<msg timestamp="20260430 15:14:43.529" level="TRACE">Arguments: [ 'Save Test Log' ]</msg>
+<kw name="Save Test Log" library="renode-keywords">
+<msg timestamp="20260430 15:14:43.529" level="TRACE">Arguments: [  ]</msg>
+<kw name="Return From Keyword If" library="BuiltIn">
+<arg>'skipped' in @{TEST TAGS}</arg>
+<doc>Returns from the enclosing user keyword if ``condition`` is true.</doc>
+<msg timestamp="20260430 15:14:43.529" level="TRACE">Arguments: [ "'skipped' in []" ]</msg>
+<msg timestamp="20260430 15:14:43.529" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:14:43.529" endtime="20260430 15:14:43.529"/>
+</kw>
+<kw name="Get Variable Value" library="BuiltIn">
+<var>${retry_index}</var>
+<arg>\${RETRYFAILED_RETRY_INDEX}</arg>
+<arg>0</arg>
+<doc>Returns variable value or ``default`` if the variable does not exist.</doc>
+<msg timestamp="20260430 15:14:43.530" level="TRACE">Arguments: [ '\\${RETRYFAILED_RETRY_INDEX}' | '0' ]</msg>
+<msg timestamp="20260430 15:14:43.533" level="TRACE">Return: '0'</msg>
+<msg timestamp="20260430 15:14:43.533" level="INFO">${retry_index} = 0</msg>
+<status status="PASS" starttime="20260430 15:14:43.529" endtime="20260430 15:14:43.533"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${test_name}</var>
+<arg>${SUITE NAME}.${TEST NAME}.fail${retry_index}</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20260430 15:14:43.534" level="TRACE">Arguments: [ 'verify_adc.Should Report Correct ADC Value.fail0' ]</msg>
+<msg timestamp="20260430 15:14:43.534" level="TRACE">Return: 'verify_adc.Should Report Correct ADC Value.fail0'</msg>
+<msg timestamp="20260430 15:14:43.534" level="INFO">${test_name} = verify_adc.Should Report Correct ADC Value.fail0</msg>
+<status status="PASS" starttime="20260430 15:14:43.533" endtime="20260430 15:14:43.534"/>
+</kw>
+<kw name="Sanitize Test Name" library="renode-keywords">
+<var>${test_name}</var>
+<arg>${test_name}</arg>
+<msg timestamp="20260430 15:14:43.534" level="TRACE">Arguments: [ ${test_name}='verify_adc.Should Report Correct ADC Value.fail0' ]</msg>
+<kw name="Replace String" library="String">
+<var>${test_name}</var>
+<arg>${test_name}</arg>
+<arg>${SPACE}</arg>
+<arg>_</arg>
+<doc>Replaces ``search_for`` in the given ``string`` with ``replace_with``.</doc>
+<msg timestamp="20260430 15:14:43.535" level="TRACE">Arguments: [ 'verify_adc.Should Report Correct ADC Value.fail0' | ' ' | '_' ]</msg>
+<msg timestamp="20260430 15:14:43.535" level="TRACE">Return: 'verify_adc.Should_Report_Correct_ADC_Value.fail0'</msg>
+<msg timestamp="20260430 15:14:43.535" level="INFO">${test_name} = verify_adc.Should_Report_Correct_ADC_Value.fail0</msg>
+<status status="PASS" starttime="20260430 15:14:43.534" endtime="20260430 15:14:43.535"/>
+</kw>
+<kw name="Replace String Using Regexp" library="String">
+<var>${test_name}</var>
+<arg>${test_name}</arg>
+<arg>[/""]</arg>
+<arg>-</arg>
+<doc>Replaces ``pattern`` in the given ``string`` with ``replace_with``.</doc>
+<msg timestamp="20260430 15:14:43.535" level="TRACE">Arguments: [ 'verify_adc.Should_Report_Correct_ADC_Value.fail0' | '[/""]' | '-' ]</msg>
+<msg timestamp="20260430 15:14:43.535" level="TRACE">Return: 'verify_adc.Should_Report_Correct_ADC_Value.fail0'</msg>
+<msg timestamp="20260430 15:14:43.535" level="INFO">${test_name} = verify_adc.Should_Report_Correct_ADC_Value.fail0</msg>
+<status status="PASS" starttime="20260430 15:14:43.535" endtime="20260430 15:14:43.536"/>
+</kw>
+<return>
+<value>${test_name}</value>
+<status status="PASS" starttime="20260430 15:14:43.536" endtime="20260430 15:14:43.536"/>
+</return>
+<msg timestamp="20260430 15:14:43.536" level="TRACE">Return: 'verify_adc.Should_Report_Correct_ADC_Value.fail0'</msg>
+<msg timestamp="20260430 15:14:43.536" level="INFO">${test_name} = verify_adc.Should_Report_Correct_ADC_Value.fail0</msg>
+<status status="PASS" starttime="20260430 15:14:43.534" endtime="20260430 15:14:43.536"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${logs_dir}</var>
+<arg>${RESULTS_DIRECTORY}/logs</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20260430 15:14:43.536" level="TRACE">Arguments: [ '/app//logs' ]</msg>
+<msg timestamp="20260430 15:14:43.536" level="TRACE">Return: '/app//logs'</msg>
+<msg timestamp="20260430 15:14:43.536" level="INFO">${logs_dir} = /app//logs</msg>
+<status status="PASS" starttime="20260430 15:14:43.536" endtime="20260430 15:14:43.536"/>
+</kw>
+<kw name="Create Directory" library="OperatingSystem">
+<arg>${logs_dir}</arg>
+<doc>Creates the specified directory.</doc>
+<msg timestamp="20260430 15:14:43.537" level="TRACE">Arguments: [ '/app//logs' ]</msg>
+<msg timestamp="20260430 15:14:43.537" level="INFO" html="true">Directory '&lt;a href="file:///app/logs"&gt;/app/logs&lt;/a&gt;' already exists.</msg>
+<msg timestamp="20260430 15:14:43.537" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:14:43.536" endtime="20260430 15:14:43.537"/>
+</kw>
+<kw name="Set Variable" library="BuiltIn">
+<var>${log_path}</var>
+<arg>${logs_dir}/${test_name}.log</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20260430 15:14:43.537" level="TRACE">Arguments: [ '/app//logs/verify_adc.Should_Report_Correct_ADC_Value.fail0.log' ]</msg>
+<msg timestamp="20260430 15:14:43.537" level="TRACE">Return: '/app//logs/verify_adc.Should_Report_Correct_ADC_Value.fail0.log'</msg>
+<msg timestamp="20260430 15:14:43.537" level="INFO">${log_path} = /app//logs/verify_adc.Should_Report_Correct_ADC_Value.fail0.log</msg>
+<status status="PASS" starttime="20260430 15:14:43.537" endtime="20260430 15:14:43.537"/>
+</kw>
+<kw name="Log To Console" library="BuiltIn">
+<arg>!!!!! Log saved to "${log_path}"</arg>
+<doc>Logs the given message to the console.</doc>
+<msg timestamp="20260430 15:14:43.537" level="TRACE">Arguments: [ '!!!!! Log saved to "/app//logs/verify_adc.Should_Report_Correct_ADC_Value.fail0.log"' ]</msg>
+<msg timestamp="20260430 15:14:43.538" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:14:43.537" endtime="20260430 15:14:43.538"/>
+</kw>
+<kw name="Save Cached Log" library="Remote">
+<arg>${log_path}</arg>
+<msg timestamp="20260430 15:14:43.538" level="TRACE">Arguments: [ '/app//logs/verify_adc.Should_Report_Correct_ADC_Value.fail0.log' ]</msg>
+<msg timestamp="20260430 15:14:43.545" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260430 15:14:43.538" endtime="20260430 15:14:43.546"/>
+</kw>
+<msg timestamp="20260430 15:14:43.546" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:14:43.529" endtime="20260430 15:14:43.546"/>
+</kw>
+<msg timestamp="20260430 15:14:43.546" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:14:43.528" endtime="20260430 15:14:43.546"/>
+</kw>
+<status status="PASS" starttime="20260430 15:14:43.528" endtime="20260430 15:14:43.546"/>
+</branch>
+<status status="PASS" starttime="20260430 15:14:43.528" endtime="20260430 15:14:43.546"/>
+</if>
+<status status="PASS" starttime="20260430 15:14:43.528" endtime="20260430 15:14:43.546"/>
+</branch>
+<status status="PASS" starttime="20260430 15:14:43.528" endtime="20260430 15:14:43.546"/>
+</if>
+<if>
+<branch type="IF" condition="${HOLD_ON_ERROR}">
+<kw name="Run Keyword If Test Failed" library="BuiltIn">
+<var>${res}</var>
+<arg>Run Keyword And Ignore Error</arg>
+<arg>Import Library</arg>
+<arg>Dialogs</arg>
+<doc>Runs the given keyword with the given arguments, if the test failed.</doc>
+<status status="NOT RUN" starttime="20260430 15:14:43.547" endtime="20260430 15:14:43.547"/>
+</kw>
+<kw name="Run Keyword If Test Failed" library="BuiltIn">
+<arg>Run Keywords</arg>
+<arg>Run Keyword If</arg>
+<arg>'${res[0]}' == 'FAIL'</arg>
+<arg>Log</arg>
+<arg>Couldn't load the Dialogs library - interactive debugging is not possible</arg>
+<arg>console=True</arg>
+<arg>AND</arg>
+<arg>Run Keyword If</arg>
+<arg>'${res[0]}' != 'FAIL'</arg>
+<arg>Open GUI</arg>
+<arg>AND</arg>
+<arg>Run Keyword If</arg>
+<arg>'${res[0]}' != 'FAIL'</arg>
+<arg>Pause Execution</arg>
+<arg>Test failed. Press OK once done debugging.</arg>
+<arg>AND</arg>
+<arg>Run Keyword If</arg>
+<arg>'${res[0]}' != 'FAIL'</arg>
+<arg>Close GUI</arg>
+<doc>Runs the given keyword with the given arguments, if the test failed.</doc>
+<status status="NOT RUN" starttime="20260430 15:14:43.547" endtime="20260430 15:14:43.547"/>
+</kw>
+<status status="NOT RUN" starttime="20260430 15:14:43.546" endtime="20260430 15:14:43.547"/>
+</branch>
+<status status="PASS" starttime="20260430 15:14:43.546" endtime="20260430 15:14:43.547"/>
+</if>
+<kw name="Reset Emulation" library="Remote">
+<msg timestamp="20260430 15:14:43.547" level="TRACE">Arguments: [  ]</msg>
+<msg timestamp="20260430 15:14:43.779" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260430 15:14:43.547" endtime="20260430 15:14:43.779"/>
+</kw>
+<kw name="Clear Cached Log" library="Remote">
+<msg timestamp="20260430 15:14:43.779" level="TRACE">Arguments: [  ]</msg>
+<msg timestamp="20260430 15:14:43.802" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260430 15:14:43.779" endtime="20260430 15:14:43.802"/>
+</kw>
+<msg timestamp="20260430 15:14:43.802" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:14:41.442" endtime="20260430 15:14:43.802"/>
+</kw>
+<status status="FAIL" starttime="20260430 15:13:00.427" endtime="20260430 15:14:43.803">InvalidOperationException: Terminal tester failed!
+
+Full report:
+([host: 04/30/2026 15:13:28, virt:       0] Attached to UART event: success)
+[host: 04/30/2026 15:13:29, virt:       1] ADC Raw: 0, Voltage: 0.00
+[host: 04/30/2026 15:13:38, virt:    1001] ADC Raw: 2048, Voltage: 1.65
+[host: 04/30/2026 15:13:47, virt:    2001] ADC Raw: 2048, Voltage: 1.65
+[host: 04/30/2026 15:13:56, virt:    3001] ADC Raw: 2048, Voltage: 1.65
+[host: 04/30/2026 15:14:05, virt:    4001] ADC Raw: 2048, Voltage: 1.65
+[host: 04/30/2026 15:14:14, virt:    5001] ADC Raw: 2048, Voltage: 1.65
+[host: 04/30/2026 15:14:23, virt:    6001] ADC Raw: 0, Voltage: 0.00
+[host: 04/30/2026 15:14:32, virt:    7002] ADC Raw: 0, Voltage: 0.00
+[host: 04/30/2026 15:14:41, virt:    8002] ADC Raw: 0, Voltage: 0.00
+ [[no newline]]
+([host: 04/30/2026 15:14:41, virt:    8012] Line containing &gt;&gt;ADC Raw: 2047, Voltage: 1.65&lt;&lt; event: failure)</status>
+</test>
+<kw name="Teardown" library="renode-keywords" type="TEARDOWN">
+<msg timestamp="20260430 15:14:43.804" level="TRACE">Arguments: [  ]</msg>
+<if>
+<branch type="IF" condition="not ${SKIP_RUNNING_SERVER}">
+<kw name="Stop Remote Server" library="Remote">
+<status status="NOT RUN" starttime="20260430 15:14:43.804" endtime="20260430 15:14:43.804"/>
+</kw>
+<status status="NOT RUN" starttime="20260430 15:14:43.804" endtime="20260430 15:14:43.804"/>
+</branch>
+<status status="PASS" starttime="20260430 15:14:43.804" endtime="20260430 15:14:43.804"/>
+</if>
+<if>
+<branch type="IF" condition="not ${SKIP_RUNNING_SERVER}">
+<kw name="Wait For Process" library="Process">
+<doc>Waits for the process to complete or to reach the given timeout.</doc>
+<status status="NOT RUN" starttime="20260430 15:14:43.805" endtime="20260430 15:14:43.805"/>
+</kw>
+<status status="NOT RUN" starttime="20260430 15:14:43.804" endtime="20260430 15:14:43.805"/>
+</branch>
+<status status="PASS" starttime="20260430 15:14:43.804" endtime="20260430 15:14:43.805"/>
+</if>
+<msg timestamp="20260430 15:14:43.805" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260430 15:14:43.804" endtime="20260430 15:14:43.805"/>
 </kw>
 <meta name="HotSpot_Action">-</meta>
-<status status="FAIL" starttime="20260430 13:30:24.925" endtime="20260430 13:30:25.007">Suite setup failed:
-Keyword 'renode-keywords.Setup Renode' expected 0 arguments, got 1.
-
-Also suite teardown failed:
-No keyword with name 'Teardown Renode' found. Did you try using keyword 'Teardown' or 'renode-keywords.Teardown' and forgot to use enough whitespace between keyword and arguments?</status>
+<status status="FAIL" starttime="20260430 15:12:59.344" endtime="20260430 15:14:43.805"/>
 </suite>
 <statistics>
 <total>

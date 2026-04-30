@@ -1,6 +1,7 @@
-$machine_name?="raspberry_pico"
-$visualization_path?=$ORIGIN/../visualization
+mach create $machine_name
 
-include $ORIGIN/../cores/initialize_peripherals.resc
+# Compile from source (development mode - slower but allows live editing)
+# For production mode (pre-built DLL), use initialize_peripherals.resc instead
+include $ORIGIN/../cores/initialize_peripherals_source.resc
 machine LoadPlatformDescription $platform_file
 sysbus LoadELF $ORIGIN/../bootroms/rp2040/b2.elf
