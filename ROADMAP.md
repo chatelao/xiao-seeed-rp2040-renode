@@ -24,8 +24,8 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 ## Phase 4: Peripheral Implementation
 ### UART Support
 - [x] Verify basic UART output in Renode [2026-04-30]
-- [ ] Implement UART input handling in simulation
-- [ ] Add Robot Framework tests for UART bidirectional communication
+- [x] Implement UART input handling in simulation [2026-04-30]
+- [x] Add Robot Framework tests for UART bidirectional communication [2026-04-30]
 
 ### ADC Support
 - [ ] Configure ADC in PlatformIO (Arduino/Pico SDK)
