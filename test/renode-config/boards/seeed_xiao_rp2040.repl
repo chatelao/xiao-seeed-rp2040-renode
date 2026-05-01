@@ -16,3 +16,10 @@ gpio:
     16 -> led_green@0
     25 -> led_blue@0
     12 -> led_rgb@0
+
+// PWM to GPIO mapping
+pwm:
+    0 -> gpio@16 // PWM0_A
+    1 -> gpio@17 // PWM0_B
+    9 -> gpio@25 // PWM4_B
+    12 -> gpio@12 // PWM6_A
