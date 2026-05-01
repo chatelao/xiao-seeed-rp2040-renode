@@ -33,7 +33,8 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Create Robot Framework test for ADC reading with simulated analog values [2026-05-01]
 
 ### PWM Support
-- [ ] Configure PWM in PlatformIO
+- [x] Configure PWM in PlatformIO [2026-05-22]
+- [ ] Implement PWM peripheral model in Renode (missing in current config)
 - [ ] Map PWM pins in Renode `.repl` file
 - [ ] Create Robot Framework test for PWM frequency and duty cycle verification
 

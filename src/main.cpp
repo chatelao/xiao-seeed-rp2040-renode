@@ -32,6 +32,12 @@ void loop() {
       int adcValue = analogRead(A0);
       Serial1.print("ADC0: ");
       Serial1.println(adcValue);
+    } else if (incomingByte == 'P') {
+      static int pwmValue = 0;
+      pwmValue = (pwmValue + 64) % 256;
+      analogWrite(LED_PIN, pwmValue);
+      Serial1.print("PWM set to: ");
+      Serial1.println(pwmValue);
     } else {
       Serial1.print("Echo: ");
       Serial1.println(incomingByte);
