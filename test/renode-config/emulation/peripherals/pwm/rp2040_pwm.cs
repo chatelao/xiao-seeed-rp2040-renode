@@ -16,27 +16,38 @@ using Antmicro.Renode.Utilities;
 
 namespace Antmicro.Renode.Peripherals.PWM
 {
-    public class RP2040PWM : RP2040PeripheralBase
+    public class RP2040PWM : RP2040PeripheralBase, INumberedGPIOOutput
     {
         public RP2040PWM(IMachine machine, ulong address) : base(machine, address)
         {
+            IRQ = new GPIO();
+            var innerConnections = new Dictionary<int, IGPIO>();
+            PWMOut = new GPIO[NumberOfSlices * 2];
+            for (int i = 0; i < PWMOut.Length; i++)
+            {
+                PWMOut[i] = new GPIO();
+                innerConnections[i] = PWMOut[i];
+            }
+            Connections = innerConnections;
+
             slices = new PWMSlice[NumberOfSlices];
             for (int i = 0; i < NumberOfSlices; ++i)
             {
                 slices[i] = new PWMSlice(this, i);
             }
             DefineRegisters();
+            Reset();
         }
 
         private void DefineRegisters()
         {
             Registers.CH0_CSR.DefineMany(this, NumberOfSlices, (reg, index) =>
             {
-                reg.WithFlag(0, out slices[index].enabled, name: $"CH{index}_CSR_EN")
+                reg.WithFlag(0, out slices[index].enabled, name: $"CH{index}_CSR_EN", writeCallback: (_, __) => slices[index].Update())
                    .WithValueField(1, 2, out slices[index].divMode, name: $"CH{index}_CSR_DIVMODE")
                    .WithFlag(3, out slices[index].phaseCorrect, name: $"CH{index}_CSR_PH_CORRECT")
-                   .WithFlag(4, out slices[index].invertA, name: $"CH{index}_CSR_A_INV")
-                   .WithFlag(5, out slices[index].invertB, name: $"CH{index}_CSR_B_INV")
+                   .WithFlag(4, out slices[index].invertA, name: $"CH{index}_CSR_A_INV", writeCallback: (_, __) => slices[index].Update())
+                   .WithFlag(5, out slices[index].invertB, name: $"CH{index}_CSR_B_INV", writeCallback: (_, __) => slices[index].Update())
                    .WithValueField(6, 1, name: $"CH{index}_CSR_TOP_SEL")
                    .WithFlag(7, name: $"CH{index}_CSR_ADVANCE")
                    .WithReservedBits(8, 24);
@@ -57,13 +68,13 @@ namespace Antmicro.Renode.Peripherals.PWM
 
             Registers.CH0_CC.DefineMany(this, NumberOfSlices, (reg, index) =>
             {
-                reg.WithValueField(0, 16, out slices[index].compareA, name: $"CH{index}_CC_A")
-                   .WithValueField(16, 16, out slices[index].compareB, name: $"CH{index}_CC_B");
+                reg.WithValueField(0, 16, out slices[index].compareA, name: $"CH{index}_CC_A", writeCallback: (_, __) => slices[index].Update())
+                   .WithValueField(16, 16, out slices[index].compareB, name: $"CH{index}_CC_B", writeCallback: (_, __) => slices[index].Update());
             }, stepInBytes: 0x14);
 
             Registers.CH0_TOP.DefineMany(this, NumberOfSlices, (reg, index) =>
             {
-                reg.WithValueField(0, 16, out slices[index].top, name: $"CH{index}_TOP")
+                reg.WithValueField(0, 16, out slices[index].top, name: $"CH{index}_TOP", writeCallback: (_, __) => slices[index].Update())
                    .WithReservedBits(16, 16);
             }, stepInBytes: 0x14);
 
@@ -73,6 +84,7 @@ namespace Antmicro.Renode.Peripherals.PWM
                     for (int i = 0; i < 8; i++)
                     {
                         slices[i].enabled.Value = BitHelper.IsBitSet(val, (byte)i);
+                        slices[i].Update();
                     }
                 }, valueProviderCallback: _ =>
                 {
@@ -97,8 +109,15 @@ namespace Antmicro.Renode.Peripherals.PWM
         public override void Reset()
         {
             base.Reset();
-            // All slices should be reset by the base call if their fields are part of RegistersCollection
+            foreach (var slice in slices)
+            {
+                slice.Update();
+            }
         }
+
+        public GPIO IRQ { get; private set; }
+        public IReadOnlyDictionary<int, IGPIO> Connections { get; }
+        private GPIO[] PWMOut { get; }
 
         private readonly PWMSlice[] slices;
         private const int NumberOfSlices = 8;
@@ -109,6 +128,19 @@ namespace Antmicro.Renode.Peripherals.PWM
             {
                 this.parent = parent;
                 this.index = index;
+            }
+
+            public void Update()
+            {
+                bool enabledValue = enabled.Value;
+                bool stateA = enabledValue && (compareA.Value > 0);
+                bool stateB = enabledValue && (compareB.Value > 0);
+
+                if (invertA.Value) stateA = !stateA;
+                if (invertB.Value) stateB = !stateB;
+
+                parent.PWMOut[2 * index].Set(stateA);
+                parent.PWMOut[2 * index + 1].Set(stateB);
             }
 
             public IFlagRegisterField enabled;

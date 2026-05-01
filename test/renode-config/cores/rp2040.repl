@@ -230,3 +230,6 @@ psm: Miscellaneous.PSM @ sysbus 0x40010000 {
 pwm: PWM.RP2040PWM @ sysbus 0x40050000 {
     address: 0x40050000
 }
+
+pwm:
+    IRQ -> nvic0@4
