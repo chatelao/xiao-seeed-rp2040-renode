@@ -37,7 +37,7 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Implement basic PWM peripheral model in Renode (register stub) [2026-05-01]
 - [x] Implement PWM slice register handling (CSR, DIV, CTR, TOP, CC) [2026-05-01]
 - [x] Map PWM pins in Renode `.repl` file [2026-05-22]
-- [ ] Create Robot Framework test for PWM frequency and duty cycle verification
+   - [x] Create Robot Framework test for PWM frequency and duty cycle verification [2026-05-22]
 
 ## Phase 5: Verification & Documentation
 - [ ] Finalize test cases for UART, ADC, and PWM
