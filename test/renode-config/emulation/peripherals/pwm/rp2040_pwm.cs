@@ -44,20 +44,20 @@ namespace Antmicro.Renode.Peripherals.PWM
             Registers.CH0_CSR.DefineMany(this, NumberOfSlices, (reg, index) =>
             {
                 reg.WithFlag(0, out slices[index].enabled, name: $"CH{index}_CSR_EN", writeCallback: (_, __) => slices[index].Update())
-                   .WithValueField(1, 2, out slices[index].divMode, name: $"CH{index}_CSR_DIVMODE")
-                   .WithFlag(3, out slices[index].phaseCorrect, name: $"CH{index}_CSR_PH_CORRECT")
+                   .WithFlag(1, out slices[index].phaseCorrect, name: $"CH{index}_CSR_PH_CORRECT", writeCallback: (_, __) => slices[index].Update())
+                   .WithValueField(2, 2, out slices[index].divMode, name: $"CH{index}_CSR_DIVMODE")
                    .WithFlag(4, out slices[index].invertA, name: $"CH{index}_CSR_A_INV", writeCallback: (_, __) => slices[index].Update())
                    .WithFlag(5, out slices[index].invertB, name: $"CH{index}_CSR_B_INV", writeCallback: (_, __) => slices[index].Update())
-                   .WithValueField(6, 1, name: $"CH{index}_CSR_TOP_SEL")
+                   .WithFlag(6, name: $"CH{index}_CSR_TOP_SEL")
                    .WithFlag(7, name: $"CH{index}_CSR_ADVANCE")
                    .WithReservedBits(8, 24);
             }, stepInBytes: 0x14);
 
             Registers.CH0_DIV.DefineMany(this, NumberOfSlices, (reg, index) =>
             {
-                reg.WithValueField(0, 8, out slices[index].divFrac, name: $"CH{index}_DIV_FRAC")
-                   .WithValueField(8, 8, out slices[index].divInt, name: $"CH{index}_DIV_INT")
-                   .WithReservedBits(16, 16);
+                reg.WithValueField(0, 4, out slices[index].divFrac, name: $"CH{index}_DIV_FRAC", writeCallback: (_, __) => slices[index].Update())
+                   .WithValueField(4, 8, out slices[index].divInt, name: $"CH{index}_DIV_INT", writeCallback: (_, __) => slices[index].Update())
+                   .WithReservedBits(12, 20);
             }, stepInBytes: 0x14);
 
             Registers.CH0_CTR.DefineMany(this, NumberOfSlices, (reg, index) =>
@@ -115,6 +115,10 @@ namespace Antmicro.Renode.Peripherals.PWM
             }
         }
 
+        public double GetDutyCycleA(int slice) => slices[slice].DutyCycleA;
+        public double GetDutyCycleB(int slice) => slices[slice].DutyCycleB;
+        public double GetFrequency(int slice) => slices[slice].Frequency;
+
         public GPIO IRQ { get; private set; }
         public IReadOnlyDictionary<int, IGPIO> Connections { get; }
         private GPIO[] PWMOut { get; }
@@ -132,15 +136,50 @@ namespace Antmicro.Renode.Peripherals.PWM
 
             public void Update()
             {
-                bool enabledValue = enabled.Value;
-                bool stateA = enabledValue && (compareA.Value > 0);
-                bool stateB = enabledValue && (compareB.Value > 0);
+                if (!enabled.Value)
+                {
+                    parent.PWMOut[2 * index].Set(invertA.Value);
+                    parent.PWMOut[2 * index + 1].Set(invertB.Value);
+                    return;
+                }
 
-                if (invertA.Value) stateA = !stateA;
-                if (invertB.Value) stateB = !stateB;
+                double topVal = top.Value + 1;
+                double dcA = (double)compareA.Value / topVal;
+                double dcB = (double)compareB.Value / topVal;
 
-                parent.PWMOut[2 * index].Set(stateA);
-                parent.PWMOut[2 * index + 1].Set(stateB);
+                if (dcA > 1.0) dcA = 1.0;
+                if (dcB > 1.0) dcB = 1.0;
+
+                if (invertA.Value) dcA = 1.0 - dcA;
+                if (invertB.Value) dcB = 1.0 - dcB;
+
+                double divisor = divInt.Value + (divFrac.Value / 16.0);
+                if (divisor == 0) divisor = 1.0;
+
+                double period = phaseCorrect.Value ? (2.0 * top.Value) : (top.Value + 1.0);
+                if (period == 0) period = 1.0;
+
+                double freq = 125000000.0 / divisor / period;
+
+                parent.Log(LogLevel.Info, "PWM Slice {0}: Frequency {1}Hz, Duty A {2:P}, Duty B {3:P}", index, freq, dcA, dcB);
+
+                // Update GPIO state based on Duty Cycle > 0 for basic visualization
+                parent.PWMOut[2 * index].Set(dcA > 0);
+                parent.PWMOut[2 * index + 1].Set(dcB > 0);
+            }
+
+            public double DutyCycleA => (double)compareA.Value / (top.Value + 1);
+            public double DutyCycleB => (double)compareB.Value / (top.Value + 1);
+            public double Frequency
+            {
+                get
+                {
+                    double divisor = divInt.Value + (divFrac.Value / 16.0);
+                    if (divisor == 0) divisor = 1.0;
+                    double freq = 125000000.0 / divisor / (top.Value + 1);
+                    if (phaseCorrect.Value) freq /= 2.0;
+                    return freq;
+                }
             }
 
             public IFlagRegisterField enabled;
