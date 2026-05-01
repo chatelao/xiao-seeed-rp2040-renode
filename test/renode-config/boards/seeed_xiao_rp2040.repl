@@ -1,5 +1,11 @@
 using "../cores/rp2040.repl"
 
+// ADC Pin Mapping:
+// A0 (GPIO 26) -> ADC Channel 0
+// A1 (GPIO 27) -> ADC Channel 1
+// A2 (GPIO 28) -> ADC Channel 2
+// A3 (GPIO 29) -> ADC Channel 3
+
 led_red: Miscellaneous.LED @ gpio 17
 led_green: Miscellaneous.LED @ gpio 16
 led_blue: Miscellaneous.LED @ gpio 25

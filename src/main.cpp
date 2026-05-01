@@ -15,6 +15,10 @@ void setup() {
   Serial1.begin(115200);
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH); // Start with LED OFF
+
+  // Configure ADC
+  analogReadResolution(12);
+
   Serial1.println("UART Bidirectional Communication Ready");
 }
 
@@ -23,8 +27,15 @@ void loop() {
     char incomingByte = Serial1.read();
     ledState = !ledState;
     digitalWrite(LED_PIN, ledState ? LOW : HIGH);
-    Serial1.print("Echo: ");
-    Serial1.println(incomingByte);
+
+    if (incomingByte == 'A') {
+      int adcValue = analogRead(A0);
+      Serial1.print("ADC0: ");
+      Serial1.println(adcValue);
+    } else {
+      Serial1.print("Echo: ");
+      Serial1.println(incomingByte);
+    }
   }
 
   static unsigned long lastMsg = 0;
