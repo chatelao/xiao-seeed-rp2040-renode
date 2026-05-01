@@ -34,7 +34,8 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 
 ### PWM Support
 - [x] Configure PWM in PlatformIO [2026-05-22]
-- [ ] Implement PWM peripheral model in Renode (missing in current config)
+- [x] Implement basic PWM peripheral model in Renode (register stub) [2026-05-01]
+- [x] Implement PWM slice register handling (CSR, DIV, CTR, TOP, CC) [2026-05-01]
 - [ ] Map PWM pins in Renode `.repl` file
 - [ ] Create Robot Framework test for PWM frequency and duty cycle verification
 
