@@ -226,3 +226,7 @@ i2c1:
 psm: Miscellaneous.PSM @ sysbus 0x40010000 {
     address: 0x40010000
 }
+
+pwm: PWM.RP2040PWM @ sysbus 0x40050000 {
+    address: 0x40050000
+}
