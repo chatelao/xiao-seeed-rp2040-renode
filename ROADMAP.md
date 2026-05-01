@@ -28,9 +28,9 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Add Robot Framework tests for UART bidirectional communication [2026-04-30]
 
 ### ADC Support
-- [ ] Configure ADC in PlatformIO (Arduino/Pico SDK)
-- [ ] Map ADC pins in Renode `.repl` file
-- [ ] Create Robot Framework test for ADC reading with simulated analog values
+- [x] Configure ADC in PlatformIO (Arduino/Pico SDK) [2026-05-01]
+- [x] Map ADC pins in Renode `.repl` file [2026-05-01]
+- [x] Create Robot Framework test for ADC reading with simulated analog values [2026-05-01]
 
 ### PWM Support
 - [ ] Configure PWM in PlatformIO
