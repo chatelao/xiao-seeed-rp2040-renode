@@ -8,13 +8,23 @@
 // NOTE: LEDs on XIAO RP2040 are active-low.
 
 const int LED_PIN = 17; // RED LED
+const int INTERRUPT_PIN = 2; // XIAO D8
 bool ledState = false;
+volatile bool interruptOccurred = false;
+
+void handleInterrupt() {
+  interruptOccurred = true;
+}
 
 void setup() {
   // Use Serial1 for hardware UART output (mapped to sysbus.uart0 in Renode)
   Serial1.begin(115200);
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH); // Start with LED OFF
+
+  // Configure Interrupt Pin
+  pinMode(INTERRUPT_PIN, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), handleInterrupt, RISING);
 
   // Configure ADC
   analogReadResolution(12);
@@ -23,6 +33,11 @@ void setup() {
 }
 
 void loop() {
+  if (interruptOccurred) {
+    interruptOccurred = false;
+    Serial1.println("GPIO Interrupt Handled");
+  }
+
   if (Serial1.available() > 0) {
     char incomingByte = Serial1.read();
     ledState = !ledState;

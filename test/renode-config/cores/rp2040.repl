@@ -190,6 +190,7 @@ adc: Analog.RP2040ADC @ sysbus 0x4004c000 {
     pads: pads
 }
 adc:
+    IRQ -> nvic0@22
     DMARequest -> dma@36
 
 gpio_qspi:
