@@ -1,7 +1,6 @@
 ## Hardware Overview
 
-<!-- ![](https://files.seeedstudio.com/wiki/XIAO-RP2040/img/xinpin.jpg) -->
-  ![pir](https://files.seeedstudio.com/wiki/XIAO-RP2040/img/xinpin.jpg)
+  ![XIAO RP2040 Hardware Overview](https://files.seeedstudio.com/wiki/XIAO-RP2040/img/xinpin.jpg)
 
 :::caution
 For general I/O pins:

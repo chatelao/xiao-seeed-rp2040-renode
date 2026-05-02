@@ -1,7 +1,5 @@
 ## Resources
 
-## Resources
-
 **Hardware Design**
 - **📄[Datasheet]** [Raspberry Pi RP2040 Datasheet](https://files.seeedstudio.com/wiki/XIAO-RP2040/res/rp2040_datasheet.pdf )
 - **📄[Schematic]** [XIAO RP2040 Schematic](https://files.seeedstudio.com/wiki/XIAO-RP2040/res/Seeed-Studio-XIAO-RP2040-v1.3.pdf )
@@ -19,7 +17,7 @@
 
 ## Course Resources
 
-![](https://mjrovai.github.io/XIAO_Big_Power_Small_Board-ebook/cover.jpg)
+![XIAO: Big Power, Small Board Mastering Arduino and TinyML](https://mjrovai.github.io/XIAO_Big_Power_Small_Board-ebook/cover.jpg)
 
 - **[Ebook]** [XIAO: Big Power, Small Board Mastering Arduino and TinyML](https://mjrovai.github.io/XIAO_Big_Power_Small_Board-ebook/)
 

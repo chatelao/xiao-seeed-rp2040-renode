@@ -2,7 +2,7 @@
 
 The schematic for the Seeed Studio XIAO RP2040 can be found in the accompanying PDF file.
 
-- [XIAO RP2040 Schematic v1.3 (PDF)](./xiao-rp2040-schematic.pdf)
+- [XIAO RP2040 Schematic v1.3 (PDF)](../xiao-rp2040.pdf)
 
 ## Hardware Versions
 - v1.0: Initial Version (2021.5.18)
