@@ -14,13 +14,13 @@ The detailed design of the solution, including the architecture, used tech stack
 - **Option A: GitHub Actions (Selected)** - Integrated CI/CD platform for GitHub repositories, allowing for automated builds and simulation runs. Explicitly mentioned in the `ROADMAP.md`.
 
 ## Detailed Architecture
-- (To be defined)
+- (To be defined, including Interrupts and Timer)
 
 ## Technical Interfaces
-- (To be defined)
+- (To be defined, including Interrupts and Timer)
 
 ## Implementation Choices
-- (To be defined)
+- (To be defined, including Interrupts and Timer)
 
 ## Discarded Alternatives
 ### Choice 3: Programming SDK

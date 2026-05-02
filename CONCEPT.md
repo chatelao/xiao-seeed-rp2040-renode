@@ -3,7 +3,7 @@
 The overall structure of the product, including Business & Use Cases as well as the High-Level Architecture.
 
 ## Goal
-Create a setup for the XIAO Seeed RP2040 able to run the UART, the ADC and the PWM on Renode over PlatformIO.
+Create a setup for the XIAO Seeed RP2040 able to run the UART, the ADC, the PWM, the Interrupts and the Timer on Renode over PlatformIO.
 
 ## Business & Use Cases
 ### Business Cases
@@ -11,19 +11,21 @@ Create a setup for the XIAO Seeed RP2040 able to run the UART, the ADC and the P
 - **Continuous Integration:** Provide a simulated environment for automated testing of peripheral drivers and application logic in CI/CD pipelines.
 
 ### Use Cases
-- **Firmware Development:** A developer writes code for XIAO Seeed RP2040 peripherals (UART, ADC, PWM) and wants to verify the logic in a simulated environment.
+- **Firmware Development:** A developer writes code for XIAO Seeed RP2040 peripherals (UART, ADC, PWM, Interrupts, Timer) and wants to verify the logic in a simulated environment.
 - **Automated Regression Testing:** Every commit to the firmware repository triggers a build and a simulation run in Renode to ensure no regressions in peripheral handling.
 
 ## High-Level Architecture
 The system consists of three main components:
 1. **Development Environment (PlatformIO):** Handles firmware compilation, dependency management, and target configuration for the RP2040.
 2. **Simulation Engine (Renode):** Emulates the RP2040 SoC and board-level peripherals.
-3. **Glue/Configuration Layer:** Bridges PlatformIO build artifacts with Renode simulation scripts and provides the necessary peripheral models (UART, ADC, PWM).
+3. **Glue/Configuration Layer:** Bridges PlatformIO build artifacts with Renode simulation scripts and provides the necessary peripheral models (UART, ADC, PWM, Interrupts, Timer).
 
 ## Functional Components
 - **UART Interface:** For serial communication simulation and console output.
 - **ADC (Analog-to-Digital Converter):** For simulating sensor inputs and analog signal processing.
 - **PWM (Pulse Width Modulation):** For simulating motor control, LED dimming, or other timed outputs.
+- **Interrupts:** For handling asynchronous events and hardware signals.
+- **Timer:** For precise timing, delays, and periodic event execution.
 
 ## Major Choices & Alternatives
 ### Choice 1: Emulation Framework

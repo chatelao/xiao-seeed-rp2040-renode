@@ -39,8 +39,18 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Map PWM pins in Renode `.repl` file [2026-05-22]
    - [x] Create Robot Framework test for PWM frequency and duty cycle verification [2026-05-22]
 
+### Interrupt Support
+- [ ] Configure NVIC and interrupt vectors in Renode
+- [ ] Implement basic interrupt handling in firmware
+- [ ] Create Robot Framework test for interrupt-driven events
+
+### Timer Support
+- [ ] Configure RP2040 Timer peripheral in Renode
+- [ ] Implement timer-based delays and alarms in firmware
+- [ ] Create Robot Framework test for timer accuracy and periodic interrupts
+
 ## Phase 5: Verification & Documentation
-- [ ] Finalize test cases for UART, ADC, and PWM
+- [ ] Finalize test cases for UART, ADC, PWM, Interrupts, and Timer
    - [x] Create a unified Robot Framework test suite `test/full_suite.robot` [2026-05-02]
    - [x] Verify the unified test suite passes [2026-05-02]
 - [ ] Run full CI/CD suite
