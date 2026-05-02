@@ -40,9 +40,9 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
    - [x] Create Robot Framework test for PWM frequency and duty cycle verification [2026-05-22]
 
 ### Interrupt Support
-- [ ] Configure NVIC and interrupt vectors in Renode
-- [ ] Implement basic interrupt handling in firmware
-- [ ] Create Robot Framework test for interrupt-driven events
+- [x] Configure NVIC and interrupt vectors in Renode [2026-05-02]
+- [x] Implement basic interrupt handling in firmware [2026-05-02]
+- [x] Create Robot Framework test for interrupt-driven events [2026-05-02]
 
 ### Timer Support
 - [ ] Configure RP2040 Timer peripheral in Renode

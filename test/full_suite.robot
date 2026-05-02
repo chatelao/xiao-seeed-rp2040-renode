@@ -75,6 +75,17 @@ Should Cycle PWM Duty Cycle
     Wait For Line On Uart     PWM set to: 0
     Verify Duty Cycle         0  B  0.0
 
+Should Handle GPIO Interrupt
+    Create Machine
+    Start Emulation
+
+    # Wait for the initial UART message
+    Wait For Line On Uart     UART Bidirectional Communication Ready
+
+    # Trigger GPIO interrupt on GPIO 2
+    Execute Command           sysbus.gpio OnGPIO 2 true
+    Wait For Line On Uart     GPIO Interrupt Handled
+
 *** Keywords ***
 Create Machine
     Execute Command           $global.TEST_FILE = @${FIRMWARE}

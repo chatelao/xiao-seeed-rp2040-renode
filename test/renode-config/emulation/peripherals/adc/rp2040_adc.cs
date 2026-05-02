@@ -28,6 +28,7 @@ namespace Antmicro.Renode.Peripherals.Analog
   {
     public RP2040ADC(IMachine machine, RP2040Clocks clocks, RP2040Pads pads, ulong address) : base(machine, address)
     {
+      this.IRQ = new GPIO();
       this.fifo = new CircularBuffer<ushort>(fifoSize);
       this.sampleProvider = new SensorSamplesFifo<ScalarSample>[channelsCount];
       this.resdStream = new RESDStream<VoltageSample>[channelsCount];
@@ -530,7 +531,7 @@ namespace Antmicro.Renode.Peripherals.Analog
       INTS = 0x20
     };
 
-    public GPIO IRQ;
+    public GPIO IRQ { get; private set; }
     public GPIO DMARequest { get; }
 
 
