@@ -48,9 +48,17 @@ uart0: UART.RP2040Uart @ sysbus 0x40034000
     address: 0x40034000
 
 uart0:
-    IRQ ->nvic0@20
+    IRQ -> nvic0@20
     DMATransmitRequest -> dma@20
     DMAReceiveRequest -> dma@21
+
+uart1: UART.RP2040Uart @ sysbus 0x40038000
+    address: 0x40038000
+
+uart1:
+    IRQ -> nvic0@21
+    DMATransmitRequest -> dma@22
+    DMAReceiveRequest -> dma@23
 
 piocpu0: CPU.RP2040PIOCPU @ sysbus
     cpuType: "rp2040_pio"
@@ -190,6 +198,7 @@ adc: Analog.RP2040ADC @ sysbus 0x4004c000 {
     pads: pads
 }
 adc:
+    IRQ -> nvic0@22
     DMARequest -> dma@36
 
 gpio_qspi:

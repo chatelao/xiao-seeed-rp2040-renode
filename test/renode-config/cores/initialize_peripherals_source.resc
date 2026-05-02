@@ -44,6 +44,7 @@ include $ORIGIN/../emulation/peripherals/spi/rp2040_xip_ssi.cs
 include $ORIGIN/../emulation/peripherals/sio/rp2040_sio.cs
 
 include $ORIGIN/../emulation/peripherals/adc/rp2040_adc.cs
+EnsureTypeIsLoaded "Antmicro.Renode.Peripherals.Analog.RP2040ADC"
 
 include $ORIGIN/../emulation/peripherals/pwm/rp2040_pwm.cs
 
