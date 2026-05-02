@@ -20,7 +20,8 @@ The detailed design of the solution, including the architecture, used tech stack
 - (To be defined, including Interrupts and Timer)
 
 ## Implementation Choices
-- (To be defined, including Interrupts and Timer)
+- **UART Peripheral:** The project utilizes a custom `RP2040Uart` model (located at `test/renode-config/emulation/peripherals/uart/rp2040_uart.cs`) rather than the stock Renode `UART.PL011`. This choice is driven by the RP2040 hardware specification, which requires support for atomic register aliases (XOR, SET, CLEAR) and specific integration with the DMA and PIO subsystems. The custom model implements the `IRP2040Peripheral` interface to provide these atomic operations and ensures accurate simulation of inter-peripheral communication.
+- **Interrupts and Timer:** (To be defined)
 
 ## Discarded Alternatives
 ### Choice 3: Programming SDK
