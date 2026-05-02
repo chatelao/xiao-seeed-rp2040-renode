@@ -42,6 +42,7 @@ namespace Antmicro.Renode.Peripherals.Analog
       this.samplingThread = machine.ObtainManagedThread(Sample, 1);
       this.samplingThread.Stop();
       this.pads = pads;
+      this.IRQ = new GPIO();
       this.DMARequest = new GPIO();
       DefineRegisters();
       Reset();
