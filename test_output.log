@@ -1,0 +1,4 @@
+Preparing suites
+Starting suites
+Running suite on Renode pid 592842 using port 49152: test/full_suite.robot
++++++ Starting test 'full_suite.Should Pass Full Test Suite'
