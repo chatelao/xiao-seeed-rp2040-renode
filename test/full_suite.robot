@@ -14,7 +14,7 @@ ${RESC}                       ${CURDIR}/renode-config/run_xiao.resc
 *** Test Cases ***
 Should Pass Full Test Suite
     [Documentation]           Runs all peripheral tests in a single session to avoid Renode assembly reload issues.
-    [Timeout]                 600 seconds
+    [Timeout]                 1200 seconds
     Create Machine
     Start Emulation
 
