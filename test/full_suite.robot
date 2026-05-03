@@ -14,34 +14,36 @@ ${RESC}                       ${CURDIR}/renode-config/run_xiao.resc
 *** Test Cases ***
 Should Pass Full Test Suite
     [Documentation]           Runs all peripheral tests in a single session to avoid Renode assembly reload issues.
+    [Timeout]                 600 seconds
     Create Machine
     Start Emulation
 
-    # 1. UART Periodic Message
+    # 1. Initialization and Claimed Alarm ID
+    Wait For Line On Uart     Claimed Alarm ID:
+    Wait For Line On Uart     UART Bidirectional Communication Ready
+
+    # 2. UART Periodic Message
     Wait For Line On Uart     Hello from XIAO RP2040!
 
-    # 2. UART Bidirectional
-    Wait For Line On Uart     UART Bidirectional Communication Ready
+    # 3. UART Bidirectional
     Write Char On Uart        X
     Wait For Line On Uart     Echo: X
 
-    # 3. ADC
+    # 4. ADC
     Execute Command           ${ADC} FeedVoltageSampleToChannel 0 1.65 1
     Write Char On Uart        A
     Wait For Line On Uart     ADC0: 2048
 
-    # 4. PWM
+    # 5. PWM
     Write Char On Uart        P
     Wait For Line On Uart     PWM set to: 64
     Verify Duty Cycle         0  B  0.25
 
-    # 5. GPIO Interrupt
+    # 6. GPIO Interrupt
     Execute Command           sysbus.gpio OnGPIO 2 true
     Wait For Line On Uart     GPIO Interrupt Handled
 
-    # 6. Timer Alarms
-    Wait For Line On Uart     Claimed Alarm ID:
-
+    # 7. Timer Alarms
     # One-shot
     Write Char On Uart        T
     Wait For Line On Uart     One-shot Timer Alarm Set for 100ms
