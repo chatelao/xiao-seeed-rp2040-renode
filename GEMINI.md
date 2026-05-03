@@ -36,6 +36,7 @@ Create a setup for the XIAO Seeed RP2040 able to run the UART, the ADC, the PWM,
 # HOWTO
 - Keep `src/install.sh` to install all tools to build the application (test only tools, see below)
 - Extract all necessary part from `https://github.com/chatelao/Renode_RP2040`
+- Publish all documentation to readthedocs.org on every push to the main branch with gh wf actions
 
 # Testing Locally & with Github Action Workflow
 - Setup the empty CI/CD pipeline before coding anything
