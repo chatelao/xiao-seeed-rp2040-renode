@@ -61,6 +61,6 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Initialize MkDocs documentation structure [2026-05-03]
 - [x] Create `mkdocs.yml` configuration [2026-05-03]
 - [x] Create `docs/requirements.txt` for documentation dependencies [2026-05-03]
-- [ ] Create `.readthedocs.yaml` configuration
-- [ ] Integrate ReadTheDocs with GitHub Actions
+- [x] Create `.readthedocs.yaml` configuration [2026-05-03]
+- [x] Integrate ReadTheDocs with GitHub Actions [2026-05-03]
 - [ ] Verify automatic documentation updates on ReadTheDocs
