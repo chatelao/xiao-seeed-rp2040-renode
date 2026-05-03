@@ -1,0 +1,14 @@
+Preparing suites
+Starting suites
+Running suite on Renode pid 611586 using port 49152: test/full_suite.robot
++++++ Starting test 'full_suite.Should Pass Full Test Suite'
++++++ Finished test 'full_suite.Should Pass Full Test Suite' in 490.30 seconds with status [92mOK[0m
+Suite test/full_suite.robot finished successfully in 494.89 seconds.
+Cleaning up suites
+Closing Renode pid 611586
+Renode pid 611586 closed
+Aggregating all robot results
+Output:  /app/robot_output.xml
+Log:     /app/log.html
+Report:  /app/report.html
+Tests finished successfully :)
