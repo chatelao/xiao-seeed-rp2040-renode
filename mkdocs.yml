@@ -1,0 +1,13 @@
+site_name: XIAO Seeed RP2040 Renode Project
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+  - Concept: CONCEPT.md
+  - Design: DESIGN.md
+  - Roadmap: ROADMAP.md
+  - Usage Guide: USAGE.md
+  - Technical Debts: TECHNICAL_DEBTS.md
+  - Specification:
+    - Overview: specification/README.md
