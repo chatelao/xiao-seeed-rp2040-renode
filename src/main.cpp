@@ -14,6 +14,7 @@ const int INTERRUPT_PIN = 2; // XIAO D8
 bool ledState = false;
 volatile bool interruptOccurred = false;
 volatile bool periodicTimerActive = false;
+volatile int alarmCount = 0;
 int alarmId = -1;
 
 void handleInterrupt() {
@@ -21,8 +22,7 @@ void handleInterrupt() {
 }
 
 void on_timer_alarm(uint alarm_num) {
-  Serial1.println("Timer Alarm Handled");
-  Serial1.flush();
+  alarmCount++;
   if (periodicTimerActive) {
       hardware_alarm_set_target(alarm_num, make_timeout_time_ms(100));
   }
@@ -59,6 +59,12 @@ void loop() {
   if (interruptOccurred) {
     interruptOccurred = false;
     Serial1.println("GPIO Interrupt Handled");
+    Serial1.flush();
+  }
+
+  while (alarmCount > 0) {
+    alarmCount--;
+    Serial1.println("Timer Alarm Handled");
     Serial1.flush();
   }
 

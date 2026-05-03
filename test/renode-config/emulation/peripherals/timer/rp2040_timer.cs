@@ -56,7 +56,7 @@ namespace Antmicro.Renode.Peripherals.Timers
                 uint limitLow = (uint)limit;
 
                 ulong ticksToWait;
-                if(limitLow > currentLow)
+                if(limitLow >= currentLow)
                 {
                     ticksToWait = limitLow - currentLow;
                 }
