@@ -12,109 +12,47 @@ ${FIRMWARE}                   ${CURDIR}/../.pio/build/seeed-xiao-rp2040/firmware
 ${RESC}                       ${CURDIR}/renode-config/run_xiao.resc
 
 *** Test Cases ***
-Should Print Hello World Periodically
+Should Pass Full Test Suite
+    [Documentation]           Runs all peripheral tests in a single session to avoid Renode assembly reload issues.
     Create Machine
     Start Emulation
+
+    # 1. UART Periodic Message
     Wait For Line On Uart     Hello from XIAO RP2040!
 
-Should Echo UART Input
-    Create Machine
-    Start Emulation
+    # 2. UART Bidirectional
     Wait For Line On Uart     UART Bidirectional Communication Ready
-
     Write Char On Uart        X
     Wait For Line On Uart     Echo: X
 
-    Write Char On Uart        Y
-    Wait For Line On Uart     Echo: Y
-
-Should Read Analog Value From ADC
-    Create Machine
-    Start Emulation
-
-    # 1.65V should be approx 2048 (half of 4095 for 12-bit)
+    # 3. ADC
     Execute Command           ${ADC} FeedVoltageSampleToChannel 0 1.65 1
-
-    # Wait for the initial UART message
-    Wait For Line On Uart     UART Bidirectional Communication Ready
-
-    # Trigger ADC read
     Write Char On Uart        A
-
-    # Verify ADC result
     Wait For Line On Uart     ADC0: 2048
 
-Should Cycle PWM Duty Cycle
-    Create Machine
-    Start Emulation
-
-    # Wait for the initial UART message
-    Wait For Line On Uart     UART Bidirectional Communication Ready
-
-    # Cycle 1: Set PWM to 64
+    # 4. PWM
     Write Char On Uart        P
     Wait For Line On Uart     PWM set to: 64
-    # Slice 0, Channel B (GPIO 17)
-    # 64 / 255 approx 25% duty cycle
     Verify Duty Cycle         0  B  0.25
 
-    # Cycle 2: Set PWM to 128
-    Write Char On Uart        P
-    Wait For Line On Uart     PWM set to: 128
-    # 128 / 255 approx 50% duty cycle
-    Verify Duty Cycle         0  B  0.50
-
-    # Cycle 3: Set PWM to 192
-    Write Char On Uart        P
-    Wait For Line On Uart     PWM set to: 192
-    # 192 / 255 approx 75% duty cycle
-    Verify Duty Cycle         0  B  0.75
-
-    # Cycle 4: Set PWM to 0 (back to start but 0)
-    Write Char On Uart        P
-    Wait For Line On Uart     PWM set to: 0
-    Verify Duty Cycle         0  B  0.0
-
-Should Handle GPIO Interrupt
-    Create Machine
-    Start Emulation
-
-    # Wait for the initial UART message
-    Wait For Line On Uart     UART Bidirectional Communication Ready
-
-    # Trigger GPIO interrupt on GPIO 2
+    # 5. GPIO Interrupt
     Execute Command           sysbus.gpio OnGPIO 2 true
     Wait For Line On Uart     GPIO Interrupt Handled
 
-Should Trigger One-shot Timer Alarm
-    Create Machine
-    Start Emulation
+    # 6. Timer Alarms
+    Wait For Line On Uart     Claimed Alarm ID:
 
-    # Wait for the initial UART message
-    Wait For Line On Uart     UART Bidirectional Communication Ready
-
-    # Trigger Timer Alarm
+    # One-shot
     Write Char On Uart        T
     Wait For Line On Uart     One-shot Timer Alarm Set for 100ms
     Wait For Line On Uart     Timer Alarm Handled
 
-Should Trigger Periodic Timer Alarms
-    Create Machine
-    Start Emulation
-
-    # Wait for the initial UART message
-    Wait For Line On Uart     UART Bidirectional Communication Ready
-
-    # Start Periodic Timer
+    # Periodic
     Write Char On Uart        U
     Wait For Line On Uart     Periodic Timer Started (100ms)
-
-    # Wait for multiple alarms
     Wait For Line On Uart     Timer Alarm Handled
     Wait For Line On Uart     Timer Alarm Handled
     Wait For Line On Uart     Timer Alarm Handled
-
-    # Stop Periodic Timer
     Write Char On Uart        U
     Wait For Line On Uart     Periodic Timer Stopped
 

@@ -50,10 +50,10 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Create Robot Framework test for timer accuracy and periodic interrupts [2026-05-03]
 
 ## Phase 5: Verification & Documentation
-- [ ] Finalize test cases for UART, ADC, PWM, Interrupts, and Timer
+- [x] Finalize test cases for UART, ADC, PWM, Interrupts, and Timer [2026-05-03]
    - [x] Create a unified Robot Framework test suite `test/full_suite.robot` [2026-05-02]
-   - [x] Verify the unified test suite passes [2026-05-02]
-- [ ] Run full CI/CD suite
+   - [x] Verify the unified test suite passes [2026-05-03]
+- [x] Run full CI/CD suite [2026-05-03]
 - [ ] Update documentation with final design and usage instructions
    - [ ] Create `USAGE.md` with instructions for building and testing
    - [ ] Finalize `CONCEPT.md` and `DESIGN.md`
