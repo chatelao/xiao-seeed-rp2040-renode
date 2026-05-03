@@ -18,7 +18,7 @@ Create a setup for the XIAO Seeed RP2040 able to run the UART, the ADC, the PWM,
 The system consists of three main components:
 1. **Development Environment (PlatformIO):** Handles firmware compilation, dependency management, and target configuration for the RP2040.
 2. **Simulation Engine (Renode):** Emulates the RP2040 SoC and board-level peripherals.
-3. **Glue/Configuration Layer:** Bridges PlatformIO build artifacts with Renode simulation scripts and provides the necessary peripheral models (UART, ADC, PWM, Interrupts, Timer).
+3. **Verification Layer (Robot Framework):** Orchestrates tests by interacting with Renode's monitor and simulated UART to verify functional correctness.
 
 ## Functional Components
 - **UART Interface:** For serial communication simulation and console output.
