@@ -49,6 +49,10 @@ jobs:
         robot --version || [[ $? -eq 251 ]]
         ls -l test/renode/renode
 
-    - name: Run Dummy Test
+    - name: Build Firmware
       run: |
-        robot test/dummy.robot
+        pio run
+
+    - name: Run Full Test Suite
+      run: |
+        ./test/renode/renode-test test/full_suite.robot
