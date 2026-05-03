@@ -45,9 +45,9 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Create Robot Framework test for interrupt-driven events [2026-05-02]
 
 ### Timer Support
-- [ ] Configure RP2040 Timer peripheral in Renode
-- [ ] Implement timer-based delays and alarms in firmware
-- [ ] Create Robot Framework test for timer accuracy and periodic interrupts
+- [x] Configure RP2040 Timer peripheral in Renode [2026-05-03]
+- [x] Implement timer-based delays and alarms in firmware [2026-05-03]
+- [x] Create Robot Framework test for timer accuracy and periodic interrupts [2026-05-03]
 
 ## Phase 5: Verification & Documentation
 - [ ] Finalize test cases for UART, ADC, PWM, Interrupts, and Timer

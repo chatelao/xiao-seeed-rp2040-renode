@@ -1,4 +1,6 @@
 #include <Arduino.h>
+#include "hardware/timer.h"
+#include "pico/time.h"
 
 // On XIAO RP2040:
 // RED LED is on GPIO 17
@@ -11,9 +13,18 @@ const int LED_PIN = 17; // RED LED
 const int INTERRUPT_PIN = 2; // XIAO D8
 bool ledState = false;
 volatile bool interruptOccurred = false;
+volatile bool periodicTimerActive = false;
+int alarmId = -1;
 
 void handleInterrupt() {
   interruptOccurred = true;
+}
+
+void on_timer_alarm(uint alarm_num) {
+  Serial1.println("Timer Alarm Handled");
+  if (periodicTimerActive) {
+      hardware_alarm_set_target(alarm_num, make_timeout_time_ms(100));
+  }
 }
 
 void setup() {
@@ -28,6 +39,10 @@ void setup() {
 
   // Configure ADC
   analogReadResolution(12);
+
+  // Configure Timer Alarm
+  alarmId = hardware_alarm_claim_unused(true);
+  hardware_alarm_set_callback(alarmId, on_timer_alarm);
 
   Serial1.println("UART Bidirectional Communication Ready");
 }
@@ -53,6 +68,19 @@ void loop() {
       analogWrite(LED_PIN, pwmValue);
       Serial1.print("PWM set to: ");
       Serial1.println(pwmValue);
+    } else if (incomingByte == 'T') {
+      periodicTimerActive = false;
+      hardware_alarm_set_target(alarmId, make_timeout_time_ms(100));
+      Serial1.println("One-shot Timer Alarm Set for 100ms");
+    } else if (incomingByte == 'U') {
+      periodicTimerActive = !periodicTimerActive;
+      if (periodicTimerActive) {
+          hardware_alarm_set_target(alarmId, make_timeout_time_ms(100));
+          Serial1.println("Periodic Timer Started (100ms)");
+      } else {
+          hardware_alarm_cancel(alarmId);
+          Serial1.println("Periodic Timer Stopped");
+      }
     } else {
       Serial1.print("Echo: ");
       Serial1.println(incomingByte);

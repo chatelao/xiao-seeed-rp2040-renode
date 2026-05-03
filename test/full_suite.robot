@@ -86,6 +86,38 @@ Should Handle GPIO Interrupt
     Execute Command           sysbus.gpio OnGPIO 2 true
     Wait For Line On Uart     GPIO Interrupt Handled
 
+Should Trigger One-shot Timer Alarm
+    Create Machine
+    Start Emulation
+
+    # Wait for the initial UART message
+    Wait For Line On Uart     UART Bidirectional Communication Ready
+
+    # Trigger Timer Alarm
+    Write Char On Uart        T
+    Wait For Line On Uart     One-shot Timer Alarm Set for 100ms
+    Wait For Line On Uart     Timer Alarm Handled
+
+Should Trigger Periodic Timer Alarms
+    Create Machine
+    Start Emulation
+
+    # Wait for the initial UART message
+    Wait For Line On Uart     UART Bidirectional Communication Ready
+
+    # Start Periodic Timer
+    Write Char On Uart        U
+    Wait For Line On Uart     Periodic Timer Started (100ms)
+
+    # Wait for multiple alarms
+    Wait For Line On Uart     Timer Alarm Handled
+    Wait For Line On Uart     Timer Alarm Handled
+    Wait For Line On Uart     Timer Alarm Handled
+
+    # Stop Periodic Timer
+    Write Char On Uart        U
+    Wait For Line On Uart     Periodic Timer Stopped
+
 *** Keywords ***
 Create Machine
     Execute Command           $global.TEST_FILE = @${FIRMWARE}
