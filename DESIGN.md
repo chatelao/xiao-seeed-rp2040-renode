@@ -13,6 +13,9 @@ The detailed design of the solution, including the architecture, used tech stack
 ### Choice 5: CI/CD Platform
 - **Option A: GitHub Actions (Selected)** - Integrated CI/CD platform for GitHub repositories, allowing for automated builds and simulation runs. Explicitly mentioned in the `ROADMAP.md`.
 
+### Choice 6: Documentation Generator
+- **Option A: MkDocs (Selected)** - Fast and simple static site generator that's geared towards building project documentation. Documentation source files are written in Markdown, and configured with a single YAML configuration file.
+
 ## Detailed Architecture
 - (To be defined, including Interrupts and Timer)
 
@@ -35,3 +38,7 @@ The detailed design of the solution, including the architecture, used tech stack
 ### Choice 5: CI/CD Platform
 - **Option B: GitLab CI/CD** - Requires external hosting or mirroring for this repository.
 - **Option C: Local Bash Scripts** - Not suitable for automated, cloud-based continuous integration and reporting.
+
+### Choice 6: Documentation Generator
+- **Option B: Sphinx** - Powerful documentation tool that uses reStructuredText as its default markup language, but can also support Markdown. It is widely used in the Python community.
+- **Option C: Doxygen** - Standard tool for generating documentation from annotated C++ sources, but less focused on high-level conceptual and design documentation.
