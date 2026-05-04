@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <Wire.h>
 #include "hardware/timer.h"
 #include "pico/time.h"
 
@@ -31,6 +32,10 @@ void on_timer_alarm(uint alarm_num) {
 void setup() {
   // Use Serial1 for hardware UART output (mapped to sysbus.uart0 in Renode)
   Serial1.begin(115200);
+
+  // Initialize I2C
+  Wire.begin();
+
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH); // Start with LED OFF
 
@@ -77,6 +82,19 @@ void loop() {
       int adcValue = analogRead(A0);
       Serial1.print("ADC0: ");
       Serial1.println(adcValue);
+      Serial1.flush();
+    } else if (incomingByte == 'I') {
+      Wire.beginTransmission(0x76);
+      Wire.write(0xD0); // REG_ID
+      Wire.endTransmission(false);
+      Wire.requestFrom(0x76, 1);
+      if (Wire.available()) {
+        byte id = Wire.read();
+        Serial1.print("BMP280 ID: 0x");
+        Serial1.println(id, HEX);
+      } else {
+        Serial1.println("BMP280 not found");
+      }
       Serial1.flush();
     } else if (incomingByte == 'P') {
       static int pwmValue = 0;
