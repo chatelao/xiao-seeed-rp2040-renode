@@ -57,7 +57,7 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Update documentation with final design and usage instructions [2026-05-03]
    - [x] Create `USAGE.md` with instructions for building and testing [2026-05-03]
    - [x] Finalize `CONCEPT.md` and `DESIGN.md` [2026-05-03]
-- [ ] Create `TESTCASES.md` with documented test scenarios
+- [x] Create `TESTCASES.md` with documented test scenarios [2026-05-04]
 ## Phase 6: Continuous Documentation
 - [x] Initialize MkDocs documentation structure [2026-05-03]
 - [x] Create `mkdocs.yml` configuration [2026-05-03]
@@ -73,9 +73,9 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Create Robot Framework tests for I2C communication and sensor reading [2026-05-04]
 
 ## Phase 8: SPI Peripheral Support
-- [ ] Implement SPI firmware driver
-- [ ] Configure SPI peripherals and chip selects in Renode `.repl`
-- [ ] Integrate a simulated SPI device (e.g., external flash or display)
+- [x] Implement SPI loopback test in firmware and verify in Renode [2026-05-04]
+- [ ] Configure SPI pins and an external SPI device in Renode `.repl`
+- [ ] Implement SPI device communication in firmware (e.g., reading WHO_AM_I)
 - [ ] Create Robot Framework tests for SPI bidirectional data transfer
 
 ## Phase 9: Transition to Pico SDK (Technical Debt)

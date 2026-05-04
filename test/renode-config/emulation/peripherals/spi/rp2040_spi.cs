@@ -226,10 +226,13 @@ namespace Antmicro.Renode.Peripherals.SPI
 
     private void Step()
     {
-      if (transmitCounter > dataSize - 1)
+      if (transmitCounter >= dataSize)
       {
+        if (transmitCounter != 16)
+        {
+          rxBuffer.Enqueue(receiveData);
+        }
         transmitCounter = 0;
-        rxBuffer.Enqueue(receiveData);
         receiveData = 0;
         if (txBuffer.Count != 0)
         {
@@ -352,7 +355,7 @@ namespace Antmicro.Renode.Peripherals.SPI
       Registers.SSPDR.Define(registers)
         .WithValueField(0, 16, valueProviderCallback: _ =>
         {
-          if (rxBuffer.Count < rxBuffer.Capacity)
+          if (rxBuffer.Count > 0)
           {
             ushort ret;
             rxBuffer.TryDequeue(out ret);
@@ -376,8 +379,8 @@ namespace Antmicro.Renode.Peripherals.SPI
       Registers.SSPSR.Define(registers)
         .WithFlag(0, FieldMode.Read, valueProviderCallback: _ => txBuffer.Count == 0, name: "SSPSR_TFE")
         .WithFlag(1, FieldMode.Read, valueProviderCallback: _ => txBuffer.Count != txBuffer.Capacity, name: "SSPSR_TNF")
-        .WithFlag(2, FieldMode.Read, valueProviderCallback: _ => rxBuffer.Count == 0, name: "SSPSR_RNE")
-        .WithFlag(3, FieldMode.Read, valueProviderCallback: _ => rxBuffer.Count != rxBuffer.Capacity, name: "SSPSR_RFF")
+        .WithFlag(2, FieldMode.Read, valueProviderCallback: _ => rxBuffer.Count != 0, name: "SSPSR_RNE")
+        .WithFlag(3, FieldMode.Read, valueProviderCallback: _ => rxBuffer.Count == rxBuffer.Capacity, name: "SSPSR_RFF")
         .WithFlag(4, FieldMode.Read, valueProviderCallback: _ => running, name: "SSPSR_BSY");
 
       Registers.SSPCPSR.Define(registers)

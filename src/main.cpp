@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Wire.h>
+#include <SPI.h>
 #include "hardware/timer.h"
 #include "pico/time.h"
 
@@ -11,7 +12,7 @@
 // NOTE: LEDs on XIAO RP2040 are active-low.
 
 const int LED_PIN = 17; // RED LED
-const int INTERRUPT_PIN = 2; // XIAO D8
+const int INTERRUPT_PIN = 21; // XIAO D6 (GPIO 21) - Moved from D8 (GPIO 2) to avoid SPI0 SCK conflict
 bool ledState = false;
 volatile bool interruptOccurred = false;
 volatile bool periodicTimerActive = false;
@@ -125,6 +126,30 @@ void loop() {
       } else {
           Serial1.println("Timer Error: No alarm claimed");
       }
+      Serial1.flush();
+    } else if (incomingByte == 'S') {
+      // SPI Loopback Test
+      SPI.begin();
+
+      // Manually enable loopback mode in the SPI0 peripheral (PL022)
+      // SSPCR1 (0x4) bit 0 is LBM (Loop Back Mode)
+      // On RP2040, SPI0 base is 0x4003c000
+      volatile uint32_t *spi0_cr1 = (volatile uint32_t *)(0x4003c000 + 0x4);
+      *spi0_cr1 |= 0x1;
+
+      uint8_t testByte = 0xBC;
+      uint8_t receivedByte = SPI.transfer(testByte);
+
+      if (receivedByte == testByte) {
+        Serial1.print("SPI Loopback Success: 0x");
+        Serial1.println(receivedByte, HEX);
+      } else {
+        Serial1.print("SPI Loopback Failed: Sent 0x");
+        Serial1.print(testByte, HEX);
+        Serial1.print(", Got 0x");
+        Serial1.println(receivedByte, HEX);
+      }
+      SPI.end();
       Serial1.flush();
     } else {
       Serial1.print("Echo: ");

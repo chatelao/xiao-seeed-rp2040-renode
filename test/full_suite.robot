@@ -44,10 +44,14 @@ Should Pass Full Test Suite
     Wait For Line On Uart     BMP280 ID: 0x58
 
     # 7. GPIO Interrupt
-    Execute Command           sysbus.gpio OnGPIO 2 true
+    Execute Command           sysbus.gpio OnGPIO 21 true
     Wait For Line On Uart     GPIO Interrupt Handled
 
-    # 8. Timer Alarms
+    # 8. SPI Loopback
+    Write Char On Uart        S
+    Wait For Line On Uart     SPI Loopback Success: 0xBC
+
+    # 9. Timer Alarms
     # One-shot
     Write Char On Uart        T
     Wait For Line On Uart     One-shot Timer Alarm Set for 100ms
