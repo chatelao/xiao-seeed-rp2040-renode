@@ -296,31 +296,12 @@ namespace Antmicro.Renode.Peripherals.Analog
     {
       if (roundRobinChannels != 0)
       {
-        byte firstChannel = channelsCount + 1;
-        byte lastChannel = 0;
-        for (byte i = 0; i < channelsCount; ++i)
+        for (int i = 1; i <= channelsCount; i++)
         {
-          if (BitHelper.IsBitSet(roundRobinChannels, i))
+          int nextChannel = (selectedInput + i) % channelsCount;
+          if (BitHelper.IsBitSet(roundRobinChannels, (byte)nextChannel))
           {
-            if (firstChannel > channelsCount)
-            {
-              firstChannel = i;
-            }
-            lastChannel = i;
-          }
-        }
-
-        if (selectedInput >= lastChannel)
-        {
-          selectedInput = firstChannel;
-          return;
-        }
-
-        for (byte c = selectedInput; c < channelsCount; ++c)
-        {
-          if (BitHelper.IsBitSet(roundRobinChannels, c))
-          {
-            selectedInput = c;
+            selectedInput = (byte)nextChannel;
             return;
           }
         }

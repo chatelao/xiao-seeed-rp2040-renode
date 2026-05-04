@@ -108,8 +108,8 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [ ] Implement `PH_ADV` and `PH_RET` phase adjustment logic
 - [ ] Create Robot Framework tests for advanced PWM features (interrupts, inputs)
 
-## Phase 12: Full ADC Feature Support
-- [ ] Fix round-robin logic in `RP2040ADC` to correctly cycle through enabled channels
+## Phase 13: Full ADC Feature Support
+- [x] Fix round-robin logic in `RP2040ADC` to correctly cycle through enabled channels [2026-05-04]
 - [ ] Implement error generation logic and propagate `ERR` bits to status and FIFO
 - [ ] Correct `READY` flag behavior to remain high during pacing timer delays
 - [ ] Refactor pacing timer to define the total sampling interval (96 cycles vs `DIV` setting)
