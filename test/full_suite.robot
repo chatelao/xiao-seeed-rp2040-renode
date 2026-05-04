@@ -66,6 +66,14 @@ Should Pass Full Test Suite
     Write Char On Uart        U
     Wait For Line On Uart     Periodic Timer Stopped
 
+    # 10. PIO Blink
+    Write Char On Uart        B
+    Wait For Line On Uart     PIO Blinking Started
+    Create LED Tester         sysbus.gpio.led_green
+    Assert LED Is Blinking    testDuration=2  onDuration=0.5  offDuration=0.5  tolerance=0.1
+    Write Char On Uart        B
+    Wait For Line On Uart     PIO Blinking Stopped
+
 *** Keywords ***
 Create Machine
     Execute Command           $global.TEST_FILE = @${FIRMWARE}
