@@ -62,7 +62,7 @@ namespace Antmicro.Renode.Peripherals.Timers
                 }
                 else
                 {
-                    ticksToWait = (0x100000000ULL - currentLow) + limitLow;
+                    ticksToWait = (0x100000000UL - currentLow) + limitLow;
                 }
 
                 // Ensure we wait at least one tick to avoid instant firing issues in some engines

@@ -45,9 +45,9 @@ namespace Antmicro.Renode.Peripherals.PWM
             {
                 reg.WithFlag(0, out slices[index].enabled, name: $"CH{index}_CSR_EN", writeCallback: (_, __) => slices[index].Update())
                    .WithFlag(1, out slices[index].phaseCorrect, name: $"CH{index}_CSR_PH_CORRECT", writeCallback: (_, __) => slices[index].Update())
-                   .WithValueField(2, 2, out slices[index].divMode, name: $"CH{index}_CSR_DIVMODE")
-                   .WithFlag(4, out slices[index].invertA, name: $"CH{index}_CSR_A_INV", writeCallback: (_, __) => slices[index].Update())
-                   .WithFlag(5, out slices[index].invertB, name: $"CH{index}_CSR_B_INV", writeCallback: (_, __) => slices[index].Update())
+                   .WithFlag(2, out slices[index].invertA, name: $"CH{index}_CSR_A_INV", writeCallback: (_, __) => slices[index].Update())
+                   .WithFlag(3, out slices[index].invertB, name: $"CH{index}_CSR_B_INV", writeCallback: (_, __) => slices[index].Update())
+                   .WithValueField(4, 2, out slices[index].divMode, name: $"CH{index}_CSR_DIVMODE")
                    .WithFlag(6, name: $"CH{index}_CSR_TOP_SEL")
                    .WithFlag(7, name: $"CH{index}_CSR_ADVANCE")
                    .WithReservedBits(8, 24);
