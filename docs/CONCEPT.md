@@ -26,6 +26,7 @@ The system consists of three main components:
 - **PWM (Pulse Width Modulation):** For simulating motor control, LED dimming, or other timed outputs.
 - **Interrupts:** For handling asynchronous events and hardware signals.
 - **Timer:** For precise timing, delays, and periodic event execution.
+- **PIO (Programmable I/O):** For simulating high-speed, custom I/O protocols and hardware-offloaded timing logic.
 
 ## Major Choices & Alternatives
 ### Choice 1: Emulation Framework
