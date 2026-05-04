@@ -164,31 +164,49 @@ namespace Antmicro.Renode.Peripherals.Analog
       {
         case State.Waiting:
           {
-            ScheduleNext();
+            ready = true;
+            if (trigger != Trigger.Nothing)
+            {
+              this.Log(LogLevel.Noisy, "ADC State: Waiting -> Sampling");
+              state = State.Sampling;
+              time = 0;
+              ready = false;
+              error = false;
+            }
             return;
           }
         case State.Delay:
           {
+            ready = true;
             time += 1;
-            if (time >= dividerIntegral + (decimal)dividerFrac / 256)
+            decimal interval = 1 + dividerIntegral + (decimal)dividerFrac / 256;
+            decimal delay = interval - sampleTime;
+            if (time >= (int)delay)
             {
-              time = 1;
+              this.Log(LogLevel.Noisy, "ADC State: Delay -> Sampling");
               state = State.Sampling;
+              time = 0;
+              ready = false;
+              error = false;
             }
             return;
           }
         case State.Sampling:
           {
+            ready = false;
             time += 1;
-            if (time >= (sampleTime - 1))
+            if (time >= sampleTime)
             {
+              this.Log(LogLevel.Noisy, "ADC State: Sampling -> SamplingDone");
               state = State.SamplingDone;
             }
             return;
           }
         case State.SamplingDone:
           {
+            ready = false;
             conversionResult = GetSampleFromChannel(selectedInput);
+            this.Log(LogLevel.Info, "ADC conversion completed on channel {0}: {1}", selectedInput, conversionResult);
             if (fifoEnabled)
             {
               if (fifo.Count == fifoSize)
@@ -197,27 +215,19 @@ namespace Antmicro.Renode.Peripherals.Analog
               }
               else
               {
+                ushort val = conversionResult;
                 if (fifoShift)
                 {
-                  fifo.Enqueue((ushort)((int)conversionResult >> 4));
+                   val = (ushort)((int)val >> 4);
                 }
-                else
+                if (fifoError && error)
                 {
-                  fifo.Enqueue(conversionResult);
+                   val |= 0x8000;
                 }
+                fifo.Enqueue(val);
               }
 
-              if (fifo.Count >= fifoThreshold)
-              {
-                if (fifoIrqEnabled)
-                {
-                  IRQ.Set(true);
-                }
-              }
-              if (dreqEnabled)
-              {
-                DMARequest.Toggle();
-              }
+              UpdateIrqAndDreq();
             }
             if (trigger == Trigger.StartOnce)
             {
@@ -227,13 +237,44 @@ namespace Antmicro.Renode.Peripherals.Analog
               running = false;
               state = State.Waiting;
             }
-            else
+            else if (trigger == Trigger.StartMany)
             {
               IterateInput();
-              ScheduleNext();
+              decimal interval = 1 + dividerIntegral + (decimal)dividerFrac / 256;
+              if (interval > (decimal)sampleTime)
+              {
+                  state = State.Delay;
+                  time = 0;
+                  ready = true;
+              }
+              else
+              {
+                  state = State.Sampling;
+                  time = 0;
+                  ready = false;
+                  error = false;
+              }
             }
             return;
           }
+      }
+    }
+
+    private void UpdateIrqAndDreq()
+    {
+      int effectiveThreshold = fifoThreshold == 0 ? 1 : (int)fifoThreshold;
+      bool condition = fifo.Count >= effectiveThreshold;
+      if (fifoIrqEnabled)
+      {
+        IRQ.Set(condition);
+      }
+      if (dreqEnabled)
+      {
+        DMARequest.Set(condition);
+      }
+      else
+      {
+        DMARequest.Set(false);
       }
     }
 
@@ -273,25 +314,6 @@ namespace Antmicro.Renode.Peripherals.Analog
       return ret;
     }
 
-    private void ScheduleNext()
-    {
-      if (trigger == Trigger.Nothing)
-      {
-        return;
-      }
-      ready = false;
-      if (dividerFrac != 0 || dividerIntegral != 0)
-      {
-        if (time < dividerIntegral + (decimal)dividerFrac / 256)
-        {
-          state = State.Delay;
-        }
-        return;
-      }
-      time = 1;
-      state = State.Sampling;
-    }
-
     private void IterateInput()
     {
       if (roundRobinChannels != 0)
@@ -327,6 +349,21 @@ namespace Antmicro.Renode.Peripherals.Analog
       if (enabled && !running && (trigger != Trigger.Nothing))
       {
         state = State.Waiting;
+        if (trigger == Trigger.StartOnce)
+        {
+          state = State.Sampling;
+          time = 0;
+          ready = false;
+          error = false;
+        }
+        else if (trigger == Trigger.StartMany)
+        {
+          state = State.Sampling;
+          time = 0;
+          ready = false;
+          error = false;
+        }
+        this.Log(LogLevel.Info, "Starting ADC sampling thread. Trigger: {0}", trigger);
         samplingThread.Start();
         running = true;
       }
@@ -387,15 +424,29 @@ namespace Antmicro.Renode.Peripherals.Analog
         .WithReservedBits(4, 4)
         .WithFlag(8, FieldMode.Read, valueProviderCallback: _ => ready, name: "READY")
         .WithFlag(9, FieldMode.Read, valueProviderCallback: _ => error, name: "ERR")
-        .WithFlag(10, valueProviderCallback: _ => errorSticky,
-          writeCallback: (_, value) => errorSticky = false, name: "ERR_STICKY")
+        .WithFlag(10, FieldMode.Read | FieldMode.WriteOneToClear, valueProviderCallback: _ => errorSticky,
+          writeCallback: (_, value) => { if(value) { errorSticky = false; error = false; } }, name: "ERR_STICKY")
         .WithReservedBits(11, 1)
         .WithValueField(12, 3, valueProviderCallback: _ => selectedInput,
-          writeCallback: (_, value) => selectedInput = (byte)value,
+          writeCallback: (_, value) => {
+              if (state == State.Sampling || state == State.SamplingDone) {
+                  error = true;
+                  errorSticky = true;
+                  this.Log(LogLevel.Info, "ADC Error triggered by AINSEL write during conversion");
+              }
+              selectedInput = (byte)value;
+          },
           name: "AINSEL")
         .WithReservedBits(15, 1)
         .WithValueField(16, 5, valueProviderCallback: _ => roundRobinChannels,
-          writeCallback: (_, value) => roundRobinChannels = (byte)value,
+          writeCallback: (_, value) => {
+              if (state == State.Sampling || state == State.SamplingDone) {
+                  error = true;
+                  errorSticky = true;
+                  this.Log(LogLevel.Info, "ADC Error triggered by RROBIN write during conversion");
+              }
+              roundRobinChannels = (byte)value;
+          },
           name: "RROBIN")
         .WithReservedBits(21, 11);
 
@@ -409,16 +460,16 @@ namespace Antmicro.Renode.Peripherals.Analog
 
       Registers.FCS.Define(this)
         .WithFlag(0, valueProviderCallback: _ => fifoEnabled,
-          writeCallback: (_, value) => fifoEnabled = value,
+          writeCallback: (_, value) => { fifoEnabled = value; UpdateIrqAndDreq(); },
           name: "EN")
         .WithFlag(1, valueProviderCallback: _ => fifoShift,
           writeCallback: (_, value) => fifoShift = value,
           name: "SHIFT")
         .WithFlag(2, valueProviderCallback: _ => fifoError,
-          writeCallback: (_, value) => fifoError = value,
+          writeCallback: (_, value) => { fifoError = value; UpdateIrqAndDreq(); },
           name: "ERR")
         .WithFlag(3, valueProviderCallback: _ => dreqEnabled,
-          writeCallback: (_, value) => dreqEnabled = value,
+          writeCallback: (_, value) => { dreqEnabled = value; UpdateIrqAndDreq(); },
           name: "DREQ")
         .WithReservedBits(4, 4)
         .WithFlag(8, FieldMode.Read, valueProviderCallback: _ => fifo.Count == 0,
@@ -435,7 +486,7 @@ namespace Antmicro.Renode.Peripherals.Analog
         .WithValueField(16, 4, FieldMode.Read, valueProviderCallback: _ => (ulong)fifo.Count, name: "LEVEL")
         .WithReservedBits(20, 4)
         .WithValueField(24, 4, valueProviderCallback: _ => fifoThreshold,
-          writeCallback: (_, value) => fifoThreshold = (byte)value,
+          writeCallback: (_, value) => { fifoThreshold = (byte)value; UpdateIrqAndDreq(); },
           name: "THRESH")
         .WithReservedBits(28, 4);
 
@@ -443,7 +494,11 @@ namespace Antmicro.Renode.Peripherals.Analog
         .WithValueField(0, 16, valueProviderCallback: _ =>
         {
           ushort ret = 0;
-          if (!fifo.TryDequeue(out ret))
+          if (fifo.TryDequeue(out ret))
+          {
+            UpdateIrqAndDreq();
+          }
+          else
           {
             fifoUnderflowed = true;
           }
@@ -478,7 +533,7 @@ namespace Antmicro.Renode.Peripherals.Analog
 
       Registers.INTE.Define(this)
         .WithFlag(0, valueProviderCallback: _ => fifoIrqEnabled,
-          writeCallback: (_, value) => fifoIrqEnabled = value,
+          writeCallback: (_, value) => { fifoIrqEnabled = value; UpdateIrqAndDreq(); },
           name: "FIFO");
 
       Registers.INTF.Define(this)
@@ -514,6 +569,11 @@ namespace Antmicro.Renode.Peripherals.Analog
 
     public GPIO IRQ { get; private set; }
     public GPIO DMARequest { get; }
+
+    public bool ReadDMARequest()
+    {
+      return DMARequest.IsSet;
+    }
 
 
     private bool dreqEnabled;
