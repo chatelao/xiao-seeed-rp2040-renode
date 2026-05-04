@@ -162,7 +162,7 @@ void loop() {
       }
       SPI.end();
       Serial1.flush();
-    } else if (incomingByte == 'X') {
+    } else if (incomingByte == 'E') {
       // Test ADC Error Detection
       adc_hw->cs = (adc_hw->cs & ~ADC_CS_AINSEL_BITS) | (0 << ADC_CS_AINSEL_LSB);
       adc_hw->cs |= ADC_CS_START_ONCE_BITS;
@@ -176,7 +176,7 @@ void loop() {
 
       adc_hw->cs |= ADC_CS_ERR_STICKY_BITS;
       Serial1.flush();
-    } else if (incomingByte == 'Y') {
+    } else if (incomingByte == 'F') {
       // Test ADC FIFO Error bit
       adc_fifo_setup(true, false, 1, true, false);
       adc_hw->cs = (adc_hw->cs & ~ADC_CS_AINSEL_BITS) | (0 << ADC_CS_AINSEL_LSB);

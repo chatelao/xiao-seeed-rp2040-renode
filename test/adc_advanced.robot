@@ -18,8 +18,8 @@ Should Detect ADC Conversion Error
     Start Emulation
     Wait For Line On Uart     UART Bidirectional Communication Ready
 
-    # Send 'X' to trigger error detection test in firmware
-    Write Char On Uart        X
+    # Send 'E' to trigger error detection test in firmware
+    Write Char On Uart        E
     Wait For Line On Uart     ADC Error Test: ERR=1 ERR_STICKY=1
 
 Should Pack Error Bit In FIFO
@@ -29,8 +29,8 @@ Should Pack Error Bit In FIFO
     Start Emulation
     Wait For Line On Uart     UART Bidirectional Communication Ready
 
-    # Send 'Y' to trigger FIFO error test in firmware
-    Write Char On Uart        Y
+    # Send 'F' to trigger FIFO error test in firmware
+    Write Char On Uart        F
     # VAL=0x8... (bit 15 set)
     Wait For Line On Uart     ADC FIFO Error Test: VAL=0x8
 

@@ -354,12 +354,14 @@ namespace Antmicro.Renode.Peripherals.Analog
           state = State.Sampling;
           time = 0;
           ready = false;
+          error = false;
         }
         else if (trigger == Trigger.StartMany)
         {
           state = State.Sampling;
           time = 0;
           ready = false;
+          error = false;
         }
         this.Log(LogLevel.Info, "Starting ADC sampling thread. Trigger: {0}", trigger);
         samplingThread.Start();
