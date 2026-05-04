@@ -1,7 +1,10 @@
 .program blink
-    pull block
-    out y, 32
 .wrap_target
+    pull noblock
+    mov x, osr
+    jmp !x skip_update
+    mov y, x
+skip_update:
     set pins, 1
     mov x, y
 lp1:

@@ -12,27 +12,29 @@
 // blink //
 // ----- //
 
-#define blink_wrap_target 2
-#define blink_wrap 7
+#define blink_wrap_target 0
+#define blink_wrap 9
 #define blink_pio_version 0
 
 static const uint16_t blink_program_instructions[] = {
-    0x80a0, //  0: pull   block
-    0x6040, //  1: out    y, 32
             //     .wrap_target
-    0xe001, //  2: set    pins, 1
-    0xa022, //  3: mov    x, y
-    0x0044, //  4: jmp    x--, 4
-    0xe000, //  5: set    pins, 0
-    0xa022, //  6: mov    x, y
-    0x0047, //  7: jmp    x--, 7
+    0x8080, //  0: pull   noblock
+    0xa027, //  1: mov    x, osr
+    0x0024, //  2: jmp    !x, 4
+    0xa041, //  3: mov    y, x
+    0xe001, //  4: set    pins, 1
+    0xa022, //  5: mov    x, y
+    0x0046, //  6: jmp    x--, 6
+    0xe000, //  7: set    pins, 0
+    0xa022, //  8: mov    x, y
+    0x0049, //  9: jmp    x--, 9
             //     .wrap
 };
 
 #if !PICO_NO_HARDWARE
 static const struct pio_program blink_program = {
     .instructions = blink_program_instructions,
-    .length = 8,
+    .length = 10,
     .origin = -1,
     .pio_version = blink_pio_version,
 #if PICO_PIO_VERSION > 0
