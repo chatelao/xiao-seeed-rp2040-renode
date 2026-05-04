@@ -57,6 +57,7 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Update documentation with final design and usage instructions [2026-05-03]
    - [x] Create `USAGE.md` with instructions for building and testing [2026-05-03]
    - [x] Finalize `CONCEPT.md` and `DESIGN.md` [2026-05-03]
+- [ ] Create `TESTCASES.md` with documented test scenarios
 ## Phase 6: Continuous Documentation
 - [x] Initialize MkDocs documentation structure [2026-05-03]
 - [x] Create `mkdocs.yml` configuration [2026-05-03]
@@ -64,3 +65,28 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Create `.readthedocs.yaml` configuration [2026-05-03]
 - [x] Integrate ReadTheDocs with GitHub Actions [2026-05-03]
 - [ ] Verify automatic documentation updates on ReadTheDocs
+
+## Phase 7: I2C Peripheral Support
+- [ ] Implement I2C firmware driver using Arduino Wire or Pico SDK
+- [ ] Configure I2C peripherals in Renode `.repl` and `.resc` files
+- [ ] Integrate an existing I2C peripheral model (e.g., PCF8523 or BMP280) for verification
+- [ ] Create Robot Framework tests for I2C communication and sensor reading
+
+## Phase 8: SPI Peripheral Support
+- [ ] Implement SPI firmware driver
+- [ ] Configure SPI peripherals and chip selects in Renode `.repl`
+- [ ] Integrate a simulated SPI device (e.g., external flash or display)
+- [ ] Create Robot Framework tests for SPI bidirectional data transfer
+
+## Phase 9: Transition to Pico SDK (Technical Debt)
+- [ ] Setup Pico SDK build environment in `src/install.sh`
+- [ ] Port UART and GPIO drivers to native Pico SDK
+- [ ] Port ADC and PWM drivers to native Pico SDK
+- [ ] Port Timer and Interrupt handling to native Pico SDK
+- [ ] Verify full system functionality with native Pico SDK firmware
+
+## Phase 10: Advanced Simulation & Performance
+- [ ] Implement DMA-based data transfer examples
+- [ ] Implement PIO (Programmable I/O) state machine examples
+- [ ] Optimize Renode simulation parameters for better host performance
+- [ ] Expand `full_suite.robot` with advanced stress tests
