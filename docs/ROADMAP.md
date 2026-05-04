@@ -85,13 +85,20 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [ ] Port Timer and Interrupt handling to native Pico SDK
 - [ ] Verify full system functionality with native Pico SDK firmware
 
-## Phase 10: Advanced Simulation & Performance
+## Phase 10: PIO Integration
+- [x] Draft `docs/PIO_CONCEPT.md` for PIO integration [2026-05-03]
+- [ ] Implement PIO (Programmable I/O) state machine examples in firmware
+- [ ] Connect PIO outputs to XIAO RP2040 pins in Renode `.repl`
+- [ ] Implement DMA requests (DREQ) and IRQ routing for PIO in Renode
+- [ ] Reuse `hello_pio` and `pio_blink` tests from `Renode_RP2040`
+- [ ] Create Robot Framework tests for PIO driving XIAO Seeed RP2040 pins
+
+## Phase 11: Advanced Simulation & Performance
 - [ ] Implement DMA-based data transfer examples
-- [ ] Implement PIO (Programmable I/O) state machine examples
 - [ ] Optimize Renode simulation parameters for better host performance
 - [ ] Expand `full_suite.robot` with advanced stress tests
 
-## Phase 11: Full PWM Feature Support
+## Phase 12: Full PWM Feature Support
 - [ ] Implement 16-bit dynamic counter in `RP2040PWM` Renode model
 - [ ] Implement double buffering for `CC` and `TOP` registers (latched update on wrap)
 - [ ] Implement `DIVMODE` support for LEVEL, RISE, and FALL input modes
