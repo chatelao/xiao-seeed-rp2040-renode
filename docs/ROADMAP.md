@@ -110,9 +110,9 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 
 ## Phase 13: Full ADC Feature Support
 - [x] Fix round-robin logic in `RP2040ADC` to correctly cycle through enabled channels [2026-05-04]
-- [ ] Implement error generation logic and propagate `ERR` bits to status and FIFO
-- [ ] Correct `READY` flag behavior to remain high during pacing timer delays
-- [ ] Refactor pacing timer to define the total sampling interval (96 cycles vs `DIV` setting)
-- [ ] Implement correct `FIFO` register bit packing including bit 15 (`ERR`)
-- [ ] Align `DMARequest` (DREQ) signaling with `FCS.THRESH` and `FCS.DREQ_EN` logic
-- [ ] Create Robot Framework tests for round-robin sampling and pacing timer accuracy
+- [x] Implement error generation logic and propagate `ERR` bits to status and FIFO [2026-05-04]
+- [x] Correct `READY` flag behavior to remain high during pacing timer delays [2026-05-04]
+- [x] Refactor pacing timer to define the total sampling interval (96 cycles vs `DIV` setting) [2026-05-04]
+- [x] Implement correct `FIFO` register bit packing including bit 15 (`ERR`) [2026-05-04]
+- [x] Align `DMARequest` (DREQ) signaling with `FCS.THRESH` and `FCS.DREQ_EN` logic [2026-05-04]
+- [x] Create Robot Framework tests for ADC error detection and threshold logic [2026-05-04]

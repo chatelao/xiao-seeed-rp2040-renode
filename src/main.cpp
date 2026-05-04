@@ -2,6 +2,7 @@
 #include <Wire.h>
 #include <SPI.h>
 #include "hardware/timer.h"
+#include "hardware/adc.h"
 #include "hardware/pio.h"
 #include "pico/time.h"
 #include "blink.pio.h"
@@ -160,6 +161,34 @@ void loop() {
         Serial1.println(receivedByte, HEX);
       }
       SPI.end();
+      Serial1.flush();
+    } else if (incomingByte == 'X') {
+      // Test ADC Error Detection
+      adc_hw->cs = (adc_hw->cs & ~ADC_CS_AINSEL_BITS) | (0 << ADC_CS_AINSEL_LSB);
+      adc_hw->cs |= ADC_CS_START_ONCE_BITS;
+      adc_hw->cs = (adc_hw->cs & ~ADC_CS_AINSEL_BITS) | (1 << ADC_CS_AINSEL_LSB); // Trigger error
+
+      while (!(adc_hw->cs & ADC_CS_READY_BITS));
+
+      bool err = (adc_hw->cs & ADC_CS_ERR_BITS) != 0;
+      bool err_sticky = (adc_hw->cs & ADC_CS_ERR_STICKY_BITS) != 0;
+      Serial1.printf("ADC Error Test: ERR=%d ERR_STICKY=%d\n", err ? 1 : 0, err_sticky ? 1 : 0);
+
+      adc_hw->cs |= ADC_CS_ERR_STICKY_BITS;
+      Serial1.flush();
+    } else if (incomingByte == 'Y') {
+      // Test ADC FIFO Error bit
+      adc_fifo_setup(true, false, 1, true, false);
+      adc_hw->cs = (adc_hw->cs & ~ADC_CS_AINSEL_BITS) | (0 << ADC_CS_AINSEL_LSB);
+      adc_hw->cs |= ADC_CS_START_ONCE_BITS;
+      adc_hw->cs = (adc_hw->cs & ~ADC_CS_AINSEL_BITS) | (1 << ADC_CS_AINSEL_LSB); // Trigger error
+
+      while (adc_fifo_get_level() == 0);
+      uint16_t val = adc_fifo_get();
+      Serial1.printf("ADC FIFO Error Test: VAL=0x%04X\n", val);
+
+      adc_fifo_setup(false, false, 0, false, false);
+      adc_hw->cs |= ADC_CS_ERR_STICKY_BITS;
       Serial1.flush();
     } else if (incomingByte == 'B') {
       pioRunning = !pioRunning;

@@ -11,9 +11,5 @@ List of technical debts identified during the project.
     - **Phase Adjustment:** `PH_ADV` and `PH_RET` bits are non-functional.
     - **Interrupt/DMA Triggering:** IRQ and DREQ signals are not asserted on counter wrap.
 
-- **ADC Implementation Gaps:** The current `RP2040ADC` Renode model has several functional gaps compared to the RP2040 datasheet:
-    - **Missing Error Handling:** There is no logic to generate or propagate the `ERR` bit in the `CS` status or the `FIFO` register, although the registers and fields are defined.
-    - **Inaccurate READY Behavior:** The `READY` flag remains low during pacing timer delays, whereas it should be high whenever the ADC is not actively performing a conversion.
-    - **Pacing Timer Implementation:** The model adds the pacing delay *before* the 96-cycle sampling period instead of using it to define the total trigger interval (`1 + INT + FRAC / 256`).
-    - **FIFO Register Bit Packing:** The `FIFO` register read logic does not correctly pack the `ERR` bit (bit 15) when `FCS.ERR` is enabled.
-    - **DREQ Logic:** The `DMARequest` signal toggles on every sample produced, ignoring the `FCS.THRESH` setting.
+- **ADC Implementation Gaps:** The `RP2040ADC` Renode model was improved in May 2026 to address previous gaps in error handling, READY flag behavior, pacing timer accuracy, and DREQ signaling. Remaining items include:
+    - **Pacing Timer Precision:** While the interval logic is implemented, the model uses a simple cycle counter which may drift under heavy simulation load.
