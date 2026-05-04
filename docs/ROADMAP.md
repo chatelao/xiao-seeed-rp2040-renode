@@ -94,7 +94,9 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [ ] Create Robot Framework tests for PIO driving XIAO Seeed RP2040 pins
 
 ## Phase 11: Advanced Simulation & Performance
-- [ ] Implement DMA-based data transfer examples
+- [x] Draft `docs/DMA_CONCEPT.md` for DMA integration [2026-05-04]
+- [ ] Implement advanced DMA features (Abort, Pacing Timers, Debug Registers)
+- [ ] Implement DMA-based data transfer examples (CRC calculation, Block move)
 - [ ] Optimize Renode simulation parameters for better host performance
 - [ ] Expand `full_suite.robot` with advanced stress tests
 
