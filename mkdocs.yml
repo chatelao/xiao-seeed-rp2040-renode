@@ -9,6 +9,7 @@ nav:
   - Roadmap: ROADMAP.md
   - Usage Guide: USAGE.md
   - Technical Debts: TECHNICAL_DEBTS.md
+  - Feature Coverage: FEATURE_COVERAGE.md
   - Specification:
     - Overview: specification/README.md
     - RP2040 Datasheet:
