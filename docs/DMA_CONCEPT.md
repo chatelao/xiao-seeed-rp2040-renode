@@ -1,63 +1,70 @@
 # DMA Simulation Concept
 
-This document outlines the strategy for adding and refining Direct Memory Access (DMA) support in the XIAO Seeed RP2040 simulation model.
+This document outlines the strategy for implementing and verifying Direct Memory Access (DMA) support in the XIAO Seeed RP2040 simulation model, leveraging best practices from existing Renode DMA models and addressing RP2040-specific architectural nuances.
 
 ## Goal
-Integrate a fully functional RP2040 DMA controller into the Renode simulation to enable complex data transfer scenarios, such as peripheral-to-memory (ADC capture), memory-to-peripheral (PIO/UART transmission), and memory-to-memory (CRC calculation, block moves).
+Integrate a fully functional RP2040 DMA controller into the Renode simulation to enable autonomous data movement between memory and peripherals, reducing CPU overhead and enabling complex scenarios like high-speed ADC sampling, UART background transmission, and real-time CRC calculation.
 
-## Architecture
-The DMA simulation utilizes a two-layer approach consisting of a peripheral model and a specialized DMA engine.
+## RP2040 DMA Architecture Overview
+The RP2040 DMA is characterized by:
+- **12 Independent Channels:** Each with full 32-bit address range for both read and write.
+- **Credit-based DREQ:** A unique mechanism to prevent FIFO overflow/underflow without requiring large buffers.
+- **Atomic Register Aliases:** Four alias windows per channel allowing different trigger behaviors (Trigger on CTRL, TRANS_COUNT, WRITE_ADDR, or READ_ADDR).
+- **Channel Chaining:** Allows one channel to start another upon completion, facilitating complex "gather/scatter" operations.
+- **Address Wrapping (Ring Buffers):** Support for power-of-2 boundary wrapping (2 bytes to 32 KiB).
+- **Sniffer (CRC):** A passive observer of data transfers that calculates checksums (CRC-32, CRC-16, Sum, XOR).
+
+## Simulation Strategy
 
 ### 1. Peripheral Model (`RPDMA`)
-The `RPDMA` class handles the register interface and channel logic.
-- **Channels:** Simulates 12 independent DMA channels, each with its own set of control/status registers (READ_ADDR, WRITE_ADDR, TRANS_COUNT, CTRL).
-- **Register Aliases:** Implements the four alias windows per channel, where different register offsets act as "triggers" to start transfers.
-- **Interrupt Routing:** Manages two system-level IRQs (IRQ0, IRQ1) with independent masking (INTE0, INTE1) and status (INTS0, INTS1) registers.
-- **Sniffer (CRC):** Implements the "sniff" hardware that passively observes data passing through a selected channel and calculates checksums (CRC-32, CRC-16, Sum, XOR).
+The `RPDMA` model handles the register interface, interrupt routing, and DREQ management.
+- **Register Aliases:** Implement the mapping of offsets 0x00, 0x10, 0x20, and 0x30 to the same physical registers but with different trigger side effects.
+- **Interrupt Routing:** Simulate two independent system-level IRQs (`IRQ0`, `IRQ1`) with associated enable (`INTE0/1`) and status (`INTS0/1`) registers.
+- **Credit Counters (`DBG_CTDREQ`):** Implement 6-bit saturation counters for each channel to simulate the credit-based DREQ scheme.
 
 ### 2. DMA Engine (`RPDmaEngine`)
-A custom `RPDmaEngine` extends the standard Renode DMA capabilities to support RP2040-specific features.
-- **Atomic Transfers:** Supports byte, halfword, and word transfer sizes.
-- **Address Wrapping (Ring Buffers):** Implements power-of-2 boundary wrapping for both read and write pointers.
-- **Checksum Integration:** Integrates directly with the sniffer logic to calculate CRC on-the-fly during bus transfers.
+A specialized engine is required to handle RP2040's unique transfer behaviors that deviate from the standard Renode `DmaEngine`.
+- **Ring Buffers:** Implement logic to wrap `ReadAddress` or `WriteAddress` at `1 << RING_SIZE` boundaries.
+- **CRC Sniffing:** Passive integration where the engine "feeds" data to the sniffer logic during the bus transfer phase.
+- **Atomic Size Support:** Strict adherence to 8/16/32-bit transfer sizes as configured in `DATA_SIZE`.
 
-## Implementation Details
+### 3. DREQ Pacing Mechanism
+The simulation will move beyond simple binary triggers to a credit-based approach:
+- **Increment:** Each pulse from a peripheral (e.g., UART RX FIFO not empty) increments the channel's credit counter.
+- **Decrement:** The DMA engine performs a transfer only when credit > 0, decrementing the counter.
+- **Sync:** Use Renode's `ExecuteInNearestSyncedState` to ensure DREQ pulses from peripherals are processed at the correct virtual time relative to the CPU.
 
-### Data Request (DREQ) Pacing
-The DMA controller listens for DREQ signals from other peripherals (PIO, UART, ADC, PWM, I2C, SPI).
-- **Current State:** Basic DREQ triggers are implemented via the `IGPIOReceiver` interface.
-- **Gap:** The RP2040 uses a credit-based DREQ scheme. The simulation needs to be refined to handle multiple in-flight transfers and prevent desynchronization when the CPU accesses a FIFO being serviced by DMA.
+## Comparison with STM32 DMA
+While the STM32 DMA (common in Renode) focuses on fixed stream-to-peripheral mappings and circular buffers, the RP2040 DMA is more flexible:
+- **Triggering:** STM32 uses dedicated request lines per channel; RP2040 allows any DREQ source to be mapped to any channel via `TREQ_SEL`.
+- **Control Blocks:** RP2040's alias/trigger system is specifically designed for loading control blocks from memory into DMA registers, which is less "native" in many STM32 DMA models.
+- **Pacing:** RP2040's X/Y fractional pacing timers offer more granular periodic transfer control than standard STM32 timer-triggering.
 
-### Channel Chaining
-When a channel completes, it can trigger another channel (specified in `CHAIN_TO`).
-- **Mechanism:** Upon completion, the `RPDMA` model uses `ExecuteInNearestSyncedState` to trigger the next channel in the chain, ensuring timing consistency.
+## Integration & Roadmap
 
-### Pacing Timers
-Four internal pacing timers can be used as TREQ sources instead of external DREQs.
-- **Requirement:** Implement `TIMER0`-`TIMER3` registers as fractional (X/Y) dividers that generate periodic transfer requests.
+### Phase 1: Core Registers & Aliases (Complete)
+- Basic register implementation for 12 channels.
+- Support for Alias 0/1/2/3 trigger logic.
 
-## Integration Plan
+### Phase 2: Advanced Transfer Logic (Ongoing)
+- **Ring Buffers:** Implementation of power-of-2 wrapping logic in `RPDmaEngine`.
+- **Sniffer/CRC:** Integration of CRC-32 and CRC-16-CCITT with bit/byte reversal support.
+- **Channel Chaining:** Ensuring completion of Channel A triggers Channel B without CPU intervention.
 
-### Phase 1: Core Functionality (Current)
-- [x] Basic channel register implementation and aliases.
-- [x] Simple memory-to-memory and peripheral-to-memory transfers.
-- [x] CRC/Sniffer logic for basic checksums.
+### Phase 3: Hardware Refinement (Planned)
+- **Credit Counters:** Implementing `DBG_CTDREQ` logic.
+- **Pacing Timers:** Implementing `TIMER0`-`TIMER3` X/Y fractional dividers.
+- **Abort Logic:** Support for `CHAN_ABORT` and the associated `BUSY` flag behavior.
 
-### Phase 2: Advanced Features & Refinement
-- [ ] Implement `CHAN_ABORT` logic to safely terminate in-progress sequences.
-- [ ] Implement Pacing Timers (`TIMER0`-`TIMER3`) for periodic transfers.
-- [ ] Implement full interrupt masking and forcing logic (INTF0, INTF1).
-- [ ] Add Debug registers (`DBG_CTDREQ`, `DBG_TCR`) for channel introspection.
-- [ ] Refine DREQ logic to support the credit-based scheme.
+## Test Strategy & Verification
+We will reuse and expand tests from the `Renode_RP2040` project, integrated into our Robot Framework suite:
+1. **`hello_dma`:** Simple memory-to-memory block move.
+2. **`sniff_crc`:** Verification of all CRC modes and bit-reversal transformations.
+3. **`control_blocks`:** Gathering data from multiple non-contiguous memory buffers to UART.
+4. **`channel_irq`:** Complex interrupt handling and reconfiguration within the ISR.
+5. **`dma_capture` (ADC):** High-speed ADC data capture into a ring buffer.
 
-## Test Cases & Verification
-We will reuse and adapt test cases from the `Renode_RP2040` project:
-- **`hello_dma`:** Basic memory-to-memory transfer and completion interrupt.
-- **`sniff_crc`:** Verification of the CRC/Sniffer hardware with various polynomials and transformations (bit reversal, inversion).
-- **`channel_irq`:** Tests complex interrupt routing and reconfiguration within the ISR.
-- **`control_blocks`:** Validates channel chaining and complex "gather" operations using control blocks in memory.
-
-## Source & References
-- **Primary Source:** [chatelao/Renode_RP2040](https://github.com/chatelao/Renode_RP2040)
+## References
 - **RP2040 Datasheet:** Section 2.5 (DMA)
-- **Reference:** STM32 DMA implementations in Renode for best practices in handling circular buffers and peripheral synchronization.
+- **Renode Source:** `DmaEngine.cs`, `StandardDma.cs`
+- **External:** [chatelao/Renode_RP2040](https://github.com/chatelao/Renode_RP2040)
