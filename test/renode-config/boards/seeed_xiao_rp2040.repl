@@ -23,3 +23,5 @@ pwm:
     1 -> gpio@17 // PWM0_B
     9 -> gpio@25 // PWM4_B
     12 -> gpio@12 // PWM6_A
+
+bmp280: I2C.BMP280 @ i2c1 0x76

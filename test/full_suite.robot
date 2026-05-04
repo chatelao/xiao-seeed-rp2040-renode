@@ -39,11 +39,15 @@ Should Pass Full Test Suite
     Wait For Line On Uart     PWM set to: 64
     Verify Duty Cycle         0  B  0.25
 
-    # 6. GPIO Interrupt
+    # 6. I2C (BMP280)
+    Write Char On Uart        I
+    Wait For Line On Uart     BMP280 ID: 0x58
+
+    # 7. GPIO Interrupt
     Execute Command           sysbus.gpio OnGPIO 2 true
     Wait For Line On Uart     GPIO Interrupt Handled
 
-    # 7. Timer Alarms
+    # 8. Timer Alarms
     # One-shot
     Write Char On Uart        T
     Wait For Line On Uart     One-shot Timer Alarm Set for 100ms

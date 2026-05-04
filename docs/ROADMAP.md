@@ -67,10 +67,10 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [ ] Verify automatic documentation updates on ReadTheDocs
 
 ## Phase 7: I2C Peripheral Support
-- [ ] Implement I2C firmware driver using Arduino Wire or Pico SDK
-- [ ] Configure I2C peripherals in Renode `.repl` and `.resc` files
-- [ ] Integrate an existing I2C peripheral model (e.g., PCF8523 or BMP280) for verification
-- [ ] Create Robot Framework tests for I2C communication and sensor reading
+- [x] Implement I2C firmware driver using Arduino Wire or Pico SDK [2026-05-04]
+- [x] Configure I2C peripherals in Renode `.repl` and `.resc` files [2026-05-04]
+- [x] Integrate an existing I2C peripheral model (e.g., PCF8523 or BMP280) for verification [2026-05-04]
+- [x] Create Robot Framework tests for I2C communication and sensor reading [2026-05-04]
 
 ## Phase 8: SPI Peripheral Support
 - [ ] Implement SPI firmware driver
