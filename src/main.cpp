@@ -2,7 +2,9 @@
 #include <Wire.h>
 #include <SPI.h>
 #include "hardware/timer.h"
+#include "hardware/pio.h"
 #include "pico/time.h"
+#include "blink.pio.h"
 
 // On XIAO RP2040:
 // RED LED is on GPIO 17
@@ -12,8 +14,12 @@
 // NOTE: LEDs on XIAO RP2040 are active-low.
 
 const int LED_PIN = 17; // RED LED
+const int GREEN_LED_PIN = 16;
 const int INTERRUPT_PIN = 21; // XIAO D6 (GPIO 21) - Moved from D8 (GPIO 2) to avoid SPI0 SCK conflict
 bool ledState = false;
+bool pioRunning = false;
+PIO pio = pio0;
+uint sm = 0;
 volatile bool interruptOccurred = false;
 volatile bool periodicTimerActive = false;
 volatile int alarmCount = 0;
@@ -59,6 +65,10 @@ void setup() {
 
   Serial1.println("UART Bidirectional Communication Ready");
   Serial1.flush();
+
+  // Initialize PIO
+  uint offset = pio_add_program(pio, &blink_program);
+  blink_program_init(pio, sm, offset, GREEN_LED_PIN);
 }
 
 void loop() {
@@ -150,6 +160,23 @@ void loop() {
         Serial1.println(receivedByte, HEX);
       }
       SPI.end();
+      Serial1.flush();
+    } else if (incomingByte == 'B') {
+      pioRunning = !pioRunning;
+      if (pioRunning) {
+        // Set blink delay (number of cycles)
+        // At 125MHz, 62,500,000 cycles = 0.5 seconds
+        pio_sm_put_blocking(pio, sm, 62500000);
+        pio_sm_set_enabled(pio, sm, true);
+        Serial1.println("PIO Blinking Started");
+      } else {
+        pio_sm_set_enabled(pio, sm, false);
+        // Important: Re-initialize GPIO to take it back from PIO
+        gpio_init(GREEN_LED_PIN);
+        pinMode(GREEN_LED_PIN, OUTPUT);
+        digitalWrite(GREEN_LED_PIN, HIGH); // Off
+        Serial1.println("PIO Blinking Stopped");
+      }
       Serial1.flush();
     } else {
       Serial1.print("Echo: ");
