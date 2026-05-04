@@ -90,3 +90,11 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [ ] Implement PIO (Programmable I/O) state machine examples
 - [ ] Optimize Renode simulation parameters for better host performance
 - [ ] Expand `full_suite.robot` with advanced stress tests
+
+## Phase 11: Full PWM Feature Support
+- [ ] Implement 16-bit dynamic counter in `RP2040PWM` Renode model
+- [ ] Implement double buffering for `CC` and `TOP` registers (latched update on wrap)
+- [ ] Implement `DIVMODE` support for LEVEL, RISE, and FALL input modes
+- [ ] Implement IRQ and DREQ signal assertion on counter wrap
+- [ ] Implement `PH_ADV` and `PH_RET` phase adjustment logic
+- [ ] Create Robot Framework tests for advanced PWM features (interrupts, inputs)
