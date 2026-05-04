@@ -53,6 +53,11 @@ jobs:
       run: |
         pio run
 
+    - name: Build Documentation
+      run: |
+        pip install -r docs/requirements.txt
+        mkdocs build
+
     - name: Run Full Test Suite
       run: |
         ./test/renode/renode-test test/full_suite.robot

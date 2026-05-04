@@ -11,3 +11,18 @@ nav:
   - Technical Debts: TECHNICAL_DEBTS.md
   - Specification:
     - Overview: specification/README.md
+    - RP2040 Datasheet:
+      - Introduction: specification/rp2040-datasheet/03_chapter_1_introduction.md
+      - System Description: specification/rp2040-datasheet/04_chapter_2_system_description/00_introduction.md
+      - Peripherals:
+        - Overview: specification/rp2040-datasheet/06_chapter_4_peripherals/00_introduction.md
+        - UART: specification/rp2040-datasheet/06_chapter_4_peripherals/02_4.2_uart.md
+        - PWM: specification/rp2040-datasheet/06_chapter_4_peripherals/05_4.5_pwm.md
+        - Timer: specification/rp2040-datasheet/06_chapter_4_peripherals/06_4.6_timer.md
+        - ADC: specification/rp2040-datasheet/06_chapter_4_peripherals/09_4.9_adc_and_temperature_sensor.md
+    - XIAO RP2040:
+      - Introduction: specification/xiao-rp2040/01_introduction.md
+      - Pin Map: specification/xiao-rp2040/05_pin_map.md
+    - SDKs:
+      - C/C++ SDK: specification/raspberry-pi-pico-c-sdk/01_raspberry_pi_pico_series_cc_sdk_libraries_and_tools_for_cc_development_on_raspberry_pi_microcontrollers.md
+      - Python SDK: specification/raspberry-pi-pico-python-sdk/01_raspberry_pi_pico_series_python_sdk_a_micropython_environment_for_raspberry_pi_microcontrollers.md

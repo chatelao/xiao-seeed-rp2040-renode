@@ -23,3 +23,6 @@ output.xml
 robot_output.xml
 logs/
 snapshots/
+
+# Documentation Build
+site/
