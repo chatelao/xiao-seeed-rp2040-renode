@@ -74,7 +74,14 @@ Should Pass Full Test Suite
     Write Char On Uart        B
     Wait For Line On Uart     PIO Blinking Stopped
 
-    # 11. Watchdog
+    # 11. PWM Interrupts and Double Buffering
+    Write Char On Uart        M
+    Wait For Line On Uart     PWM Interrupt Enabled for Slice 0
+    Wait For Line On Uart     PWM Interrupt Handled
+    Wait For Line On Uart     PWM Interrupt Handled
+    Wait For Line On Uart     PWM Interrupt Handled
+
+    # 12. Watchdog
     # Enable watchdog
     Write Char On Uart        W
     Wait For Line On Uart     Watchdog Enabled (500ms)
