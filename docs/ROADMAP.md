@@ -87,21 +87,25 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Refactor pacing timer to define the total sampling interval (96 cycles vs `DIV` setting) [2026-05-04]
 - [x] Implement correct `FIFO` register bit packing including bit 15 (`ERR`) [2026-05-04]
 - [x] Align `DMARequest` (DREQ) signaling with `FCS.THRESH` and `FCS.DREQ_EN` logic [2026-05-04]
-- [ ] Fix stability of ADC error detection and threshold logic tests
+- [x] Fix stability of ADC error detection and threshold logic tests [2026-05-05]
 
 ## Phase 8: Motor Control and bEMF Support
 - [x] Draft `docs/BEMF_LOOP.md` for bEMF loop calculation concept [2026-05-05]
-- [ ] Implement a `MotorModel` Renode peripheral to simulate back-EMF based on PWM duty cycle and motor parameters (Kv, poles, resistance).
-- [ ] Wire the `MotorModel` to PWM outputs and ADC input channels in the XIAO RP2040 `.repl` configuration.
-- [ ] Implement high-precision ADC/PWM synchronization in firmware using PWM wrap interrupts (Phase 13 dependency).
-- [ ] Develop the BEMF zero-crossing detection algorithm and commutation state machine.
+- [ ] Phase 8.1: Implementation of `MotorModel` Renode peripheral
+    - [ ] Simulate back-EMF based on PWM duty cycle and motor parameters (Kv, poles, resistance).
+    - [ ] Wire the `MotorModel` to PWM outputs and ADC input channels in the XIAO RP2040 `.repl` configuration.
+- [ ] Phase 8.2: Firmware logic for high-precision ADC/PWM synchronization
+    - [ ] Implement synchronization using PWM wrap interrupts.
+    - [ ] Ensure sample timing alignment with PWM cycles.
+- [ ] Phase 8.3: BEMF zero-crossing detection logic
+    - [ ] Develop the BEMF zero-crossing detection algorithm and commutation state machine.
 - [ ] Create a UART-based logging system for BEMF data and a host-side tool (e.g., Python/Matplotlib) for graphical analysis.
 - [ ] Add Robot Framework test cases to verify closed-loop motor commutation and speed stability.
 
 ## Phase x: PIO Integration
 - [x] Draft `docs/PIO_CONCEPT.md` for PIO integration [2026-05-03]
-- [ ] Implement PIO (Programmable I/O) state machine examples in firmware
-- [ ] Connect PIO outputs to XIAO RP2040 pins in Renode `.repl`
+- [x] Implement PIO (Programmable I/O) state machine examples in firmware [2026-05-04]
+- [x] Connect PIO outputs to XIAO RP2040 pins in Renode `.repl` [2026-05-04]
 - [ ] Implement DMA requests (DREQ) and IRQ routing for PIO in Renode
 - [ ] Reuse `hello_pio` and `pio_blink` tests from `Renode_RP2040`
 - [ ] Create Robot Framework tests for PIO driving XIAO Seeed RP2040 pins
