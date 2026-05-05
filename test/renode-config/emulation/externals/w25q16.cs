@@ -383,7 +383,18 @@ namespace Antmicro.Renode.Peripherals.SPI
                     result = ReadFromMemory();
                     break;
                 case DecodedOperation.OperationType.ReadID:
-                    this.Log(LogLevel.Info, "TODO: implement READ ID");
+                    if (currentOperation.CommandBytesHandled == 0)
+                    {
+                        result = manufacturerId;
+                    }
+                    else if (currentOperation.CommandBytesHandled == 1)
+                    {
+                        result = memoryType;
+                    }
+                    else if (currentOperation.CommandBytesHandled == 2)
+                    {
+                        result = capacity;
+                    }
                     break;
                 case DecodedOperation.OperationType.ReadSerialFlashDiscoveryParameter:
                     this.Log(LogLevel.Info, "TODO: implement READ SFDP");
@@ -484,6 +495,7 @@ namespace Antmicro.Renode.Peripherals.SPI
 
         private const byte manufacturerId = 0xEF;
         private const byte memoryType = 0x28;
+        private const byte capacity = 0x15;
         private const byte EmptyByte = 0xff;
     }
 

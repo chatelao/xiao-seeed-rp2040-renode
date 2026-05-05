@@ -224,6 +224,19 @@ namespace Antmicro.Renode.Peripherals.SPI
       return false;
     }
 
+    private byte ReverseBits(byte b)
+    {
+        uint reversed = 0;
+        for (int i = 0; i < 8; i++)
+        {
+            if ((b & (1 << i)) != 0)
+            {
+                reversed |= (uint)(1 << (7 - i));
+            }
+        }
+        return (byte)reversed;
+    }
+
     private void Step()
     {
       if (transmitCounter >= dataSize)
@@ -231,6 +244,7 @@ namespace Antmicro.Renode.Peripherals.SPI
         if (transmitCounter != 16)
         {
           rxBuffer.Enqueue(receiveData);
+          this.Log(LogLevel.Noisy, "SPI{0}: Enqueued to RX FIFO: 0x{1:X}", id, receiveData);
         }
         transmitCounter = 0;
         receiveData = 0;
@@ -247,6 +261,7 @@ namespace Antmicro.Renode.Peripherals.SPI
           _executionThread.Stop();
           running = false;
         }
+        return;
       }
 
       bool clockWasHigh = ReadMultiplePins(clockPins);
@@ -256,6 +271,23 @@ namespace Antmicro.Renode.Peripherals.SPI
       {
         bool bitToSend = Convert.ToBoolean((transmitData >> (dataSize - 1 - transmitCounter)) & 1);
         SetMultiplePins(txPins, bitToSend);
+
+        if (transmitCounter == 0)
+        {
+          this.Log(LogLevel.Info, "SPI{0}: Starting frame with data 0x{1:X}, transmitCounter {2}", id, transmitData, transmitCounter);
+          if (RegisteredPeripheral != null)
+          {
+            byte dataToTransmit = (byte)transmitData;
+            if (dataSize < 8)
+            {
+               dataToTransmit &= (byte)((1 << dataSize) - 1);
+            }
+
+            externalReceiveData = RegisteredPeripheral.Transmit(dataToTransmit);
+
+            this.Log(LogLevel.Info, "SPI{0}: Transmitted 0x{1:X} to external, got 0x{2:X}", id, dataToTransmit, externalReceiveData);
+          }
+        }
       }
 
       SetMultiplePins(clockPins, !clockWasHigh);
@@ -272,7 +304,16 @@ namespace Antmicro.Renode.Peripherals.SPI
         }
         else
         {
-          receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(ReadMultiplePins(rxPins)));
+          bool receivedBit;
+          if (RegisteredPeripheral != null)
+          {
+            receivedBit = Convert.ToBoolean((externalReceiveData >> (dataSize - 1 - transmitCounter)) & 1);
+          }
+          else
+          {
+            receivedBit = ReadMultiplePins(rxPins);
+          }
+          receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(receivedBit));
         }
         transmitCounter += 1;
       }
@@ -286,6 +327,14 @@ namespace Antmicro.Renode.Peripherals.SPI
     public void WriteDoubleWord(long offset, uint value)
     {
       registers.Write(offset, value);
+    }
+
+    public void FinishTransmission()
+    {
+      if (RegisteredPeripheral != null)
+      {
+        RegisteredPeripheral.FinishTransmission();
+      }
     }
 
     public override void Reset()
@@ -320,6 +369,7 @@ namespace Antmicro.Renode.Peripherals.SPI
       transmitCounter = 16;
       transmitData = 0;
       receiveData = 0;
+      externalReceiveData = 0;
       UpdateFrequency(clocks.PeripheralClockFrequency);
     }
 
@@ -453,6 +503,7 @@ namespace Antmicro.Renode.Peripherals.SPI
     private byte transmitCounter;
     private ushort transmitData;
     private ushort receiveData;
+    private byte externalReceiveData;
     private enum Registers
     {
       SSPCR0 = 0x0,

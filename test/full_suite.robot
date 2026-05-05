@@ -51,6 +51,10 @@ Should Pass Full Test Suite
     Write Char On Uart        S
     Wait For Line On Uart     SPI Loopback Success: 0xBC
 
+    # 8a. SPI External Device (Flash)
+    Write Char On Uart        V
+    Wait For Line On Uart     SPI Flash ID: EF 28 15
+
     # 9. Timer Alarms
     # One-shot
     Write Char On Uart        T

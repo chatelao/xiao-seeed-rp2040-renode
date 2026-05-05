@@ -17,6 +17,7 @@
 const int LED_PIN = 17; // RED LED
 const int GREEN_LED_PIN = 16;
 const int INTERRUPT_PIN = 21; // XIAO D6 (GPIO 21) - Moved from D8 (GPIO 2) to avoid SPI0 SCK conflict
+const int FLASH_CS_PIN = 20; // XIAO D7 (GPIO 20)
 bool ledState = false;
 bool pioRunning = false;
 PIO pio = pio0;
@@ -160,6 +161,40 @@ void loop() {
         Serial1.print(", Got 0x");
         Serial1.println(receivedByte, HEX);
       }
+
+      // Disable loopback mode
+      *spi0_cr1 &= ~0x1;
+
+      SPI.end();
+      Serial1.flush();
+    } else if (incomingByte == 'V') {
+      // Verify SPI External Device (Flash)
+      pinMode(FLASH_CS_PIN, OUTPUT);
+      digitalWrite(FLASH_CS_PIN, HIGH);
+
+      SPI.begin();
+
+      // Ensure loopback is OFF
+      volatile uint32_t *spi0_cr1 = (volatile uint32_t *)(0x4003c000 + 0x4);
+      *spi0_cr1 &= ~0x1;
+
+      digitalWrite(FLASH_CS_PIN, LOW);
+      SPI.transfer(0x9F); // Read JEDEC ID
+      uint8_t m_id = SPI.transfer(0);
+      uint8_t mem_type = SPI.transfer(0);
+      uint8_t capacity = SPI.transfer(0);
+      digitalWrite(FLASH_CS_PIN, HIGH);
+
+      Serial1.print("SPI Flash ID: ");
+      if (m_id < 0x10) Serial1.print("0");
+      Serial1.print(m_id, HEX);
+      Serial1.print(" ");
+      if (mem_type < 0x10) Serial1.print("0");
+      Serial1.print(mem_type, HEX);
+      Serial1.print(" ");
+      if (capacity < 0x10) Serial1.print("0");
+      Serial1.println(capacity, HEX);
+
       SPI.end();
       Serial1.flush();
     } else if (incomingByte == 'E') {
