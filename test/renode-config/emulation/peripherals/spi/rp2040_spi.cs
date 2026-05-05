@@ -188,7 +188,10 @@ namespace Antmicro.Renode.Peripherals.SPI
 
     public void OnGPIO(int number, bool value)
     {
-
+        if (RegisteredPeripheral != null && RegisteredPeripheral is IGPIOReceiver receiver)
+        {
+            receiver.OnGPIO(number, value);
+        }
     }
 
     private void SetMultiplePins(ICollection<int> pins, bool state)
@@ -237,6 +240,11 @@ namespace Antmicro.Renode.Peripherals.SPI
         if (txBuffer.Count != 0)
         {
           txBuffer.TryDequeue(out transmitData);
+          if (RegisteredPeripheral != null)
+          {
+            externalReceiveData = RegisteredPeripheral.Transmit((byte)transmitData);
+            this.Log(LogLevel.Noisy, "SPI{0}: Transmitted 0x{1:X} to external, got 0x{2:X}", id, (byte)transmitData, externalReceiveData);
+          }
         }
         else
         {
@@ -246,6 +254,8 @@ namespace Antmicro.Renode.Peripherals.SPI
           SetMultiplePins(clockPins, false);
           _executionThread.Stop();
           running = false;
+          transmitCounter = 16;
+          return;
         }
       }
 
@@ -272,7 +282,16 @@ namespace Antmicro.Renode.Peripherals.SPI
         }
         else
         {
-          receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(ReadMultiplePins(rxPins)));
+          bool receivedBit;
+          if (RegisteredPeripheral != null)
+          {
+            receivedBit = Convert.ToBoolean((externalReceiveData >> (dataSize - 1 - transmitCounter)) & 1);
+          }
+          else
+          {
+            receivedBit = ReadMultiplePins(rxPins);
+          }
+          receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(receivedBit));
         }
         transmitCounter += 1;
       }
@@ -286,6 +305,14 @@ namespace Antmicro.Renode.Peripherals.SPI
     public void WriteDoubleWord(long offset, uint value)
     {
       registers.Write(offset, value);
+    }
+
+    public void FinishTransmission()
+    {
+      if (RegisteredPeripheral != null)
+      {
+        RegisteredPeripheral.FinishTransmission();
+      }
     }
 
     public override void Reset()
@@ -320,6 +347,7 @@ namespace Antmicro.Renode.Peripherals.SPI
       transmitCounter = 16;
       transmitData = 0;
       receiveData = 0;
+      externalReceiveData = 0;
       UpdateFrequency(clocks.PeripheralClockFrequency);
     }
 
@@ -453,6 +481,7 @@ namespace Antmicro.Renode.Peripherals.SPI
     private byte transmitCounter;
     private ushort transmitData;
     private ushort receiveData;
+    private byte externalReceiveData;
     private enum Registers
     {
       SSPCR0 = 0x0,

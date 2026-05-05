@@ -31,6 +31,8 @@ namespace Antmicro.Renode.Peripherals.SPI
 
     public class W25QXX : ISPIPeripheral, IGPIOReceiver
     {
+        private bool csHigh = true;
+
         public W25QXX(MappedMemory underlyingMemory)
         {
             if (!Misc.IsPowerOfTwo((ulong)underlyingMemory.Size))
@@ -134,6 +136,10 @@ namespace Antmicro.Renode.Peripherals.SPI
 
         public virtual byte Transmit(byte data)
         {
+            if (csHigh)
+            {
+                return 0xFF;
+            }
             this.Log(LogLevel.Noisy, "Transmitting data 0x{0:X}, current state: {1}", data, currentOperation.State);
             switch (currentOperation.State)
             {
@@ -383,7 +389,18 @@ namespace Antmicro.Renode.Peripherals.SPI
                     result = ReadFromMemory();
                     break;
                 case DecodedOperation.OperationType.ReadID:
-                    this.Log(LogLevel.Info, "TODO: implement READ ID");
+                    if (currentOperation.CommandBytesHandled == 0)
+                    {
+                        result = manufacturerId;
+                    }
+                    else if (currentOperation.CommandBytesHandled == 1)
+                    {
+                        result = memoryType;
+                    }
+                    else if (currentOperation.CommandBytesHandled == 2)
+                    {
+                        result = capacity;
+                    }
                     break;
                 case DecodedOperation.OperationType.ReadSerialFlashDiscoveryParameter:
                     this.Log(LogLevel.Info, "TODO: implement READ SFDP");
@@ -403,10 +420,14 @@ namespace Antmicro.Renode.Peripherals.SPI
 
         public void OnGPIO(int number, bool value)
         {
-            if (number == 0 && value)
+            if (number == 0)
             {
-                this.Log(LogLevel.Noisy, "CS# deasserted");
-                FinishTransmission();
+                if (value && !csHigh)
+                {
+                    this.Log(LogLevel.Noisy, "CS# deasserted");
+                    FinishTransmission();
+                }
+                csHigh = value;
             }
         }
 
@@ -416,6 +437,7 @@ namespace Antmicro.Renode.Peripherals.SPI
             writeEnable.Value = false;
             continuousReadMode = null;
             originalCommandDummyBytes = 0;
+            csHigh = true;
         }
         public MappedMemory UnderlyingMemory => underlyingMemory;
 
@@ -484,6 +506,7 @@ namespace Antmicro.Renode.Peripherals.SPI
 
         private const byte manufacturerId = 0xEF;
         private const byte memoryType = 0x28;
+        private const byte capacity = 0x15;
         private const byte EmptyByte = 0xff;
     }
 
