@@ -188,7 +188,10 @@ namespace Antmicro.Renode.Peripherals.SPI
 
     public void OnGPIO(int number, bool value)
     {
-
+        if (RegisteredPeripheral != null && RegisteredPeripheral is IGPIOReceiver receiver)
+        {
+            receiver.OnGPIO(number, value);
+        }
     }
 
     private void SetMultiplePins(ICollection<int> pins, bool state)
