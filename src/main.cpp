@@ -4,6 +4,7 @@
 #include "hardware/timer.h"
 #include "hardware/adc.h"
 #include "hardware/pio.h"
+#include "hardware/watchdog.h"
 #include "pico/time.h"
 #include "blink.pio.h"
 
@@ -40,6 +41,10 @@ void on_timer_alarm(uint alarm_num) {
 void setup() {
   // Use Serial1 for hardware UART output (mapped to sysbus.uart0 in Renode)
   Serial1.begin(115200);
+
+  if (watchdog_caused_reboot()) {
+    Serial1.println("Watchdog Reboot Detected");
+  }
 
   // Initialize I2C
   Wire.begin();
@@ -206,6 +211,14 @@ void loop() {
         digitalWrite(GREEN_LED_PIN, HIGH); // Off
         Serial1.println("PIO Blinking Stopped");
       }
+      Serial1.flush();
+    } else if (incomingByte == 'W') {
+      watchdog_enable(500, 1);
+      Serial1.println("Watchdog Enabled (500ms)");
+      Serial1.flush();
+    } else if (incomingByte == 'K') {
+      watchdog_update();
+      Serial1.println("Watchdog Kicked");
       Serial1.flush();
     } else {
       Serial1.print("Echo: ");
