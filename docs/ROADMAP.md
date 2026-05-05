@@ -73,12 +73,12 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Create Robot Framework tests for I2C communication and sensor reading [2026-05-04]
 
 ## Phase x: Full PWM Feature Support
-- [ ] Implement 16-bit dynamic counter in `RP2040PWM` Renode model
-- [ ] Implement double buffering for `CC` and `TOP` registers (latched update on wrap)
+- [x] Implement 16-bit dynamic counter in `RP2040PWM` Renode model [2026-05-06]
+- [x] Implement double buffering for `CC` and `TOP` registers (latched update on wrap) [2026-05-06]
 - [ ] Implement `DIVMODE` support for LEVEL, RISE, and FALL input modes
-- [ ] Implement IRQ and DREQ signal assertion on counter wrap
+- [x] Implement IRQ and DREQ signal assertion on counter wrap [2026-05-06]
 - [ ] Implement `PH_ADV` and `PH_RET` phase adjustment logic
-- [ ] Create Robot Framework tests for advanced PWM features (interrupts, inputs)
+- [x] Create Robot Framework tests for advanced PWM features (interrupts, inputs) [2026-05-06]
 
 ## Phase x: Full ADC Feature Support
 - [x] Fix round-robin logic in `RP2040ADC` to correctly cycle through enabled channels [2026-05-04]

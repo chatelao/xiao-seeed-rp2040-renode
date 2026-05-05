@@ -4,6 +4,7 @@
 #include "hardware/timer.h"
 #include "hardware/adc.h"
 #include "hardware/pio.h"
+#include "hardware/pwm.h"
 #include "hardware/watchdog.h"
 #include "pico/time.h"
 #include "blink.pio.h"
@@ -25,10 +26,16 @@ uint sm = 0;
 volatile bool interruptOccurred = false;
 volatile bool periodicTimerActive = false;
 volatile int alarmCount = 0;
+volatile bool pwmInterruptOccurred = false;
 int alarmId = -1;
 
 void handleInterrupt() {
   interruptOccurred = true;
+}
+
+void on_pwm_interrupt() {
+    pwm_clear_irq(pwm_gpio_to_slice_num(LED_PIN));
+    pwmInterruptOccurred = true;
 }
 
 void on_timer_alarm(uint alarm_num) {
@@ -82,6 +89,12 @@ void loop() {
   if (interruptOccurred) {
     interruptOccurred = false;
     Serial1.println("GPIO Interrupt Handled");
+    Serial1.flush();
+  }
+
+  if (pwmInterruptOccurred) {
+    pwmInterruptOccurred = false;
+    Serial1.println("PWM Interrupt Handled");
     Serial1.flush();
   }
 
@@ -220,6 +233,22 @@ void loop() {
     } else if (incomingByte == 'K') {
       watchdog_update();
       Serial1.println("Watchdog Kicked");
+      Serial1.flush();
+    } else if (incomingByte == 'M') {
+      // PWM Interrupt Test
+      uint slice_num = pwm_gpio_to_slice_num(LED_PIN);
+      pwm_clear_irq(slice_num);
+      pwm_set_irq_enabled(slice_num, true);
+      irq_set_exclusive_handler(PWM_IRQ_WRAP, on_pwm_interrupt);
+      irq_set_enabled(PWM_IRQ_WRAP, true);
+
+      pwm_config config = pwm_get_default_config();
+      pwm_config_set_clkdiv(&config, 100.0f);
+      pwm_config_set_wrap(&config, 1000);
+      pwm_init(slice_num, &config, true);
+
+      Serial1.print("PWM Interrupt Enabled for Slice ");
+      Serial1.println(slice_num);
       Serial1.flush();
     } else {
       Serial1.print("Echo: ");
