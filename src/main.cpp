@@ -57,6 +57,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), handleInterrupt, RISING);
 
   // Configure ADC
+  adc_init();
   analogReadResolution(12);
 
   // Configure Timer Alarm
