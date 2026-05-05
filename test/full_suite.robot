@@ -74,6 +74,21 @@ Should Pass Full Test Suite
     Write Char On Uart        B
     Wait For Line On Uart     PIO Blinking Stopped
 
+    # 11. Watchdog
+    # Enable watchdog
+    Write Char On Uart        W
+    Wait For Line On Uart     Watchdog Enabled (500ms)
+
+    # Kick watchdog after 200ms
+    Sleep                     0.2
+    Write Char On Uart        K
+    Wait For Line On Uart     Watchdog Kicked
+
+    # Wait for reboot (expecting "Watchdog Reboot Detected")
+    Wait For Line On Uart     Watchdog Reboot Detected
+    Wait For Line On Uart     Claimed Alarm ID:
+    Wait For Line On Uart     UART Bidirectional Communication Ready
+
 *** Keywords ***
 Create Machine
     Execute Command           $global.TEST_FILE = @${FIRMWARE}

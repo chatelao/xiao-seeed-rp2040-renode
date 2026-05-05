@@ -53,6 +53,7 @@ namespace Antmicro.Renode.Peripherals.Timers
             {
                 this.Log(LogLevel.Debug, "Watchdog disabled due to lack of cycles configuration");
                 timer.Enabled = false;
+                return;
             }
 
             // * 2 due to bug in RP2040, please check errrata RP2040-E1 inside datasheet
@@ -77,7 +78,7 @@ namespace Antmicro.Renode.Peripherals.Timers
                 .WithFlag(30, writeCallback: (_, value) =>
                 {
                     timer.Enabled = value;
-                    this.Log(LogLevel.Debug, "Watchdog enable: {0}", value);
+                    this.Log(LogLevel.Info, "Watchdog enable: {0}", value);
                 }, valueProviderCallback: _ => timer.Enabled, name: "ENABLED")
                 .WithFlag(31, FieldMode.Write, writeCallback: (_, value) =>
                 {

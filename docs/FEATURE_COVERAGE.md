@@ -41,7 +41,7 @@ This document tracks the implementation status of RP2040 features in the Renode 
 | 4.4 SPI | ⚠️ | Loopback mode supported and verified. |
 | 4.5 PWM | ⚠️ | Functional slices with CSR, DIV, CTR, TOP, CC registers. Missing: double buffering, dynamic 16-bit counter, phase adjustment, and wrap IRQs. |
 | 4.6 Timer | ✅ | 64-bit counter, 4 alarms with IRQ support (0-3). |
-| 4.7 Watchdog | ❌ | n/a |
+| 4.7 Watchdog | ✅ | Watchdog timer with reboot support verified. |
 | 4.8 RTC | ❌ | n/a |
 | 4.9 ADC | ⚠️ | Voltage sampling on 5 channels. Support for error bits, FIFO packing, and DREQ signaling implemented; tests still require stabilization. |
 | 4.10 SSI | ❌ | n/a |
