@@ -135,3 +135,10 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [ ] Integrate USB core logic and endpoint management
 - [ ] Create firmware examples for USB Serial and HID
 - [ ] Create Robot Framework tests for USB communication
+
+## Phase 17: Motor Control and bEMF Support
+- [x] Draft `docs/BEMF_LOOP.md` for bEMF loop calculation concept [2026-05-05]
+- [ ] Implement motor physics simulation in Renode (speed, torque, bEMF)
+- [ ] Implement ADC/PWM synchronization logic in firmware
+- [ ] Implement closed-loop bEMF commutation logic
+- [ ] Create Robot Framework tests for motor speed control and bEMF logging
