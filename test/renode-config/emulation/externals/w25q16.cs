@@ -31,6 +31,8 @@ namespace Antmicro.Renode.Peripherals.SPI
 
     public class W25QXX : ISPIPeripheral, IGPIOReceiver
     {
+        private bool csHigh = true;
+
         public W25QXX(MappedMemory underlyingMemory)
         {
             if (!Misc.IsPowerOfTwo((ulong)underlyingMemory.Size))
@@ -134,6 +136,10 @@ namespace Antmicro.Renode.Peripherals.SPI
 
         public virtual byte Transmit(byte data)
         {
+            if (csHigh)
+            {
+                return 0xFF;
+            }
             this.Log(LogLevel.Noisy, "Transmitting data 0x{0:X}, current state: {1}", data, currentOperation.State);
             switch (currentOperation.State)
             {
@@ -414,10 +420,14 @@ namespace Antmicro.Renode.Peripherals.SPI
 
         public void OnGPIO(int number, bool value)
         {
-            if (number == 0 && value)
+            if (number == 0)
             {
-                this.Log(LogLevel.Noisy, "CS# deasserted");
-                FinishTransmission();
+                if (value && !csHigh)
+                {
+                    this.Log(LogLevel.Noisy, "CS# deasserted");
+                    FinishTransmission();
+                }
+                csHigh = value;
             }
         }
 
@@ -427,6 +437,7 @@ namespace Antmicro.Renode.Peripherals.SPI
             writeEnable.Value = false;
             continuousReadMode = null;
             originalCommandDummyBytes = 0;
+            csHigh = true;
         }
         public MappedMemory UnderlyingMemory => underlyingMemory;
 
