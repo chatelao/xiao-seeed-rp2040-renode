@@ -97,6 +97,7 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Draft `docs/DMA_CONCEPT.md` for DMA integration [2026-05-04]
 - [ ] Implement advanced DMA features (Abort, Pacing Timers, Debug Registers)
 - [ ] Implement DMA-based data transfer examples (CRC calculation, Block move)
+- [ ] Create Robot Framework tests for basic DMA transfers and interrupts
 - [ ] Optimize Renode simulation parameters for better host performance
 - [ ] Expand `full_suite.robot` with advanced stress tests
 
@@ -115,4 +116,22 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Refactor pacing timer to define the total sampling interval (96 cycles vs `DIV` setting) [2026-05-04]
 - [x] Implement correct `FIFO` register bit packing including bit 15 (`ERR`) [2026-05-04]
 - [x] Align `DMARequest` (DREQ) signaling with `FCS.THRESH` and `FCS.DREQ_EN` logic [2026-05-04]
-- [x] Create Robot Framework tests for ADC error detection and threshold logic [2026-05-04]
+- [ ] Fix stability of ADC error detection and threshold logic tests
+
+## Phase 14: Watchdog and RTC Support
+- [ ] Implement `RP2040Watchdog` Renode model for system supervisor
+- [ ] Implement `RP2040RTC` Renode model for real-time clock functionality
+- [ ] Create firmware examples for Watchdog timeout and RTC alarm
+- [ ] Create Robot Framework tests for Watchdog and RTC
+
+## Phase 15: System Resets and Power Management
+- [ ] Implement `RP2040Resets` Renode model for peripheral reset control
+- [ ] Implement `RP2040Power` Renode model for power-on reset and sleep states
+- [ ] Create firmware examples for peripheral reset and low-power modes
+- [ ] Create Robot Framework tests for reset and power management
+
+## Phase 16: USB Support
+- [ ] Implement `RP2040USB` Renode model for USB controller
+- [ ] Integrate USB core logic and endpoint management
+- [ ] Create firmware examples for USB Serial and HID
+- [ ] Create Robot Framework tests for USB communication

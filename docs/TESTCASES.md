@@ -64,3 +64,31 @@ The full test suite validates the integration of the firmware with various RP204
   - **Verification**: Wait for multiple "Timer Alarm Handled" messages.
   - **Action**: Write character 'U' again to stop.
   - **Verification**: Wait for "Periodic Timer Stopped".
+
+## Advanced ADC Test Suite: `test/adc_advanced.robot`
+
+This suite validates advanced ADC features and error handling logic.
+
+### 1. ADC Conversion Error Detection
+- **Goal**: Verify that changing `AINSEL` during sampling sets the `ERR` and `ERR_STICKY` bits.
+- **Action**: Write character 'E' to UART to trigger error detection test in firmware.
+- **Verification**: Wait for "ADC Error Test: ERR=1 ERR_STICKY=1" on UART.
+
+### 2. ADC FIFO Error Reporting
+- **Goal**: Verify that bit 15 is set in FIFO data when a conversion error occurs and FIFO error reporting is enabled.
+- **Action**: Write character 'F' to UART to trigger FIFO error test in firmware.
+- **Verification**: Wait for "ADC FIFO Error Test: VAL=0x8..." on UART (bit 15 set).
+
+### 3. READY Flag Persistence
+- **Goal**: Verify that the `READY` flag remains high when the ADC is in Waiting or Delay state between samples.
+- **Action**:
+  - Set a long pacing delay (high `DIV` register value).
+  - Enable many-start mode.
+- **Verification**: Read the `CS` register via Renode monitor and assert that the `READY` bit is 1.
+
+### 4. DMA Request (DREQ) Pacing
+- **Goal**: Verify that `DMARequest` is asserted only when the FIFO level reaches the configured threshold.
+- **Action**:
+  - Set `FCS.THRESH` to 4.
+  - Trigger 3 samples manually and verify `DMARequest` is false.
+  - Trigger a 4th sample and verify `DMARequest` becomes true.
