@@ -17,11 +17,9 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
 {
     public class MotorModel : IGPIOReceiver, IExternal
     {
-        public MotorModel(IMachine machine, RP2040ADC adc, int adcChannel)
+        public MotorModel(IMachine machine)
         {
             this.machine = machine;
-            this.adc = adc;
-            this.channel = adcChannel;
 
             // Default parameters
             this.Kv = 1000;         // RPM/V
@@ -82,7 +80,10 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
             if (Vmapped > 3.3) Vmapped = 3.3;
             if (Vmapped < 0) Vmapped = 0;
 
-            adc.SetDefaultVoltageOnChannel(channel, Vmapped);
+            if (Adc != null)
+            {
+                Adc.SetDefaultVoltageOnChannel(AdcChannel, Vmapped);
+            }
         }
 
         public void Reset()
@@ -101,10 +102,10 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
         public double Resistance { get; set; }
         public double Inertia { get; set; }
         public double Friction { get; set; }
+        public RP2040ADC Adc { get; set; }
+        public int AdcChannel { get; set; }
 
         private readonly IMachine machine;
-        private readonly RP2040ADC adc;
-        private readonly int channel;
         private readonly IManagedThread updateThread;
         private readonly object sync = new object();
         private double velocity; // rad/s
