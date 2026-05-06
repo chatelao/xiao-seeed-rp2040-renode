@@ -91,9 +91,11 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 
 ## Phase 8: Motor Control and bEMF Support
 - [x] Draft `docs/BEMF_LOOP.md` for bEMF loop calculation concept [2026-05-05]
-- [ ] Phase 8.1: Implementation of `MotorModel` Renode peripheral
-    - [ ] Simulate back-EMF based on PWM duty cycle and motor parameters (Kv, poles, resistance).
+- [ ] Phase 8.1: Integration of `MotorModel` Renode peripheral
+    - [x] Create `MotorModel` Renode peripheral model [2026-05-06]
     - [ ] Wire the `MotorModel` to PWM outputs and ADC input channels in the XIAO RP2040 `.repl` configuration.
+    - [ ] Implement UART command 'G' in firmware to read Motor ADC channel.
+    - [ ] Verify `MotorModel` integration with Robot Framework tests.
 - [ ] Phase 8.2: Firmware logic for high-precision ADC/PWM synchronization
     - [ ] Implement synchronization using PWM wrap interrupts.
     - [ ] Ensure sample timing alignment with PWM cycles.
@@ -107,8 +109,8 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Implement PIO (Programmable I/O) state machine examples in firmware [2026-05-04]
 - [x] Connect PIO outputs to XIAO RP2040 pins in Renode `.repl` [2026-05-04]
 - [ ] Implement DMA requests (DREQ) and IRQ routing for PIO in Renode
-- [ ] Reuse `hello_pio` and `pio_blink` tests from `Renode_RP2040`
-- [ ] Create Robot Framework tests for PIO driving XIAO Seeed RP2040 pins
+- [x] Reuse `hello_pio` and `pio_blink` tests from `Renode_RP2040` [2026-05-06]
+- [x] Create Robot Framework tests for PIO driving XIAO Seeed RP2040 pins [2026-05-06]
 
 ## Phase 10: Transition to Pico SDK (Technical Debt)
 - [ ] Setup Pico SDK build environment in `src/install.sh`

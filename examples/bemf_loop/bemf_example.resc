@@ -1,17 +1,6 @@
 $machine_name?="seeed_xiao_rp2040"
 $platform_file?=$ORIGIN/bemf_example.repl
-
-include $ORIGIN/../../test/renode-config/cores/initialize_peripherals_source.resc
-machine LoadPlatformDescription $platform_file
-sysbus LoadELF $ORIGIN/../../test/renode-config/bootroms/rp2040/b2.elf
-
-# Set relaxed default quantum for faster simulation
-emulation SetGlobalQuantum "0.0001"
-
-# Load firmware
-sysbus LoadELF $global.TEST_FILE
-
-sysbus.cpu0 VectorTableOffset 0x00000000
-sysbus.cpu1 VectorTableOffset 0x00000000
+$board_initialization_file=$ORIGIN/../../test/renode-config/boards/initialize_custom_board.resc
+include $ORIGIN/../../test/renode-config/tests/prepare.resc
 
 showAnalyzer sysbus.uart0

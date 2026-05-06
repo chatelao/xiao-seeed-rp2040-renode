@@ -106,11 +106,10 @@ void loop() {
 
   if (Serial1.available() > 0) {
     char incomingByte = Serial1.read();
-    ledState = !ledState;
-    digitalWrite(LED_PIN, ledState ? LOW : HIGH);
 
     if (incomingByte == 'A') {
-      int adcValue = analogRead(A0);
+      adc_select_input(0);
+      int adcValue = adc_read();
       Serial1.print("ADC0: ");
       Serial1.println(adcValue);
       Serial1.flush();
@@ -249,6 +248,12 @@ void loop() {
 
       Serial1.print("PWM Interrupt Enabled for Slice ");
       Serial1.println(slice_num);
+      Serial1.flush();
+    } else if (incomingByte == 'G') {
+      adc_select_input(1);
+      int motorAdc = adc_read();
+      Serial1.print("Motor ADC: ");
+      Serial1.println(motorAdc);
       Serial1.flush();
     } else {
       Serial1.print("Echo: ");
