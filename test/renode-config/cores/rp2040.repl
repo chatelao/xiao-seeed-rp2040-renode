@@ -234,3 +234,8 @@ pwm: PWM.RP2040PWM @ sysbus 0x40050000 {
 
 pwm:
     IRQ -> nvic0@4
+    1 -> motor@0
+
+motor: Miscellaneous.MotorModel
+    adc: adc
+    adcChannel: 1

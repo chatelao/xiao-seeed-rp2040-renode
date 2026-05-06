@@ -1,0 +1,2 @@
+mach create
+sysbus LoadELF @.pio/build/seeed-xiao-rp2040/firmware.elf true

@@ -3,7 +3,4 @@ $platform_file?=$ORIGIN/boards/seeed_xiao_rp2040.repl
 $board_initialization_file=$ORIGIN/boards/initialize_custom_board.resc
 include $ORIGIN/tests/prepare.resc
 
-# Load firmware
-sysbus LoadELF $global.TEST_FILE
-
 showAnalyzer sysbus.uart0
