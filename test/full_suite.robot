@@ -81,7 +81,12 @@ Should Pass Full Test Suite
     Wait For Line On Uart     PWM Interrupt Handled
     Wait For Line On Uart     PWM Interrupt Handled
 
-    # 12. Watchdog
+    # 12. DMA
+    Write Char On Uart        D
+    Wait For Line On Uart     DMA Transfer Success: DMA TRANSFER TEST  timeout=60
+    Wait For Line On Uart     DMA Interrupt Handled  timeout=60
+
+    # 13. Watchdog
     # Enable watchdog
     Write Char On Uart        W
     Wait For Line On Uart     Watchdog Enabled (500ms)

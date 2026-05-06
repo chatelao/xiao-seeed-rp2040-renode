@@ -201,6 +201,10 @@ dma: DMA.RPDMA @ sysbus 0x50000000 {
     address: 0x50000000
 }
 
+dma:
+    IRQ0 -> nvic0@11
+    IRQ1 -> nvic0@12
+
 watchdog: Timers.RP2040Watchdog @ sysbus 0x40058000 {
     address: 0x40058000;
     clocks: clocks

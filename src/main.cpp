@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <SPI.h>
+#include "hardware/dma.h"
 #include "hardware/timer.h"
 #include "hardware/adc.h"
 #include "hardware/pio.h"
@@ -30,6 +31,7 @@ volatile bool periodicTimerActive = false;
 volatile int alarmCount = 0;
 volatile bool pwmInterruptOccurred = false;
 volatile bool rtcInterruptOccurred = false;
+volatile bool dmaInterruptOccurred = false;
 volatile bool syncAdcEnabled = false;
 volatile uint16_t lastSyncAdcValue = 0;
 int alarmId = -1;
@@ -49,6 +51,14 @@ void on_pwm_interrupt() {
 
 void on_rtc_interrupt() {
     rtcInterruptOccurred = true;
+}
+
+void on_dma_interrupt() {
+    // Clear the interrupt on the channel that triggered it
+    // The bits in INTS0 are cleared by writing to the corresponding bits in INTR
+    uint32_t ints = dma_hw->ints0;
+    dma_hw->intr = ints;
+    dmaInterruptOccurred = true;
 }
 
 void on_timer_alarm(uint alarm_num) {
@@ -119,6 +129,12 @@ void loop() {
   if (rtcInterruptOccurred) {
     rtcInterruptOccurred = false;
     Serial1.println("RTC Alarm Handled");
+    Serial1.flush();
+  }
+
+  if (dmaInterruptOccurred) {
+    dmaInterruptOccurred = false;
+    Serial1.println("DMA Interrupt Handled");
     Serial1.flush();
   }
 
@@ -346,6 +362,46 @@ void loop() {
       Serial1.flush();
       rtc_set_alarm(&alarm, on_rtc_interrupt);
       Serial1.println("RTC Alarm Set for +2s");
+      Serial1.flush();
+    } else if (incomingByte == 'D') {
+      // DMA Memory-to-Memory Test
+      const char *src_str = "DMA TRANSFER TEST";
+      char dst_str[32] = {0};
+
+      int dma_chan = dma_claim_unused_channel(true);
+      dma_channel_config c = dma_channel_get_default_config(dma_chan);
+      channel_config_set_transfer_data_size(&c, DMA_SIZE_8);
+      channel_config_set_read_increment(&c, true);
+      channel_config_set_write_increment(&c, true);
+
+      dma_channel_configure(
+          dma_chan,
+          &c,
+          dst_str,
+          src_str,
+          strlen(src_str),
+          false
+      );
+
+      // Enable interrupt on DMA channel completion
+      dma_channel_set_irq0_enabled(dma_chan, true);
+      irq_set_exclusive_handler(DMA_IRQ_0, on_dma_interrupt);
+      irq_set_enabled(DMA_IRQ_0, true);
+
+      dma_channel_start(dma_chan);
+
+      // Wait for completion (in a real app we'd use the interrupt, here we poll and check interrupt flag)
+      dma_channel_wait_for_finish_blocking(dma_chan);
+
+      if (strcmp(src_str, dst_str) == 0) {
+          Serial1.print("DMA Transfer Success: ");
+          Serial1.println(dst_str);
+      } else {
+          Serial1.print("DMA Transfer Failed: Got '");
+          Serial1.print(dst_str);
+          Serial1.println("'");
+      }
+      dma_channel_unclaim(dma_chan);
       Serial1.flush();
     } else {
       Serial1.print("Echo: ");
