@@ -25,12 +25,3 @@ pwm:
     12 -> gpio@12 // PWM6_A
 
 bmp280: I2C.BMP280 @ i2c1 0x76
-
-motor: Miscellaneous.MotorModel
-    Adc: adc
-    AdcChannel: 1
-    Vbus: 12.0
-    Kv: 1000
-
-gpio:
-    17 -> motor@0
