@@ -206,6 +206,13 @@ watchdog: Timers.RP2040Watchdog @ sysbus 0x40058000 {
     clocks: clocks
 }
 
+rtc: Timers.RP2040RTC @ sysbus 0x4005c000 {
+    address: 0x4005c000
+}
+
+rtc:
+    IRQ -> nvic0@25
+
 i2c0: I2C.RP2040I2C @ sysbus 0x40044000 {
     gpio: gpio;
     id: 0;
