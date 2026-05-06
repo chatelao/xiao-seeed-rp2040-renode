@@ -112,27 +112,6 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Reuse `hello_pio` and `pio_blink` tests from `Renode_RP2040` [2026-05-06]
 - [x] Create Robot Framework tests for PIO driving XIAO Seeed RP2040 pins [2026-05-06]
 
-## Phase 10: Transition to Pico SDK (Technical Debt)
-- [ ] Setup Pico SDK build environment in `src/install.sh`
-- [ ] Port UART and GPIO drivers to native Pico SDK
-- [ ] Port ADC and PWM drivers to native Pico SDK
-- [ ] Port Timer and Interrupt handling to native Pico SDK
-- [ ] Verify full system functionality with native Pico SDK firmware
-
-# Future phasese - DO NOT IMPLEMENT YET
-
-## Phase 17: USB Support
-- [ ] Implement `RP2040USB` Renode model for USB controller
-- [ ] Integrate USB core logic and endpoint management
-- [ ] Create firmware examples for USB Serial and HID
-- [ ] Create Robot Framework tests for USB communication
-- [ ] 
-## Phase 9: SPI Peripheral Support
-- [x] Implement SPI loopback test in firmware and verify in Renode [2026-05-04]
-- [ ] Configure SPI pins and an external SPI device in Renode `.repl`
-- [ ] Implement SPI device communication in firmware (e.g., reading WHO_AM_I)
-- [ ] Create Robot Framework tests for SPI bidirectional data transfer
-
 ## Phase 12: Advanced Simulation & Performance
 - [x] Draft `docs/DMA_CONCEPT.md` for DMA integration [2026-05-04]
 - [ ] Implement advanced DMA features (Abort, Pacing Timers, Debug Registers)
@@ -141,17 +120,9 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [ ] Optimize Renode simulation parameters for better host performance
 - [ ] Expand `full_suite.robot` with advanced stress tests
 
-## Phase 15: Watchdog and RTC Support
-- [x] Implement `RP2040Watchdog` Renode model for system supervisor [2026-05-05]
-- [x] Implement `RP2040RTC` Renode model for real-time clock functionality [2026-05-06]
-- [x] Create firmware examples for Watchdog timeout [2026-05-05]
-- [x] Create firmware examples for RTC alarm [2026-05-06]
-- [x] Create Robot Framework tests for Watchdog [2026-05-05]
-- [x] Create Robot Framework tests for RTC [2026-05-06]
-
-## Phase 16: System Resets and Power Management
-- [ ] Implement `RP2040Resets` Renode model for peripheral reset control
-- [ ] Implement `RP2040Power` Renode model for power-on reset and sleep states
-- [ ] Create firmware examples for peripheral reset and low-power modes
-- [ ] Create Robot Framework tests for reset and power management
-
+## Phase 10: Transition to Pico SDK (Technical Debt)
+- [ ] Setup Pico SDK build environment in `src/install.sh`
+- [ ] Port UART and GPIO drivers to native Pico SDK
+- [ ] Port ADC and PWM drivers to native Pico SDK
+- [ ] Port Timer and Interrupt handling to native Pico SDK
+- [ ] Verify full system functionality with native Pico SDK firmware
