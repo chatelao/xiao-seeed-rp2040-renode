@@ -58,36 +58,20 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
    - [x] Create `USAGE.md` with instructions for building and testing [2026-05-03]
    - [x] Finalize `CONCEPT.md` and `DESIGN.md` [2026-05-03]
 - [x] Create `TESTCASES.md` with documented test scenarios [2026-05-04]
+
 ## Phase 6: Continuous Documentation
 - [x] Initialize MkDocs documentation structure [2026-05-03]
 - [x] Create `mkdocs.yml` configuration [2026-05-03]
 - [x] Create `docs/requirements.txt` for documentation dependencies [2026-05-03]
 - [x] Create `.readthedocs.yaml` configuration [2026-05-03]
 - [x] Integrate ReadTheDocs with GitHub Actions [2026-05-03]
-- [ ] Verify automatic documentation updates on ReadTheDocs
+- [x] Verify automatic documentation updates on ReadTheDocs [2026-05-06]
 
 ## Phase 7: I2C Peripheral Support
 - [x] Implement I2C firmware driver using Arduino Wire or Pico SDK [2026-05-04]
 - [x] Configure I2C peripherals in Renode `.repl` and `.resc` files [2026-05-04]
 - [x] Integrate an existing I2C peripheral model (e.g., PCF8523 or BMP280) for verification [2026-05-04]
 - [x] Create Robot Framework tests for I2C communication and sensor reading [2026-05-04]
-
-## Phase x: Full PWM Feature Support
-- [x] Implement 16-bit dynamic counter in `RP2040PWM` Renode model [2026-05-06]
-- [x] Implement double buffering for `CC` and `TOP` registers (latched update on wrap) [2026-05-06]
-- [ ] Implement `DIVMODE` support for LEVEL, RISE, and FALL input modes
-- [x] Implement IRQ and DREQ signal assertion on counter wrap [2026-05-06]
-- [ ] Implement `PH_ADV` and `PH_RET` phase adjustment logic
-- [x] Create Robot Framework tests for advanced PWM features (interrupts, inputs) [2026-05-06]
-
-## Phase x: Full ADC Feature Support
-- [x] Fix round-robin logic in `RP2040ADC` to correctly cycle through enabled channels [2026-05-04]
-- [x] Implement error generation logic and propagate `ERR` bits to status and FIFO [2026-05-04]
-- [x] Correct `READY` flag behavior to remain high during pacing timer delays [2026-05-04]
-- [x] Refactor pacing timer to define the total sampling interval (96 cycles vs `DIV` setting) [2026-05-04]
-- [x] Implement correct `FIFO` register bit packing including bit 15 (`ERR`) [2026-05-04]
-- [x] Align `DMARequest` (DREQ) signaling with `FCS.THRESH` and `FCS.DREQ_EN` logic [2026-05-04]
-- [x] Fix stability of ADC error detection and threshold logic tests [2026-05-05]
 
 ## Phase 8: Motor Control and bEMF Support
 - [x] Draft `docs/BEMF_LOOP.md` for bEMF loop calculation concept [2026-05-05]
@@ -96,15 +80,28 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
     - [x] Wire the `MotorModel` to PWM outputs and ADC input channels in the XIAO RP2040 `.repl` configuration. [2026-05-06]
     - [x] Implement UART command 'G' in firmware to read Motor ADC channel. [2026-05-06]
     - [x] Verify `MotorModel` integration with Robot Framework tests. [2026-05-06]
-- [ ] Phase 8.2: Firmware logic for high-precision ADC/PWM synchronization
-    - [ ] Implement synchronization using PWM wrap interrupts.
-    - [ ] Ensure sample timing alignment with PWM cycles.
+- [x] Phase 8.2: Firmware logic for high-precision ADC/PWM synchronization [2026-05-06]
+    - [x] Implement synchronization using PWM wrap interrupts.
+    - [x] Ensure sample timing alignment with PWM cycles.
 - [ ] Phase 8.3: BEMF zero-crossing detection logic
     - [ ] Develop the BEMF zero-crossing detection algorithm and commutation state machine.
 - [ ] Create a UART-based logging system for BEMF data and a host-side tool (e.g., Python/Matplotlib) for graphical analysis.
 - [ ] Add Robot Framework test cases to verify closed-loop motor commutation and speed stability.
 
-## Phase x: PIO Integration
+## Phase 9: SPI Peripheral Support
+- [x] Implement SPI loopback test in firmware and verify in Renode [2026-05-04]
+- [ ] Configure SPI pins and an external SPI device in Renode `.repl`
+- [ ] Implement SPI device communication in firmware (e.g., reading WHO_AM_I)
+- [ ] Create Robot Framework tests for SPI bidirectional data transfer
+
+## Phase 10: Transition to Pico SDK (Technical Debt)
+- [ ] Setup Pico SDK build environment in `src/install.sh`
+- [ ] Port UART and GPIO drivers to native Pico SDK
+- [ ] Port ADC and PWM drivers to native Pico SDK
+- [ ] Port Timer and Interrupt handling to native Pico SDK
+- [ ] Verify full system functionality with native Pico SDK firmware
+
+## Phase 11: PIO Integration
 - [x] Draft `docs/PIO_CONCEPT.md` for PIO integration [2026-05-03]
 - [x] Implement PIO (Programmable I/O) state machine examples in firmware [2026-05-04]
 - [x] Connect PIO outputs to XIAO RP2040 pins in Renode `.repl` [2026-05-04]
@@ -120,9 +117,39 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [ ] Optimize Renode simulation parameters for better host performance
 - [ ] Expand `full_suite.robot` with advanced stress tests
 
-## Phase 10: Transition to Pico SDK (Technical Debt)
-- [ ] Setup Pico SDK build environment in `src/install.sh`
-- [ ] Port UART and GPIO drivers to native Pico SDK
-- [ ] Port ADC and PWM drivers to native Pico SDK
-- [ ] Port Timer and Interrupt handling to native Pico SDK
-- [ ] Verify full system functionality with native Pico SDK firmware
+## Phase 13: Full PWM Feature Support
+- [x] Implement 16-bit dynamic counter in `RP2040PWM` Renode model [2026-05-06]
+- [x] Implement double buffering for `CC` and `TOP` registers (latched update on wrap) [2026-05-06]
+- [ ] Implement `DIVMODE` support for LEVEL, RISE, and FALL input modes
+- [x] Implement IRQ and DREQ signal assertion on counter wrap [2026-05-06]
+- [ ] Implement `PH_ADV` and `PH_RET` phase adjustment logic
+- [x] Create Robot Framework tests for advanced PWM features (interrupts, inputs) [2026-05-06]
+
+## Phase 14: Full ADC Feature Support
+- [x] Fix round-robin logic in `RP2040ADC` to correctly cycle through enabled channels [2026-05-04]
+- [x] Implement error generation logic and propagate `ERR` bits to status and FIFO [2026-05-04]
+- [x] Correct `READY` flag behavior to remain high during pacing timer delays [2026-05-04]
+- [x] Refactor pacing timer to define the total sampling interval (96 cycles vs `DIV` setting) [2026-05-04]
+- [x] Implement correct `FIFO` register bit packing including bit 15 (`ERR`) [2026-05-04]
+- [x] Align `DMARequest` (DREQ) signaling with `FCS.THRESH` and `FCS.DREQ_EN` logic [2026-05-04]
+- [x] Fix stability of ADC error detection and threshold logic tests [2026-05-05]
+
+## Phase 15: Watchdog and RTC Support
+- [x] Implement `RP2040Watchdog` Renode model for system supervisor [2026-05-05]
+- [x] Implement `RP2040RTC` Renode model for real-time clock functionality [2026-05-06]
+- [x] Create firmware examples for Watchdog timeout [2026-05-05]
+- [x] Create firmware examples for RTC alarm [2026-05-06]
+- [x] Create Robot Framework tests for Watchdog [2026-05-05]
+- [x] Create Robot Framework tests for RTC [2026-05-06]
+
+## Phase 16: System Resets and Power Management
+- [ ] Implement `RP2040Resets` Renode model for peripheral reset control
+- [ ] Implement `RP2040Power` Renode model for power-on reset and sleep states
+- [ ] Create firmware examples for peripheral reset and low-power modes
+- [ ] Create Robot Framework tests for reset and power management
+
+## Phase 17: USB Support
+- [ ] Implement `RP2040USB` Renode model for USB controller
+- [ ] Integrate USB core logic and endpoint management
+- [ ] Create firmware examples for USB Serial and HID
+- [ ] Create Robot Framework tests for USB communication
