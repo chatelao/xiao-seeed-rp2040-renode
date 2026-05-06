@@ -31,6 +31,7 @@ Should Integrate Motor Model with PWM and ADC
 
 *** Keywords ***
 Create Machine
+    Execute Command           $platform_file = @${CURDIR}/test/renode-config/boards/seeed_xiao_rp2040_motor.repl
     Execute Command           $global.TEST_FILE = @${FIRMWARE}
     Execute Command           include @${RESC}
     Create Terminal Tester    ${UART}

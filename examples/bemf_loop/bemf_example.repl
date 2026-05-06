@@ -1,8 +1,8 @@
 using "../../test/renode-config/boards/seeed_xiao_rp2040.repl"
 
-motor: Miscellaneous.MotorModel @ sysbus
-    adc: adc
-    adcChannel: 0
+motor: Miscellaneous.MotorModel
+    Adc: adc
+    AdcChannel: 0
     Kv: 1000
     Vbus: 12.0
 

@@ -91,11 +91,11 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 
 ## Phase 8: Motor Control and bEMF Support
 - [x] Draft `docs/BEMF_LOOP.md` for bEMF loop calculation concept [2026-05-05]
-- [ ] Phase 8.1: Integration of `MotorModel` Renode peripheral
+- [x] Phase 8.1: Integration of `MotorModel` Renode peripheral [2026-05-06]
     - [x] Create `MotorModel` Renode peripheral model [2026-05-06]
-    - [ ] Wire the `MotorModel` to PWM outputs and ADC input channels in the XIAO RP2040 `.repl` configuration.
-    - [ ] Implement UART command 'G' in firmware to read Motor ADC channel.
-    - [ ] Verify `MotorModel` integration with Robot Framework tests.
+    - [x] Wire the `MotorModel` to PWM outputs and ADC input channels in the XIAO RP2040 `.repl` configuration. [2026-05-06]
+    - [x] Implement UART command 'G' in firmware to read Motor ADC channel. [2026-05-06]
+    - [x] Verify `MotorModel` integration with Robot Framework tests. [2026-05-06]
 - [ ] Phase 8.2: Firmware logic for high-precision ADC/PWM synchronization
     - [ ] Implement synchronization using PWM wrap interrupts.
     - [ ] Ensure sample timing alignment with PWM cycles.
