@@ -143,11 +143,11 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 
 ## Phase 15: Watchdog and RTC Support
 - [x] Implement `RP2040Watchdog` Renode model for system supervisor [2026-05-05]
-- [ ] Implement `RP2040RTC` Renode model for real-time clock functionality
+- [x] Implement `RP2040RTC` Renode model for real-time clock functionality [2026-05-06]
 - [x] Create firmware examples for Watchdog timeout [2026-05-05]
-- [ ] Create firmware examples for RTC alarm
+- [x] Create firmware examples for RTC alarm [2026-05-06]
 - [x] Create Robot Framework tests for Watchdog [2026-05-05]
-- [ ] Create Robot Framework tests for RTC
+- [x] Create Robot Framework tests for RTC [2026-05-06]
 
 ## Phase 16: System Resets and Power Management
 - [ ] Implement `RP2040Resets` Renode model for peripheral reset control

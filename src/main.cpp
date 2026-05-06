@@ -6,7 +6,9 @@
 #include "hardware/pio.h"
 #include "hardware/pwm.h"
 #include "hardware/watchdog.h"
+#include "hardware/rtc.h"
 #include "pico/time.h"
+#include "pico/util/datetime.h"
 #include "blink.pio.h"
 
 // On XIAO RP2040:
@@ -27,6 +29,7 @@ volatile bool interruptOccurred = false;
 volatile bool periodicTimerActive = false;
 volatile int alarmCount = 0;
 volatile bool pwmInterruptOccurred = false;
+volatile bool rtcInterruptOccurred = false;
 int alarmId = -1;
 
 void handleInterrupt() {
@@ -36,6 +39,10 @@ void handleInterrupt() {
 void on_pwm_interrupt() {
     pwm_clear_irq(pwm_gpio_to_slice_num(LED_PIN));
     pwmInterruptOccurred = true;
+}
+
+void on_rtc_interrupt() {
+    rtcInterruptOccurred = true;
 }
 
 void on_timer_alarm(uint alarm_num) {
@@ -55,6 +62,9 @@ void setup() {
 
   // Initialize I2C
   Wire.begin();
+
+  // Initialize RTC
+  rtc_init();
 
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, HIGH); // Start with LED OFF
@@ -95,6 +105,12 @@ void loop() {
   if (pwmInterruptOccurred) {
     pwmInterruptOccurred = false;
     Serial1.println("PWM Interrupt Handled");
+    Serial1.flush();
+  }
+
+  if (rtcInterruptOccurred) {
+    rtcInterruptOccurred = false;
+    Serial1.println("RTC Alarm Handled");
     Serial1.flush();
   }
 
@@ -254,6 +270,62 @@ void loop() {
       int motorAdc = adc_read();
       Serial1.print("Motor ADC: ");
       Serial1.println(motorAdc);
+      Serial1.flush();
+    } else if (incomingByte == 'R') {
+      // RTC Test: Set and Get time
+      datetime_t t = {
+          .year  = 2024,
+          .month = 05,
+          .day   = 06,
+          .dotw  = 1, // Monday
+          .hour  = 12,
+          .min   = 00,
+          .sec   = 00
+      };
+      rtc_set_datetime(&t);
+      sleep_us(64); // Wait for clock domain crossing
+
+      rtc_get_datetime(&t);
+      char datetime_buf[64];
+      datetime_to_str(datetime_buf, sizeof(datetime_buf), &t);
+      Serial1.print("RTC Time Set: ");
+      Serial1.println(datetime_buf);
+
+      // Simple wait to see it increment (in a real test we'd poll or use alarms)
+      delay(1100);
+      rtc_get_datetime(&t);
+      datetime_to_str(datetime_buf, sizeof(datetime_buf), &t);
+      Serial1.print("RTC Time After 1s: ");
+      Serial1.println(datetime_buf);
+      Serial1.flush();
+    } else if (incomingByte == 'Q') {
+      // RTC Alarm Test
+      datetime_t t = {
+          .year  = 2024,
+          .month = 05,
+          .day   = 06,
+          .dotw  = 1,
+          .hour  = 12,
+          .min   = 00,
+          .sec   = 00
+      };
+      rtc_set_datetime(&t);
+      sleep_us(64);
+
+      datetime_t alarm = {
+          .year  = -1,
+          .month = -1,
+          .day   = -1,
+          .dotw  = -1,
+          .hour  = -1,
+          .min   = -1,
+          .sec   = 02
+      };
+
+      Serial1.println("Setting RTC Alarm...");
+      Serial1.flush();
+      rtc_set_alarm(&alarm, on_rtc_interrupt);
+      Serial1.println("RTC Alarm Set for +2s");
       Serial1.flush();
     } else {
       Serial1.print("Echo: ");
