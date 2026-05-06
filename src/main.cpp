@@ -30,6 +30,8 @@ volatile bool periodicTimerActive = false;
 volatile int alarmCount = 0;
 volatile bool pwmInterruptOccurred = false;
 volatile bool rtcInterruptOccurred = false;
+volatile bool syncAdcEnabled = false;
+volatile uint16_t lastSyncAdcValue = 0;
 int alarmId = -1;
 
 void handleInterrupt() {
@@ -39,6 +41,10 @@ void handleInterrupt() {
 void on_pwm_interrupt() {
     pwm_clear_irq(pwm_gpio_to_slice_num(LED_PIN));
     pwmInterruptOccurred = true;
+    if (syncAdcEnabled) {
+        // We assume AINSEL is already set to 1 by the 'H' command
+        lastSyncAdcValue = adc_read();
+    }
 }
 
 void on_rtc_interrupt() {
@@ -104,8 +110,10 @@ void loop() {
 
   if (pwmInterruptOccurred) {
     pwmInterruptOccurred = false;
-    Serial1.println("PWM Interrupt Handled");
-    Serial1.flush();
+    if (!syncAdcEnabled) {
+      Serial1.println("PWM Interrupt Handled");
+      Serial1.flush();
+    }
   }
 
   if (rtcInterruptOccurred) {
@@ -259,7 +267,7 @@ void loop() {
 
       pwm_config config = pwm_get_default_config();
       pwm_config_set_clkdiv(&config, 100.0f);
-      pwm_config_set_wrap(&config, 1000);
+      pwm_config_set_wrap(&config, 5000);
       pwm_init(slice_num, &config, true);
 
       Serial1.print("PWM Interrupt Enabled for Slice ");
@@ -270,6 +278,18 @@ void loop() {
       int motorAdc = adc_read();
       Serial1.print("Motor ADC: ");
       Serial1.println(motorAdc);
+      Serial1.flush();
+    } else if (incomingByte == 'H') {
+      syncAdcEnabled = !syncAdcEnabled;
+      if (syncAdcEnabled) {
+          adc_select_input(1);
+      }
+      Serial1.print("Sync ADC ");
+      Serial1.println(syncAdcEnabled ? "Enabled" : "Disabled");
+      Serial1.flush();
+    } else if (incomingByte == 'V') {
+      Serial1.print("Last Sync ADC: ");
+      Serial1.println(lastSyncAdcValue);
       Serial1.flush();
     } else if (incomingByte == 'R') {
       // RTC Test: Set and Get time
