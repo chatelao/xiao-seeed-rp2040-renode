@@ -94,13 +94,6 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [ ] Implement SPI device communication in firmware (e.g., reading WHO_AM_I)
 - [ ] Create Robot Framework tests for SPI bidirectional data transfer
 
-## Phase 10: Transition to Pico SDK (Technical Debt)
-- [ ] Setup Pico SDK build environment in `src/install.sh`
-- [ ] Port UART and GPIO drivers to native Pico SDK
-- [ ] Port ADC and PWM drivers to native Pico SDK
-- [ ] Port Timer and Interrupt handling to native Pico SDK
-- [ ] Verify full system functionality with native Pico SDK firmware
-
 ## Phase 11: PIO Integration
 - [x] Draft `docs/PIO_CONCEPT.md` for PIO integration [2026-05-03]
 - [x] Implement PIO (Programmable I/O) state machine examples in firmware [2026-05-04]
@@ -153,3 +146,10 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [ ] Integrate USB core logic and endpoint management
 - [ ] Create firmware examples for USB Serial and HID
 - [ ] Create Robot Framework tests for USB communication
+
+## Phase 10: Transition to Pico SDK (Technical Debt)
+- [ ] Setup Pico SDK build environment in `src/install.sh`
+- [ ] Port UART and GPIO drivers to native Pico SDK
+- [ ] Port ADC and PWM drivers to native Pico SDK
+- [ ] Port Timer and Interrupt handling to native Pico SDK
+- [ ] Verify full system functionality with native Pico SDK firmware
