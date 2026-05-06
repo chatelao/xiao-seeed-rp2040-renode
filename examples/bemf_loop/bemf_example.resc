@@ -1,10 +1,6 @@
 $machine_name?="seeed_xiao_rp2040"
-$platform_file?=@/app/examples/bemf_loop/bemf_example.repl
-$board_initialization_file=@/app/test/renode-config/boards/initialize_custom_board.resc
-include @/app/test/renode-config/tests/prepare.resc
-
-# The prepare.resc might already load firmware, let's see.
-# If it fails with 'Parameters did not match the signature' for LoadELF,
-# it means LoadELF $global.TEST_FILE is called where TEST_FILE is not properly set or used.
+$platform_file?=$ORIGIN/bemf_example.repl
+$board_initialization_file=$ORIGIN/../../test/renode-config/boards/initialize_custom_board.resc
+include $ORIGIN/../../test/renode-config/tests/prepare.resc
 
 showAnalyzer sysbus.uart0
