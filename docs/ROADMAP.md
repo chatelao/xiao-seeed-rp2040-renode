@@ -75,9 +75,9 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 ## Phase x: Full PWM Feature Support
 - [x] Implement 16-bit dynamic counter in `RP2040PWM` Renode model [2026-05-06]
 - [x] Implement double buffering for `CC` and `TOP` registers (latched update on wrap) [2026-05-06]
-- [ ] Implement `DIVMODE` support for LEVEL, RISE, and FALL input modes
+- [x] Implement `DIVMODE` support for LEVEL mode [2026-05-06]
 - [x] Implement IRQ and DREQ signal assertion on counter wrap [2026-05-06]
-- [ ] Implement `PH_ADV` and `PH_RET` phase adjustment logic
+- [x] Implement `PH_ADV` and `PH_RET` phase adjustment logic [2026-05-06]
 - [x] Create Robot Framework tests for advanced PWM features (interrupts, inputs) [2026-05-06]
 
 ## Phase x: Full ADC Feature Support
