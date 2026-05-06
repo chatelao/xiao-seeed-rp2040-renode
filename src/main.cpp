@@ -327,6 +327,25 @@ void loop() {
       rtc_set_alarm(&alarm, on_rtc_interrupt);
       Serial1.println("RTC Alarm Set for +2s");
       Serial1.flush();
+    } else if (incomingByte == 'H') {
+      // Test PWM Phase Adjustment
+      uint slice_num = pwm_gpio_to_slice_num(LED_PIN);
+      pwm_set_enabled(slice_num, false);
+      pwm_set_wrap(slice_num, 0xFFFF);
+      pwm_set_counter(slice_num, 1000);
+      // Keep disabled for stable reading
+
+      uint16_t count1 = pwm_get_counter(slice_num);
+      // Advance phase
+      pwm_hw->slice[slice_num].csr |= PWM_CH0_CSR_PH_ADV_BITS;
+      uint16_t count2 = pwm_get_counter(slice_num);
+
+      // Retard phase
+      pwm_hw->slice[slice_num].csr |= PWM_CH0_CSR_PH_RET_BITS;
+      uint16_t count3 = pwm_get_counter(slice_num);
+
+      Serial1.printf("PWM Phase Test: C1=%d C2=%d C3=%d\n", count1, count2, count3);
+      Serial1.flush();
     } else {
       Serial1.print("Echo: ");
       Serial1.println(incomingByte);

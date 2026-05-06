@@ -18,13 +18,20 @@ using Antmicro.Renode.Peripherals.Timers;
 
 namespace Antmicro.Renode.Peripherals.PWM
 {
-    public class RP2040PWM : RP2040PeripheralBase, INumberedGPIOOutput
+    public class RP2040PWM : RP2040PeripheralBase, INumberedGPIOOutput, IGPIOReceiver
     {
         public RP2040PWM(IMachine machine, ulong address) : base(machine, address)
         {
             IRQ = new GPIO();
             var innerConnections = new Dictionary<int, IGPIO>();
             PWMOut = new GPIO[NumberOfSlices * 2];
+            DMARequest = new GPIO[NumberOfSlices];
+
+            for (int i = 0; i < NumberOfSlices; i++)
+            {
+                DMARequest[i] = new GPIO();
+            }
+
             for (int i = 0; i < PWMOut.Length; i++)
             {
                 PWMOut[i] = new GPIO();
@@ -54,9 +61,9 @@ namespace Antmicro.Renode.Peripherals.PWM
                    .WithFlag(1, out slices[index].phaseCorrect, name: $"CH{index}_CSR_PH_CORRECT", writeCallback: (_, __) => slices[index].Update())
                    .WithFlag(2, out slices[index].invertA, name: $"CH{index}_CSR_A_INV", writeCallback: (_, __) => slices[index].Update())
                    .WithFlag(3, out slices[index].invertB, name: $"CH{index}_CSR_B_INV", writeCallback: (_, __) => slices[index].Update())
-                   .WithValueField(4, 2, out slices[index].divMode, name: $"CH{index}_CSR_DIVMODE")
-                   .WithFlag(6, name: $"CH{index}_CSR_TOP_SEL")
-                   .WithFlag(7, name: $"CH{index}_CSR_ADVANCE")
+                   .WithValueField(4, 2, out slices[index].divMode, name: $"CH{index}_CSR_DIVMODE", writeCallback: (_, __) => slices[index].Update())
+                   .WithFlag(6, out slices[index].phRet, name: $"CH{index}_CSR_PH_RET", writeCallback: (_, val) => { if(val) { slices[index].RetardPhase(); slices[index].phRet.Value = false; } })
+                   .WithFlag(7, out slices[index].phAdv, name: $"CH{index}_CSR_PH_ADV", writeCallback: (_, val) => { if(val) { slices[index].AdvancePhase(); slices[index].phAdv.Value = false; } })
                    .WithReservedBits(8, 24);
             }, stepInBytes: 0x14);
 
@@ -143,6 +150,21 @@ namespace Antmicro.Renode.Peripherals.PWM
         {
             interruptsRaw.Value |= (1u << slice);
             UpdateInterrupts();
+            DMARequest[slice].Set(true);
+            DMARequest[slice].Set(false);
+        }
+
+        public void OnGPIO(int number, bool value)
+        {
+            // B inputs are pins 1, 3, 5, 7, 9, 11, 13, 15
+            if (number % 2 != 0)
+            {
+                int slice = number / 2;
+                if (slice < NumberOfSlices)
+                {
+                    slices[slice].SetBPinState(value);
+                }
+            }
         }
 
         private void UpdateInterrupts()
@@ -154,8 +176,21 @@ namespace Antmicro.Renode.Peripherals.PWM
         public double GetDutyCycleA(int slice) => slices[slice].DutyCycleA;
         public double GetDutyCycleB(int slice) => slices[slice].DutyCycleB;
         public double GetFrequency(int slice) => slices[slice].Frequency;
+        public void SetCounter(int slice, ushort value) => slices[slice].SetCounter(value);
+        public uint GetCurrentCounter(int slice) => slices[slice].GetCurrentCounter();
+        public void AdvancePhase(int slice) => slices[slice].AdvancePhase();
+        public void RetardPhase(int slice) => slices[slice].RetardPhase();
 
         public GPIO IRQ { get; private set; }
+        public GPIO[] DMARequest { get; }
+        public GPIO DMARequest0 => DMARequest[0];
+        public GPIO DMARequest1 => DMARequest[1];
+        public GPIO DMARequest2 => DMARequest[2];
+        public GPIO DMARequest3 => DMARequest[3];
+        public GPIO DMARequest4 => DMARequest[4];
+        public GPIO DMARequest5 => DMARequest[5];
+        public GPIO DMARequest6 => DMARequest[6];
+        public GPIO DMARequest7 => DMARequest[7];
         public IReadOnlyDictionary<int, IGPIO> Connections { get; }
         private GPIO[] PWMOut { get; }
 
@@ -204,6 +239,33 @@ namespace Antmicro.Renode.Peripherals.PWM
                 Update();
             }
 
+            public void AdvancePhase()
+            {
+                // Advance: extra count
+                timer.Value = (timer.Value + 1) % (activeTop + 1);
+                parent.Log(LogLevel.Info, "PWM Slice {0}: Phase Advanced, counter now {1}", index, timer.Value);
+            }
+
+            public void RetardPhase()
+            {
+                // Retard: one less count
+                if (timer.Value > 0)
+                {
+                    timer.Value -= 1;
+                }
+                else
+                {
+                    timer.Value = activeTop;
+                }
+                parent.Log(LogLevel.Info, "PWM Slice {0}: Phase Retarded, counter now {1}", index, timer.Value);
+            }
+
+            public void SetBPinState(bool value)
+            {
+                bPinState = value;
+                Update();
+            }
+
             public void Update()
             {
                 if (!enabled.Value)
@@ -214,13 +276,25 @@ namespace Antmicro.Renode.Peripherals.PWM
                     return;
                 }
 
+                // DIVMODE:
+                // 0: FREE_RUNNING
+                // 1: LEVEL (B pin must be high)
+                // 2: RISE (B pin rising edge) - Not fully implemented cycle-accurately in this timer model
+                // 3: FALL (B pin falling edge) - Not fully implemented cycle-accurately in this timer model
+                bool running = true;
+                if (divMode.Value == 1) // LEVEL
+                {
+                    bool effectiveB = invertB.Value ? !bPinState : bPinState;
+                    running = effectiveB;
+                }
+
                 uint divider = (uint)(divInt.Value * 16 + divFrac.Value);
                 if (divider == 0) divider = 16; // Minimum divider is 1.0 (16/16)
 
                 // The error was: Cannot implicitly convert type 'int' to 'ulong' for timer.Divider
                 timer.Divider = (ulong)divider;
                 timer.Limit = (ulong)activeTop;
-                timer.Enabled = true;
+                timer.Enabled = running;
 
                 double topVal = activeTop + 1;
                 double dcA = (double)activeCompareA / topVal;
@@ -246,7 +320,11 @@ namespace Antmicro.Renode.Peripherals.PWM
             }
 
             public uint GetCurrentCounter() => (uint)timer.Value;
-            public void SetCounter(ushort val) => timer.Value = val;
+            public void SetCounter(ushort val)
+            {
+                timer.Value = val;
+                parent.Log(LogLevel.Info, "PWM Slice {0}: Counter set to {1}", index, val);
+            }
 
             public double DutyCycleA => (double)activeCompareA / (activeTop + 1);
             public double DutyCycleB => (double)activeCompareB / (activeTop + 1);
@@ -264,6 +342,8 @@ namespace Antmicro.Renode.Peripherals.PWM
 
             public IFlagRegisterField enabled;
             public IValueRegisterField divMode;
+            public IFlagRegisterField phRet;
+            public IFlagRegisterField phAdv;
             public IFlagRegisterField phaseCorrect;
             public IFlagRegisterField invertA;
             public IFlagRegisterField invertB;
@@ -275,6 +355,7 @@ namespace Antmicro.Renode.Peripherals.PWM
             public IValueRegisterField shadowTop;
 
             public uint activeCompareA;
+            private bool bPinState;
             public uint activeCompareB;
             public uint activeTop;
 
