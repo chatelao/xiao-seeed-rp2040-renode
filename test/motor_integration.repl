@@ -1,0 +1,8 @@
+using "renode-config/boards/seeed_xiao_rp2040.repl"
+
+motor: Miscellaneous.MotorModel @ sysbus
+    adc: adc
+    adcChannel: 1
+
+pwm:
+    1 -> motor@0
