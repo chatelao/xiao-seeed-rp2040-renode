@@ -34,3 +34,6 @@ external_flash: SPI.W25QXX @ spi0
 
 gpio:
     1 -> external_flash@0
+    2 -> external_flash@1
+    3 -> external_flash@2
+    4 -> external_flash@3

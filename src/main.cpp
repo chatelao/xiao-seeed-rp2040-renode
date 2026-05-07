@@ -201,9 +201,8 @@ void loop() {
       SPI.begin();
 
       // Manually enable loopback mode in the SPI0 peripheral (PL022)
-      // Using SET alias (base + 0x2000) for safety
-      volatile uint32_t *spi0_cr1_set = (volatile uint32_t *)(0x4003c000 + 0x2000 + 0x4);
-      *spi0_cr1_set = 0x1;
+      volatile uint32_t *spi0_cr1 = (volatile uint32_t *)(0x4003c000 + 0x4);
+      *spi0_cr1 |= 0x1;
 
       uint8_t testByte = 0xBC;
       uint8_t receivedByte = SPI.transfer(testByte);
@@ -367,6 +366,12 @@ void loop() {
       Serial1.flush();
     } else if (incomingByte == 'J') {
       // External SPI Flash Test (JEDEC ID)
+      // Hardware SPI0 pins on Seeed XIAO RP2040
+      gpio_set_function(2, GPIO_FUNC_SPI); // SCK
+      gpio_set_function(3, GPIO_FUNC_SPI); // TX (MOSI)
+      gpio_set_function(4, GPIO_FUNC_SPI); // RX (MISO)
+      gpio_set_function(1, GPIO_FUNC_SPI); // CS
+
       SPI.setSCK(2);
       SPI.setTX(3);
       SPI.setRX(4);

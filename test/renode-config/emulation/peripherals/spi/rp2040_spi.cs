@@ -284,7 +284,7 @@ namespace Antmicro.Renode.Peripherals.SPI
             }
           }
           bool externalBit = Convert.ToBoolean((externalResponse >> (7 - (transmitCounter % 8))) & 1);
-          receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(externalBit | bitToReceive));
+          receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(RegisteredPeripheral != null ? externalBit : bitToReceive));
         }
         transmitCounter += 1;
       }
