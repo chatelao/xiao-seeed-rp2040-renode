@@ -27,7 +27,10 @@ pwm:
 bmp280: I2C.BMP280 @ i2c1 0x76
 
 external_flash_mem: Memory.MappedMemory @ sysbus 0x11000000
-    size: 0x100000
+    size: 0x200000
 
 external_flash: SPI.W25QXX @ spi0
     underlyingMemory: external_flash_mem
+
+gpio:
+    1 -> external_flash@0
