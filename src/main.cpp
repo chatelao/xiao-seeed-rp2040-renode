@@ -201,8 +201,6 @@ void loop() {
       SPI.begin();
 
       // Manually enable loopback mode in the SPI0 peripheral (PL022)
-      // SSPCR1 (0x4) bit 0 is LBM (Loop Back Mode)
-      // On RP2040, SPI0 base is 0x4003c000
       volatile uint32_t *spi0_cr1 = (volatile uint32_t *)(0x4003c000 + 0x4);
       *spi0_cr1 |= 0x1;
 
@@ -218,6 +216,9 @@ void loop() {
         Serial1.print(", Got 0x");
         Serial1.println(receivedByte, HEX);
       }
+      // Disable loopback using CLEAR alias (base + 0x3000)
+      volatile uint32_t *spi0_cr1_clr = (volatile uint32_t *)(0x4003c000 + 0x3000 + 0x4);
+      *spi0_cr1_clr = 0x1;
       SPI.end();
       Serial1.flush();
     } else if (incomingByte == 'E') {
@@ -362,6 +363,44 @@ void loop() {
       Serial1.flush();
       rtc_set_alarm(&alarm, on_rtc_interrupt);
       Serial1.println("RTC Alarm Set for +2s");
+      Serial1.flush();
+    } else if (incomingByte == 'J') {
+      // External SPI Flash Test (JEDEC ID)
+      // Hardware SPI0 pins on Seeed XIAO RP2040
+      gpio_set_function(2, GPIO_FUNC_SPI); // SCK
+      gpio_set_function(3, GPIO_FUNC_SPI); // TX (MOSI)
+      gpio_set_function(4, GPIO_FUNC_SPI); // RX (MISO)
+      gpio_set_function(1, GPIO_FUNC_SPI); // CS
+
+      SPI.setSCK(2);
+      SPI.setTX(3);
+      SPI.setRX(4);
+      SPI.setCS(1);
+      SPI.begin();
+
+      // Ensure loopback is OFF using CLEAR alias
+      volatile uint32_t *spi0_cr1_clr = (volatile uint32_t *)(0x4003c000 + 0x3000 + 0x4);
+      *spi0_cr1_clr = 0x1;
+
+      // JEDEC ID command is 0x9F
+      // We expect 3 bytes: Manufacturer ID (0xEF), Memory Type, Capacity
+
+      SPI.transfer(0x9F);
+      uint8_t m_id = SPI.transfer(0x00);
+      uint8_t type = SPI.transfer(0x00);
+      uint8_t cap = SPI.transfer(0x00);
+
+      Serial1.print("Flash JEDEC ID: ");
+      if (m_id < 0x10) Serial1.print("0");
+      Serial1.print(m_id, HEX);
+      Serial1.print(" ");
+      if (type < 0x10) Serial1.print("0");
+      Serial1.print(type, HEX);
+      Serial1.print(" ");
+      if (cap < 0x10) Serial1.print("0");
+      Serial1.println(cap, HEX);
+
+      SPI.end();
       Serial1.flush();
     } else if (incomingByte == 'D') {
       // DMA Memory-to-Memory Test

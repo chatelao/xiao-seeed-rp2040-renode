@@ -195,7 +195,7 @@ namespace Antmicro.Renode.Peripherals.SPI
     {
       foreach (int pin in pins)
       {
-        this.gpio.WritePin(pin, state);
+        this.gpio.WritePin(pin, state, (id == 0) ? RP2040GPIO.GpioFunction.SPI0_CSN : RP2040GPIO.GpioFunction.SPI1_CSN, true);
       }
     }
 
@@ -241,6 +241,7 @@ namespace Antmicro.Renode.Peripherals.SPI
         else
         {
           transmitData = 0;
+          transmitCounter = 16;
 
           SetMultiplePins(txPins, false);
           SetMultiplePins(clockPins, false);
@@ -272,7 +273,18 @@ namespace Antmicro.Renode.Peripherals.SPI
         }
         else
         {
-          receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(ReadMultiplePins(rxPins)));
+          bool bitToReceive = ReadMultiplePins(rxPins);
+          if (transmitCounter == 0)
+          {
+            externalResponse = 0;
+            if (RegisteredPeripheral != null)
+            {
+              externalResponse = RegisteredPeripheral.Transmit((byte)transmitData);
+              this.Log(LogLevel.Debug, "SPI{0}: Sent byte 0x{1:X2} to external peripheral, got 0x{2:X2}", id, (byte)transmitData, externalResponse);
+            }
+          }
+          bool externalBit = Convert.ToBoolean((externalResponse >> (7 - (transmitCounter % 8))) & 1);
+          receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(RegisteredPeripheral != null ? externalBit : bitToReceive));
         }
         transmitCounter += 1;
       }
@@ -343,9 +355,15 @@ namespace Antmicro.Renode.Peripherals.SPI
 
       Registers.SSPCR1.Define(registers)
         .WithFlag(0, valueProviderCallback: _ => loopbackMode,
-          writeCallback: (_, value) => loopbackMode = value, name: "SSPCR1_LBM")
+          writeCallback: (_, value) => {
+            loopbackMode = value;
+            this.Log(LogLevel.Debug, "SPI{0}: Loopback Mode set to {1}", id, value);
+          }, name: "SSPCR1_LBM")
         .WithFlag(1, valueProviderCallback: _ => synchronousSerialPort,
-          writeCallback: (_, value) => synchronousSerialPort = value, name: "SSPCR1_SSE")
+          writeCallback: (_, value) => {
+            synchronousSerialPort = value;
+            SetMultiplePins(csPins, !value);
+          }, name: "SSPCR1_SSE")
         .WithFlag(2, valueProviderCallback: _ => masterSlaveSelect,
           writeCallback: (_, value) => masterSlaveSelect = value, name: "SSPCR1_MS")
         .WithFlag(3, valueProviderCallback: _ => slaveModeDisabled,
@@ -453,6 +471,7 @@ namespace Antmicro.Renode.Peripherals.SPI
     private byte transmitCounter;
     private ushort transmitData;
     private ushort receiveData;
+    private byte externalResponse;
     private enum Registers
     {
       SSPCR0 = 0x0,
