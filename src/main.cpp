@@ -201,10 +201,9 @@ void loop() {
       SPI.begin();
 
       // Manually enable loopback mode in the SPI0 peripheral (PL022)
-      // SSPCR1 (0x4) bit 0 is LBM (Loop Back Mode)
-      // On RP2040, SPI0 base is 0x4003c000
-      volatile uint32_t *spi0_cr1 = (volatile uint32_t *)(0x4003c000 + 0x4);
-      *spi0_cr1 |= 0x1;
+      // Using SET alias (base + 0x2000) for safety
+      volatile uint32_t *spi0_cr1_set = (volatile uint32_t *)(0x4003c000 + 0x2000 + 0x4);
+      *spi0_cr1_set = 0x1;
 
       uint8_t testByte = 0xBC;
       uint8_t receivedByte = SPI.transfer(testByte);
@@ -218,6 +217,9 @@ void loop() {
         Serial1.print(", Got 0x");
         Serial1.println(receivedByte, HEX);
       }
+      // Disable loopback using CLEAR alias (base + 0x3000)
+      volatile uint32_t *spi0_cr1_clr = (volatile uint32_t *)(0x4003c000 + 0x3000 + 0x4);
+      *spi0_cr1_clr = 0x1;
       SPI.end();
       Serial1.flush();
     } else if (incomingByte == 'E') {
@@ -370,6 +372,10 @@ void loop() {
       SPI.setRX(4);
       SPI.setCS(1);
       SPI.begin();
+
+      // Ensure loopback is OFF using CLEAR alias
+      volatile uint32_t *spi0_cr1_clr = (volatile uint32_t *)(0x4003c000 + 0x3000 + 0x4);
+      *spi0_cr1_clr = 0x1;
 
       // JEDEC ID command is 0x9F
       // We expect 3 bytes: Manufacturer ID (0xEF), Memory Type, Capacity
