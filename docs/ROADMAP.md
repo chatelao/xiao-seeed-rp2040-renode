@@ -90,9 +90,9 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 
 ## Phase 9: SPI Peripheral Support
 - [x] Implement SPI loopback test in firmware and verify in Renode [2026-05-04]
-- [ ] Configure SPI pins and an external SPI device in Renode `.repl`
-- [ ] Implement SPI device communication in firmware (e.g., reading WHO_AM_I)
-- [ ] Create Robot Framework tests for SPI bidirectional data transfer
+- [x] Configure SPI pins and an external SPI device in Renode `.repl` [2026-05-07]
+- [x] Implement SPI device communication in firmware (e.g., reading WHO_AM_I) [2026-05-07]
+- [x] Create Robot Framework tests for SPI bidirectional data transfer [2026-05-07]
 
 ## Phase 11: PIO Integration
 - [x] Draft `docs/PIO_CONCEPT.md` for PIO integration [2026-05-03]

@@ -363,6 +363,34 @@ void loop() {
       rtc_set_alarm(&alarm, on_rtc_interrupt);
       Serial1.println("RTC Alarm Set for +2s");
       Serial1.flush();
+    } else if (incomingByte == 'J') {
+      // External SPI Flash Test (JEDEC ID)
+      SPI.setSCK(2);
+      SPI.setTX(3);
+      SPI.setRX(4);
+      SPI.setCS(1);
+      SPI.begin();
+
+      // JEDEC ID command is 0x9F
+      // We expect 3 bytes: Manufacturer ID (0xEF), Memory Type, Capacity
+
+      SPI.transfer(0x9F);
+      uint8_t m_id = SPI.transfer(0x00);
+      uint8_t type = SPI.transfer(0x00);
+      uint8_t cap = SPI.transfer(0x00);
+
+      Serial1.print("Flash JEDEC ID: ");
+      if (m_id < 0x10) Serial1.print("0");
+      Serial1.print(m_id, HEX);
+      Serial1.print(" ");
+      if (type < 0x10) Serial1.print("0");
+      Serial1.print(type, HEX);
+      Serial1.print(" ");
+      if (cap < 0x10) Serial1.print("0");
+      Serial1.println(cap, HEX);
+
+      SPI.end();
+      Serial1.flush();
     } else if (incomingByte == 'D') {
       // DMA Memory-to-Memory Test
       const char *src_str = "DMA TRANSFER TEST";
