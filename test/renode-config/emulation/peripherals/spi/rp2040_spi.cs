@@ -241,7 +241,6 @@ namespace Antmicro.Renode.Peripherals.SPI
           {
             // For now support only 8-bit peripherals as most of them are byte-oriented
             peripheralResponse = RegisteredPeripheral.Transmit((byte)transmitData);
-            this.Log(LogLevel.Info, "SPI{0}: Transmitted 0x{1:X2} to peripheral, received 0x{2:X2}", id, (byte)transmitData, peripheralResponse);
           }
         }
         else
@@ -260,7 +259,6 @@ namespace Antmicro.Renode.Peripherals.SPI
       // SPI Mode 0: set data BEFORE raising clock so data is stable at rising edge
       if (!clockWasHigh)
       {
-        // PL022 (PrimeCell SSP) shifts MSB first
         bool bitToSend = Convert.ToBoolean((transmitData >> (dataSize - 1 - transmitCounter)) & 1);
         SetMultiplePins(txPins, bitToSend);
       }
@@ -279,7 +277,6 @@ namespace Antmicro.Renode.Peripherals.SPI
         }
         else if (RegisteredPeripheral != null)
         {
-          // Bit-by-bit shift into receive register
           bool bitReceived = Convert.ToBoolean((peripheralResponse >> (dataSize - 1 - transmitCounter)) & 1);
           receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(bitReceived));
         }
@@ -318,7 +315,7 @@ namespace Antmicro.Renode.Peripherals.SPI
 
       _executionThread.Stop();
 
-      dataSize = 8;
+      dataSize = 0;
       frameFormat = 0;
       clockPolarity = false;
       clockPhase = false;
