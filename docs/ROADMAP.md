@@ -91,7 +91,7 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 ## Phase 9: SPI Peripheral Support
 - [x] Implement SPI loopback test in firmware and verify in Renode [2026-05-04]
 - [ ] Configure SPI pins and an external SPI device in Renode `.repl`
-- [ ] Implement SPI device communication in firmware (e.g., reading WHO_AM_I)
+- [ ] Implement SPI device communication in firmware (e.g., reading JEDEC ID)
 - [ ] Create Robot Framework tests for SPI bidirectional data transfer
 
 ## Phase 11: PIO Integration

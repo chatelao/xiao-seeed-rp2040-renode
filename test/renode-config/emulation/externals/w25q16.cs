@@ -383,7 +383,21 @@ namespace Antmicro.Renode.Peripherals.SPI
                     result = ReadFromMemory();
                     break;
                 case DecodedOperation.OperationType.ReadID:
-                    this.Log(LogLevel.Info, "TODO: implement READ ID");
+                    switch (currentOperation.CommandBytesHandled)
+                    {
+                        case 0:
+                            result = manufacturerId;
+                            break;
+                        case 1:
+                            result = memoryType;
+                            break;
+                        case 2:
+                            result = 0x15; // Capacity: 16Mb (2^15)
+                            break;
+                        default:
+                            result = 0;
+                            break;
+                    }
                     break;
                 case DecodedOperation.OperationType.ReadSerialFlashDiscoveryParameter:
                     this.Log(LogLevel.Info, "TODO: implement READ SFDP");
@@ -403,10 +417,17 @@ namespace Antmicro.Renode.Peripherals.SPI
 
         public void OnGPIO(int number, bool value)
         {
-            if (number == 0 && value)
+            if (number == 0)
             {
-                this.Log(LogLevel.Noisy, "CS# deasserted");
-                FinishTransmission();
+                if (value)
+                {
+                    this.Log(LogLevel.Noisy, "CS# deasserted");
+                    FinishTransmission();
+                }
+                else
+                {
+                    this.Log(LogLevel.Noisy, "CS# asserted");
+                }
             }
         }
 
