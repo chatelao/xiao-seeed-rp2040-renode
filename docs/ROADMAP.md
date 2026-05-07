@@ -105,8 +105,8 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 ## Phase 12: Advanced Simulation & Performance
 - [x] Draft `docs/DMA_CONCEPT.md` for DMA integration [2026-05-04]
 - [ ] Implement advanced DMA features (Abort, Pacing Timers, Debug Registers)
-- [ ] Implement DMA-based data transfer examples (CRC calculation, Block move)
-- [ ] Create Robot Framework tests for basic DMA transfers and interrupts
+- [x] Implement DMA-based data transfer examples (CRC calculation, Block move) [2026-05-06]
+- [x] Create Robot Framework tests for basic DMA transfers and interrupts [2026-05-06]
 - [ ] Optimize Renode simulation parameters for better host performance
 - [ ] Expand `full_suite.robot` with advanced stress tests
 

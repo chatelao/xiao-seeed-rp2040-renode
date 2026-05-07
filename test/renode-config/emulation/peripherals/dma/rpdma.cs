@@ -80,8 +80,7 @@ namespace Antmicro.Renode.Peripherals.DMA
       DefineRegisters();
       this.numberOfDREQ = Enum.GetNames(typeof(DREQ)).Length;
       var irqs = new Dictionary<int, IGPIO>();
-      //this.ExternalRequest = new GPIO[numberOfDREQ];
-      for (int i = 0; i < numberOfDREQ; ++i)
+      for (int i = 0; i < 2; ++i)
       {
         irqs[i] = new GPIO();
       }
@@ -100,15 +99,40 @@ namespace Antmicro.Renode.Peripherals.DMA
       sniffByteSwap.Value = false;
       sniffOutReversed.Value = false;
       sniffData = 0;
+      inte0 = 0;
+      intf0 = 0;
+      inte1 = 0;
+      intf1 = 0;
       for (int i = 0; i < channels.Length; ++i)
       {
         channels[i].Reset();
       }
+      UpdateInterrupts();
     }
 
     public void Trigger(int channelNumber)
     {
       channels[channelNumber].TriggerTransfer();
+    }
+
+    private void UpdateInterrupts()
+    {
+      uint intr = 0;
+      for(int i = 0; i < channels.Length; ++i)
+      {
+        if(channels[i].InterruptRaised)
+        {
+          intr |= 1u << i;
+        }
+      }
+
+      uint ints0 = (intr & inte0) | intf0;
+      uint ints1 = (intr & inte1) | intf1;
+
+      this.Log(LogLevel.Info, "UpdateInterrupts: intr=0x{0:X}, inte0=0x{1:X}, ints0=0x{2:X}", intr, inte0, ints0);
+
+      Connections[0].Set((ints0 & 0xFFFF) != 0);
+      Connections[1].Set((ints1 & 0xFFFF) != 0);
     }
 
     public override uint ReadDoubleWord(long offset)
@@ -149,6 +173,9 @@ namespace Antmicro.Renode.Peripherals.DMA
     {
       get; private set;
     }
+
+    public GPIO IRQ0 => (GPIO)Connections[0];
+    public GPIO IRQ1 => (GPIO)Connections[1];
 
     private void DefineRegisters()
     {
@@ -219,7 +246,7 @@ namespace Antmicro.Renode.Peripherals.DMA
         .WithReservedBits(16, 16);
 
       Registers.INTR.Define(this)
-        .WithValueField(0, 16, FieldMode.Read | FieldMode.Write, valueProviderCallback: (_) =>
+        .WithValueField(0, 16, FieldMode.Read | FieldMode.WriteOneToClear, valueProviderCallback: (_) =>
         {
           uint irqs = 0;
           for (int i = 0; i < channels.Length; ++i)
@@ -238,37 +265,49 @@ namespace Antmicro.Renode.Peripherals.DMA
           }
         }, name: "INTR");
 
+      Registers.INTE0.Define(this)
+        .WithValueField(0, 16, valueProviderCallback: _ => (ulong)inte0,
+          writeCallback: (_, value) => { inte0 = (uint)value; UpdateInterrupts(); }, name: "INTE0")
+        .WithReservedBits(16, 16);
+
+      Registers.INTF0.Define(this)
+        .WithValueField(0, 16, valueProviderCallback: _ => (ulong)intf0,
+          writeCallback: (_, value) => { intf0 = (uint)value; UpdateInterrupts(); }, name: "INTF0")
+        .WithReservedBits(16, 16);
+
       Registers.INTS0.Define(this)
-        .WithValueField(0, 16, FieldMode.Read | FieldMode.Write, valueProviderCallback: (_) =>
+        .WithValueField(0, 16, FieldMode.Read, valueProviderCallback: (_) =>
         {
-          uint irqs = 0;
-          return irqs;
-        }, writeCallback: (_, value) =>
-        {
+          uint intr = 0;
           for (int i = 0; i < channels.Length; ++i)
           {
-            if (((value >> i) & 0x01) == 1)
-            {
-              channels[i].InterruptRaised = false;
-            }
+            if (channels[i].InterruptRaised) intr |= 1u << i;
           }
-        }, name: "INTS0");
+          return (intr & inte0) | intf0;
+        }, name: "INTS0")
+        .WithReservedBits(16, 16);
+
+      Registers.INTE1.Define(this)
+        .WithValueField(0, 16, valueProviderCallback: _ => (ulong)inte1,
+          writeCallback: (_, value) => { inte1 = (uint)value; UpdateInterrupts(); }, name: "INTE1")
+        .WithReservedBits(16, 16);
+
+      Registers.INTF1.Define(this)
+        .WithValueField(0, 16, valueProviderCallback: _ => (ulong)intf1,
+          writeCallback: (_, value) => { intf1 = (uint)value; UpdateInterrupts(); }, name: "INTF1")
+        .WithReservedBits(16, 16);
 
       Registers.INTS1.Define(this)
-        .WithValueField(0, 16, FieldMode.Read | FieldMode.Write, valueProviderCallback: (_) =>
+        .WithValueField(0, 16, FieldMode.Read, valueProviderCallback: (_) =>
         {
-          uint irqs = 0;
-          return irqs;
-        }, writeCallback: (_, value) =>
-        {
+          uint intr = 0;
           for (int i = 0; i < channels.Length; ++i)
           {
-            if (((value >> i) & 0x01) == 1)
-            {
-              channels[i].InterruptRaised = false;
-            }
+            if (channels[i].InterruptRaised) intr |= 1u << i;
           }
-        }, name: "INTS1");
+          return (intr & inte1) | intf1;
+        }, name: "INTS1")
+        .WithReservedBits(16, 16);
     }
 
 
@@ -430,7 +469,8 @@ namespace Antmicro.Renode.Peripherals.DMA
         {
           RPXXXXDmaRequest request = CreateRequest(paced);
           parent.channelFinished[channelNumber] = false;
-          if (sniffEnable.Value)
+          ResponseWithCrc response;
+          if (sniffEnable.Value && (uint)parent.sniffChannel == (uint)channelNumber)
           {
             ChecksumRequest.Type checksumType = ChecksumRequest.Type.Crc32;
             switch (this.parent.sniffCalcType.Value)
@@ -466,17 +506,18 @@ namespace Antmicro.Renode.Peripherals.DMA
               type = checksumType,
               init = this.parent.sniffData,
             };
-            var response = parent.engine.IssueCopy(request, null, req);
+            response = parent.engine.IssueCopy(request, null, req);
             this.parent.sniffData = response.crc;
           }
           else
           {
-            var response = parent.engine.IssueCopy(request);
-            if (!paced)
-            {
-              readAddress = (uint)response.response.ReadAddress.Value;
-              writeAddress = (uint)response.response.WriteAddress.Value;
-            }
+            response = parent.engine.IssueCopy(request);
+          }
+
+          if (!paced)
+          {
+            readAddress = (uint)response.response.ReadAddress.Value;
+            writeAddress = (uint)response.response.WriteAddress.Value;
           }
 
           if (paced)
@@ -602,7 +643,17 @@ namespace Antmicro.Renode.Peripherals.DMA
       private IFlagRegisterField writeError;
       private IFlagRegisterField readError;
       private IFlagRegisterField ahbError;
-      public bool InterruptRaised;
+      private bool interruptRaised;
+      public bool InterruptRaised
+      {
+        get => interruptRaised;
+        set
+        {
+          if(interruptRaised == value) return;
+          interruptRaised = value;
+          parent.UpdateInterrupts();
+        }
+      }
       private Dictionary<long, Registers> aliases;
       private RPDMA parent;
       private int channelNumber;
@@ -616,6 +667,10 @@ namespace Antmicro.Renode.Peripherals.DMA
     private RPDmaEngine engine;
     private int numberOfChannels;
     private bool[] channelFinished;
+    private uint inte0;
+    private uint intf0;
+    private uint inte1;
+    private uint intf1;
     private IFlagRegisterField sniffEnable;
     private byte sniffChannel;
     private enum CalculateType
