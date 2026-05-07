@@ -79,6 +79,10 @@ void setup() {
   // Initialize I2C
   Wire.begin();
 
+  // Initialize SPI CS pins to HIGH to avoid unintended commands
+  pinMode(20, OUTPUT);
+  digitalWrite(20, HIGH);
+
   // Initialize RTC
   rtc_init();
 
@@ -362,6 +366,32 @@ void loop() {
       Serial1.flush();
       rtc_set_alarm(&alarm, on_rtc_interrupt);
       Serial1.println("RTC Alarm Set for +2s");
+      Serial1.flush();
+    } else if (incomingByte == 'j') {
+      // SPI External Device Test (JEDEC ID)
+      // XIAO RP2040 D8=GPIO2(SCK), D9=GPIO4(RX), D10=GPIO3(TX), D7=GPIO20(CS)
+      const int CS_PIN = 20;
+      pinMode(CS_PIN, OUTPUT);
+      digitalWrite(CS_PIN, HIGH);
+
+      SPI.setSCK(2);
+      SPI.setTX(3);
+      SPI.setRX(4);
+      SPI.begin();
+
+      // Ensure Loopback Mode (LBM) is disabled
+      volatile uint32_t *spi0_cr1 = (volatile uint32_t *)(0x4003c000 + 0x4);
+      *spi0_cr1 &= ~0x1;
+
+      digitalWrite(CS_PIN, LOW);
+      SPI.transfer(0x9F); // Read JEDEC ID command
+      uint8_t mid = SPI.transfer(0);
+      uint8_t mtype = SPI.transfer(0);
+      uint8_t cap = SPI.transfer(0);
+      digitalWrite(CS_PIN, HIGH);
+
+      Serial1.printf("JEDEC ID: %02X %02X %02X\n", mid, mtype, cap);
+      SPI.end();
       Serial1.flush();
     } else if (incomingByte == 'D') {
       // DMA Memory-to-Memory Test

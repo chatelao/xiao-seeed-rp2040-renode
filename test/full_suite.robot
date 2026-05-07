@@ -51,6 +51,10 @@ Should Pass Full Test Suite
     Write Char On Uart        S
     Wait For Line On Uart     SPI Loopback Success: 0xBC
 
+    # 8b. SPI External Flash (JEDEC ID)
+    Write Char On Uart        j
+    Wait For Line On Uart     JEDEC ID: EF 28 15
+
     # 9. Timer Alarms
     # One-shot
     Write Char On Uart        T

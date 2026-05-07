@@ -237,6 +237,12 @@ namespace Antmicro.Renode.Peripherals.SPI
         if (txBuffer.Count != 0)
         {
           txBuffer.TryDequeue(out transmitData);
+          if (!loopbackMode && RegisteredPeripheral != null)
+          {
+            // For now support only 8-bit peripherals as most of them are byte-oriented
+            peripheralResponse = RegisteredPeripheral.Transmit((byte)transmitData);
+            this.Log(LogLevel.Info, "SPI{0}: Transmitted 0x{1:X2} to peripheral, received 0x{2:X2}", id, (byte)transmitData, peripheralResponse);
+          }
         }
         else
         {
@@ -254,6 +260,7 @@ namespace Antmicro.Renode.Peripherals.SPI
       // SPI Mode 0: set data BEFORE raising clock so data is stable at rising edge
       if (!clockWasHigh)
       {
+        // PL022 (PrimeCell SSP) shifts MSB first
         bool bitToSend = Convert.ToBoolean((transmitData >> (dataSize - 1 - transmitCounter)) & 1);
         SetMultiplePins(txPins, bitToSend);
       }
@@ -269,6 +276,12 @@ namespace Antmicro.Renode.Peripherals.SPI
           // In loopback mode, feed transmitted bit back to receiver
           bool transmittedBit = Convert.ToBoolean((transmitData >> (dataSize - 1 - transmitCounter)) & 1);
           receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(transmittedBit));
+        }
+        else if (RegisteredPeripheral != null)
+        {
+          // Bit-by-bit shift into receive register
+          bool bitReceived = Convert.ToBoolean((peripheralResponse >> (dataSize - 1 - transmitCounter)) & 1);
+          receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(bitReceived));
         }
         else
         {
@@ -305,7 +318,7 @@ namespace Antmicro.Renode.Peripherals.SPI
 
       _executionThread.Stop();
 
-      dataSize = 0;
+      dataSize = 8;
       frameFormat = 0;
       clockPolarity = false;
       clockPhase = false;
@@ -320,6 +333,7 @@ namespace Antmicro.Renode.Peripherals.SPI
       transmitCounter = 16;
       transmitData = 0;
       receiveData = 0;
+      peripheralResponse = 0;
       UpdateFrequency(clocks.PeripheralClockFrequency);
     }
 
@@ -453,6 +467,7 @@ namespace Antmicro.Renode.Peripherals.SPI
     private byte transmitCounter;
     private ushort transmitData;
     private ushort receiveData;
+    private ushort peripheralResponse;
     private enum Registers
     {
       SSPCR0 = 0x0,
