@@ -101,16 +101,17 @@ namespace Antmicro.Renode.Peripherals.SPI
 
     private void RecalculateClockRate()
     {
-      uint newFrequency = (uint)((decimal)periFrequency / (clockPrescaleDivisor * (1 + clockRate)));
-      if (newFrequency == 0)
+      uint bitRate = (uint)((decimal)periFrequency / (clockPrescaleDivisor * (1 + clockRate)));
+      if (bitRate == 0)
       {
-        newFrequency = 1;
+        bitRate = 1;
       }
-      if (newFrequency != this._executionThread.Frequency)
+      uint toggleRate = 2 * bitRate;
+      if (toggleRate != this._executionThread.Frequency)
       {
-        this._executionThread.Frequency = newFrequency;
-        this.Log(LogLevel.Debug, "SPI{0}: Changed frequency to: {1}", id, newFrequency);
-        steps = clocks.SystemClockFrequency / newFrequency;
+        this._executionThread.Frequency = toggleRate;
+        this.Log(LogLevel.Debug, "SPI{0}: Changed toggle frequency to: {1}", id, toggleRate);
+        steps = clocks.SystemClockFrequency / toggleRate;
       }
     }
 
@@ -226,74 +227,66 @@ namespace Antmicro.Renode.Peripherals.SPI
 
     private void Step()
     {
-      bool clockWasHigh = ReadMultiplePins(clockPins);
-
       if (transmitCounter >= dataSize)
       {
-        if (txBuffer.Count != 0)
+        if (txBuffer.TryDequeue(out transmitData))
         {
-          txBuffer.TryDequeue(out transmitData);
           transmitCounter = 0;
           receiveData = 0;
-          if (!loopbackMode && RegisteredPeripheral != null)
-          {
-            // For now support only 8-bit peripherals as most of them are byte-oriented
-            peripheralResponse = RegisteredPeripheral.Transmit((byte)transmitData);
-          }
+          // SPI Mode 0: preparation edge occurs on falling, but for the first bit,
+          // it must be stable on the first rising edge.
+          SetMultiplePins(txPins, Convert.ToBoolean((transmitData >> (dataSize - 1)) & 1));
         }
         else
         {
-          transmitData = 0;
-
-          SetMultiplePins(txPins, false);
-          SetMultiplePins(clockPins, false);
-          _executionThread.Stop();
           running = false;
+          _executionThread.Stop();
+          SetMultiplePins(txPins, false);
+          SetMultiplePins(clockPins, clockPolarity);
           return;
         }
       }
 
-      // SPI Mode 0: set data BEFORE raising clock so data is stable at rising edge
-      if (!clockWasHigh)
-      {
-        bool bitToSend = Convert.ToBoolean((transmitData >> (dataSize - 1 - transmitCounter)) & 1);
-        SetMultiplePins(txPins, bitToSend);
-      }
+      bool clockWasHigh = ReadMultiplePins(clockPins);
 
-      SetMultiplePins(clockPins, !clockWasHigh);
-      gpio.ReevaluatePio((uint)steps);
-
-      if (!clockWasHigh)
+      if (clockWasHigh == clockPolarity)
       {
-        // Read data on rising edge
+        // Leading edge: Sample
+        bool bitReceived;
         if (loopbackMode)
         {
-          // In loopback mode, feed transmitted bit back to receiver
-          bool transmittedBit = Convert.ToBoolean((transmitData >> (dataSize - 1 - transmitCounter)) & 1);
-          receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(transmittedBit));
+          bitReceived = Convert.ToBoolean((transmitData >> (dataSize - 1 - transmitCounter)) & 1);
         }
         else
         {
-          receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(ReadMultiplePins(rxPins)));
+          bitReceived = ReadMultiplePins(rxPins);
         }
-        transmitCounter += 1;
+        receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(bitReceived));
+        transmitCounter++;
 
-        if (transmitCounter >= dataSize)
+        SetMultiplePins(clockPins, !clockWasHigh);
+      }
+      else
+      {
+        // Trailing edge: Prepare next bit
+        if (transmitCounter < dataSize)
         {
-          if (loopbackMode)
+          SetMultiplePins(txPins, Convert.ToBoolean((transmitData >> (dataSize - 1 - transmitCounter)) & 1));
+        }
+        else
+        {
+          if (!loopbackMode && RegisteredPeripheral != null)
           {
-            rxBuffer.Enqueue(receiveData);
-          }
-          else if (RegisteredPeripheral != null)
-          {
-            rxBuffer.Enqueue(peripheralResponse);
+            rxBuffer.Enqueue(RegisteredPeripheral.Transmit((byte)transmitData));
           }
           else
           {
             rxBuffer.Enqueue(receiveData);
           }
         }
+        SetMultiplePins(clockPins, !clockWasHigh);
       }
+      gpio.ReevaluatePio((uint)steps);
     }
 
     public uint ReadDoubleWord(long offset)
@@ -437,7 +430,16 @@ namespace Antmicro.Renode.Peripherals.SPI
       Registers.SSPPCELLID3.Define(registers)
             .WithValueField(0, 8, FieldMode.Read, valueProviderCallback: _ => 0xb1, name: "SSPCELLID3")
             .WithReservedBits(8, 24);
+
+      Registers.SSPIMSC.Define(registers);
+      Registers.SSPRIS.Define(registers);
+      Registers.SSPMIS.Define(registers);
+      Registers.SSPICR.Define(registers);
+      Registers.SSPDMACR.Define(registers);
     }
+
+    public GPIO DMATransmitRequest { get; } = new GPIO();
+    public GPIO DMAReceiveRequest { get; } = new GPIO();
 
 
     public IGPIO[] IRQs { get; private set; }

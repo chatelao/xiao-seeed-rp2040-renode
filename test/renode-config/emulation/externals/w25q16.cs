@@ -417,10 +417,17 @@ namespace Antmicro.Renode.Peripherals.SPI
 
         public void OnGPIO(int number, bool value)
         {
-            if (number == 0 && value)
+            if (number == 0)
             {
-                this.Log(LogLevel.Noisy, "CS# deasserted");
-                FinishTransmission();
+                if (value)
+                {
+                    this.Log(LogLevel.Noisy, "CS# deasserted");
+                    FinishTransmission();
+                }
+                else
+                {
+                    this.Log(LogLevel.Noisy, "CS# asserted");
+                }
             }
         }
 
