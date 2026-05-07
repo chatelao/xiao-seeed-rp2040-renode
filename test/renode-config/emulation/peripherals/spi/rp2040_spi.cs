@@ -226,17 +226,15 @@ namespace Antmicro.Renode.Peripherals.SPI
 
     private void Step()
     {
+      bool clockWasHigh = ReadMultiplePins(clockPins);
+
       if (transmitCounter >= dataSize)
       {
-        if (transmitCounter != 16)
-        {
-          rxBuffer.Enqueue(receiveData);
-        }
-        transmitCounter = 0;
-        receiveData = 0;
         if (txBuffer.Count != 0)
         {
           txBuffer.TryDequeue(out transmitData);
+          transmitCounter = 0;
+          receiveData = 0;
           if (!loopbackMode && RegisteredPeripheral != null)
           {
             // For now support only 8-bit peripherals as most of them are byte-oriented
@@ -251,10 +249,9 @@ namespace Antmicro.Renode.Peripherals.SPI
           SetMultiplePins(clockPins, false);
           _executionThread.Stop();
           running = false;
+          return;
         }
       }
-
-      bool clockWasHigh = ReadMultiplePins(clockPins);
 
       // SPI Mode 0: set data BEFORE raising clock so data is stable at rising edge
       if (!clockWasHigh)
@@ -275,16 +272,27 @@ namespace Antmicro.Renode.Peripherals.SPI
           bool transmittedBit = Convert.ToBoolean((transmitData >> (dataSize - 1 - transmitCounter)) & 1);
           receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(transmittedBit));
         }
-        else if (RegisteredPeripheral != null)
-        {
-          bool bitReceived = Convert.ToBoolean((peripheralResponse >> (dataSize - 1 - transmitCounter)) & 1);
-          receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(bitReceived));
-        }
         else
         {
           receiveData = (ushort)((receiveData << 1) | Convert.ToUInt16(ReadMultiplePins(rxPins)));
         }
         transmitCounter += 1;
+
+        if (transmitCounter >= dataSize)
+        {
+          if (loopbackMode)
+          {
+            rxBuffer.Enqueue(receiveData);
+          }
+          else if (RegisteredPeripheral != null)
+          {
+            rxBuffer.Enqueue(peripheralResponse);
+          }
+          else
+          {
+            rxBuffer.Enqueue(receiveData);
+          }
+        }
       }
     }
 
@@ -315,7 +323,7 @@ namespace Antmicro.Renode.Peripherals.SPI
 
       _executionThread.Stop();
 
-      dataSize = 0;
+      dataSize = 8;
       frameFormat = 0;
       clockPolarity = false;
       clockPhase = false;

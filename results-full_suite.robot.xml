@@ -1,0 +1,790 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 6.1 (Python 3.12.13 on linux)" generated="20260507 07:49:47.158" rpa="false" schemaversion="4">
+<suite id="s1" name="full_suite" source="/app/test/full_suite.robot">
+<kw name="Setup" library="renode-keywords" type="SETUP">
+<msg timestamp="20260507 07:49:47.253" level="TRACE">Arguments: [  ]</msg>
+<kw name="Evaluate" library="BuiltIn">
+<var>${SYSTEM}</var>
+<arg>platform.system()</arg>
+<arg>modules=platform</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20260507 07:49:47.254" level="TRACE">Arguments: [ 'platform.system()' | modules='platform' ]</msg>
+<msg timestamp="20260507 07:49:47.254" level="TRACE">Return: 'Linux'</msg>
+<msg timestamp="20260507 07:49:47.254" level="INFO">${SYSTEM} = Linux</msg>
+<status status="PASS" starttime="20260507 07:49:47.253" endtime="20260507 07:49:47.254"/>
+</kw>
+<kw name="Set Variable If" library="BuiltIn">
+<var>${CONFIGURATION}</var>
+<arg>not ${SKIP_RUNNING_SERVER} and ${SERVER_REMOTE_DEBUG}</arg>
+<arg>Debug</arg>
+<arg>${CONFIGURATION}</arg>
+<doc>Sets variable based on the given condition.</doc>
+<msg timestamp="20260507 07:49:47.255" level="TRACE">Arguments: [ 'not True and False' | 'Debug' | '${CONFIGURATION}' ]</msg>
+<msg timestamp="20260507 07:49:47.255" level="TRACE">Return: 'Release'</msg>
+<msg timestamp="20260507 07:49:47.255" level="INFO">${CONFIGURATION} = Release</msg>
+<status status="PASS" starttime="20260507 07:49:47.254" endtime="20260507 07:49:47.255"/>
+</kw>
+<kw name="Create List" library="BuiltIn">
+<var>@{PARAMS}</var>
+<arg>--robot-server-port</arg>
+<arg>${PORT_NUMBER}</arg>
+<arg>--hide-log</arg>
+<doc>Returns a list containing given items.</doc>
+<msg timestamp="20260507 07:49:47.255" level="TRACE">Arguments: [ '--robot-server-port' | '49152' | '--hide-log' ]</msg>
+<msg timestamp="20260507 07:49:47.255" level="TRACE">Return: ['--robot-server-port', '49152', '--hide-log']</msg>
+<msg timestamp="20260507 07:49:47.255" level="INFO">@{PARAMS} = [ --robot-server-port | 49152 | --hide-log ]</msg>
+<status status="PASS" starttime="20260507 07:49:47.255" endtime="20260507 07:49:47.255"/>
+</kw>
+<if>
+<branch type="IF" condition="${DISABLE_GUI}">
+<kw name="Insert Into List" library="Collections">
+<arg>${PARAMS}</arg>
+<arg>0</arg>
+<arg>--disable-gui</arg>
+<doc>Inserts ``value`` into ``list`` to the position specified with ``index``.</doc>
+<status status="NOT RUN" starttime="20260507 07:49:47.256" endtime="20260507 07:49:47.256"/>
+</kw>
+<status status="NOT RUN" starttime="20260507 07:49:47.256" endtime="20260507 07:49:47.256"/>
+</branch>
+<status status="PASS" starttime="20260507 07:49:47.256" endtime="20260507 07:49:47.256"/>
+</if>
+<if>
+<branch type="IF" condition="not ${SKIP_RUNNING_SERVER}">
+<kw name="File Should Exist" library="OperatingSystem">
+<arg>${DIRECTORY}/${BINARY_NAME}</arg>
+<arg>msg=Robot Framework remote server binary not found (${DIRECTORY}/${BINARY_NAME}). Did you forget to build it in ${CONFIGURATION} configuration?</arg>
+<doc>Fails unless the given ``path`` points to an existing file.</doc>
+<status status="NOT RUN" starttime="20260507 07:49:47.256" endtime="20260507 07:49:47.256"/>
+</kw>
+<status status="NOT RUN" starttime="20260507 07:49:47.256" endtime="20260507 07:49:47.256"/>
+</branch>
+<status status="PASS" starttime="20260507 07:49:47.256" endtime="20260507 07:49:47.256"/>
+</if>
+<if>
+<branch type="IF" condition="not ${SKIP_RUNNING_SERVER} and not ${SERVER_REMOTE_DEBUG} and not '${SYSTEM}' == 'Windows' and not ${NET_PLATFORM}">
+<kw name="Start Process" library="Process">
+<arg>mono</arg>
+<arg>${BINARY_NAME}</arg>
+<arg>@{PARAMS}</arg>
+<arg>cwd=${DIRECTORY}</arg>
+<doc>Starts a new process on background.</doc>
+<status status="NOT RUN" starttime="20260507 07:49:47.257" endtime="20260507 07:49:47.257"/>
+</kw>
+<status status="NOT RUN" starttime="20260507 07:49:47.256" endtime="20260507 07:49:47.257"/>
+</branch>
+<status status="PASS" starttime="20260507 07:49:47.256" endtime="20260507 07:49:47.257"/>
+</if>
+<if>
+<branch type="IF" condition="not ${SKIP_RUNNING_SERVER} and not ${SERVER_REMOTE_DEBUG} and '${SYSTEM}' == 'Windows'">
+<kw name="Start Process" library="Process">
+<arg>${BINARY_NAME}</arg>
+<arg>@{PARAMS}</arg>
+<arg>cwd=${DIRECTORY}</arg>
+<arg>shell=true</arg>
+<doc>Starts a new process on background.</doc>
+<status status="NOT RUN" starttime="20260507 07:49:47.257" endtime="20260507 07:49:47.257"/>
+</kw>
+<status status="NOT RUN" starttime="20260507 07:49:47.257" endtime="20260507 07:49:47.257"/>
+</branch>
+<status status="PASS" starttime="20260507 07:49:47.257" endtime="20260507 07:49:47.257"/>
+</if>
+<if>
+<branch type="IF" condition="not ${SKIP_RUNNING_SERVER} and not ${SERVER_REMOTE_DEBUG} and ${NET_PLATFORM}">
+<kw name="Start Process" library="Process">
+<arg>dotnet ${BINARY_NAME}</arg>
+<arg>@{PARAMS}</arg>
+<arg>cwd=${DIRECTORY}</arg>
+<arg>shell=true</arg>
+<doc>Starts a new process on background.</doc>
+<status status="NOT RUN" starttime="20260507 07:49:47.258" endtime="20260507 07:49:47.258"/>
+</kw>
+<status status="NOT RUN" starttime="20260507 07:49:47.257" endtime="20260507 07:49:47.258"/>
+</branch>
+<status status="PASS" starttime="20260507 07:49:47.257" endtime="20260507 07:49:47.258"/>
+</if>
+<if>
+<branch type="IF" condition="not ${SKIP_RUNNING_SERVER} and ${SERVER_REMOTE_DEBUG} and not '${SYSTEM}' == 'Windows' and not ${NET_PLATFORM}">
+<kw name="Start Process" library="Process">
+<arg>mono</arg>
+<arg>--debug</arg>
+<arg>--debugger-agent\=transport\=dt_socket,address\=0.0.0.0:${SERVER_REMOTE_PORT},server\=y,suspend\=${SERVER_REMOTE_SUSPEND}</arg>
+<arg>${BINARY_NAME}</arg>
+<arg>@{PARAMS}</arg>
+<arg>cwd=${DIRECTORY}</arg>
+<doc>Starts a new process on background.</doc>
+<status status="NOT RUN" starttime="20260507 07:49:47.258" endtime="20260507 07:49:47.258"/>
+</kw>
+<status status="NOT RUN" starttime="20260507 07:49:47.258" endtime="20260507 07:49:47.258"/>
+</branch>
+<status status="PASS" starttime="20260507 07:49:47.258" endtime="20260507 07:49:47.258"/>
+</if>
+<if>
+<branch type="IF" condition="not ${SKIP_RUNNING_SERVER} and ${SERVER_REMOTE_DEBUG} and '${SYSTEM}' == 'Windows'">
+<kw name="Fatal Error" library="BuiltIn">
+<arg>Windows doesn't support server remote debug option.</arg>
+<doc>Stops the whole test execution.</doc>
+<status status="NOT RUN" starttime="20260507 07:49:47.259" endtime="20260507 07:49:47.259"/>
+</kw>
+<status status="NOT RUN" starttime="20260507 07:49:47.258" endtime="20260507 07:49:47.259"/>
+</branch>
+<status status="PASS" starttime="20260507 07:49:47.258" endtime="20260507 07:49:47.259"/>
+</if>
+<if>
+<branch type="IF" condition="not '${SYSTEM}' == 'Windows'">
+<kw name="Wait Until Keyword Succeeds" library="BuiltIn">
+<arg>60s</arg>
+<arg>1s</arg>
+<arg>Import Library</arg>
+<arg>Remote</arg>
+<arg>http://127.0.0.1:${PORT_NUMBER}/</arg>
+<doc>Runs the specified keyword and retries if it fails.</doc>
+<msg timestamp="20260507 07:49:47.259" level="TRACE">Arguments: [ '60s' | '1s' | 'Import Library' | 'Remote' | 'http://127.0.0.1:${PORT_NUMBER}/' ]</msg>
+<kw name="Import Library" library="BuiltIn">
+<arg>Remote</arg>
+<arg>http://127.0.0.1:${PORT_NUMBER}/</arg>
+<doc>Imports a library with the given name and optional arguments.</doc>
+<msg timestamp="20260507 07:49:47.260" level="TRACE">Arguments: [ 'Remote' | 'http://127.0.0.1:${PORT_NUMBER}/' ]</msg>
+<msg timestamp="20260507 07:49:47.752" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260507 07:49:47.260" endtime="20260507 07:49:47.752"/>
+</kw>
+<msg timestamp="20260507 07:49:47.752" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260507 07:49:47.259" endtime="20260507 07:49:47.753"/>
+</kw>
+<status status="PASS" starttime="20260507 07:49:47.259" endtime="20260507 07:49:47.753"/>
+</branch>
+<status status="PASS" starttime="20260507 07:49:47.259" endtime="20260507 07:49:47.753"/>
+</if>
+<if>
+<branch type="IF" condition="'${SYSTEM}' == 'Windows'">
+<kw name="Wait Until Keyword Succeeds" library="BuiltIn">
+<arg>60s</arg>
+<arg>1s</arg>
+<arg>Import Library</arg>
+<arg>Remote</arg>
+<arg>http://localhost:${PORT_NUMBER}/</arg>
+<doc>Runs the specified keyword and retries if it fails.</doc>
+<status status="NOT RUN" starttime="20260507 07:49:47.753" endtime="20260507 07:49:47.753"/>
+</kw>
+<status status="NOT RUN" starttime="20260507 07:49:47.753" endtime="20260507 07:49:47.753"/>
+</branch>
+<status status="PASS" starttime="20260507 07:49:47.753" endtime="20260507 07:49:47.753"/>
+</if>
+<kw name="Setup Renode" library="renode-keywords">
+<msg timestamp="20260507 07:49:47.754" level="TRACE">Arguments: [  ]</msg>
+<kw name="Set Default Uart Timeout" library="Remote">
+<arg>${DEFAULT_UART_TIMEOUT}</arg>
+<msg timestamp="20260507 07:49:47.754" level="TRACE">Arguments: [ '8' ]</msg>
+<msg timestamp="20260507 07:49:47.788" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260507 07:49:47.754" endtime="20260507 07:49:47.788"/>
+</kw>
+<if>
+<branch type="IF" condition="${SAVE_LOGS}">
+<kw name="Enable Logging To Cache" library="Remote">
+<msg timestamp="20260507 07:49:47.789" level="TRACE">Arguments: [  ]</msg>
+<msg timestamp="20260507 07:49:47.796" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260507 07:49:47.789" endtime="20260507 07:49:47.796"/>
+</kw>
+<status status="PASS" starttime="20260507 07:49:47.788" endtime="20260507 07:49:47.796"/>
+</branch>
+<status status="PASS" starttime="20260507 07:49:47.788" endtime="20260507 07:49:47.796"/>
+</if>
+<kw name="Set Variable" library="BuiltIn">
+<var>${allowed_chars}</var>
+<arg>abcdefghijklmnopqrstuvwxyz01234567890_-</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20260507 07:49:47.797" level="TRACE">Arguments: [ 'abcdefghijklmnopqrstuvwxyz01234567890_-' ]</msg>
+<msg timestamp="20260507 07:49:47.797" level="TRACE">Return: 'abcdefghijklmnopqrstuvwxyz01234567890_-'</msg>
+<msg timestamp="20260507 07:49:47.797" level="INFO">${allowed_chars} = abcdefghijklmnopqrstuvwxyz01234567890_-</msg>
+<status status="PASS" starttime="20260507 07:49:47.796" endtime="20260507 07:49:47.797"/>
+</kw>
+<kw name="Convert To Lower Case" library="String">
+<var>${metrics_fname}</var>
+<arg>${SUITE_NAME}</arg>
+<doc>Converts string to lower case.</doc>
+<msg timestamp="20260507 07:49:47.797" level="TRACE">Arguments: [ 'full_suite' ]</msg>
+<msg timestamp="20260507 07:49:47.797" level="TRACE">Return: 'full_suite'</msg>
+<msg timestamp="20260507 07:49:47.797" level="INFO">${metrics_fname} = full_suite</msg>
+<status status="PASS" starttime="20260507 07:49:47.797" endtime="20260507 07:49:47.797"/>
+</kw>
+<kw name="Replace String" library="String">
+<var>${metrics_fname}</var>
+<arg>${metrics_fname}</arg>
+<arg>${SPACE}</arg>
+<arg>_</arg>
+<doc>Replaces ``search_for`` in the given ``string`` with ``replace_with``.</doc>
+<msg timestamp="20260507 07:49:47.798" level="TRACE">Arguments: [ 'full_suite' | ' ' | '_' ]</msg>
+<msg timestamp="20260507 07:49:47.798" level="TRACE">Return: 'full_suite'</msg>
+<msg timestamp="20260507 07:49:47.798" level="INFO">${metrics_fname} = full_suite</msg>
+<status status="PASS" starttime="20260507 07:49:47.797" endtime="20260507 07:49:47.798"/>
+</kw>
+<kw name="Replace String Using Regexp" library="String">
+<var>${metrics_fname}</var>
+<arg>${metrics_fname}</arg>
+<arg>[^${allowed_chars}]+</arg>
+<arg>${EMPTY}</arg>
+<doc>Replaces ``pattern`` in the given ``string`` with ``replace_with``.</doc>
+<msg timestamp="20260507 07:49:47.799" level="TRACE">Arguments: [ 'full_suite' | '[^abcdefghijklmnopqrstuvwxyz01234567890_-]+' | '' ]</msg>
+<msg timestamp="20260507 07:49:47.799" level="TRACE">Return: 'full_suite'</msg>
+<msg timestamp="20260507 07:49:47.799" level="INFO">${metrics_fname} = full_suite</msg>
+<status status="PASS" starttime="20260507 07:49:47.798" endtime="20260507 07:49:47.799"/>
+</kw>
+<kw name="Join Path" library="OperatingSystem">
+<var>${metrics_path}</var>
+<arg>${RESULTS_DIRECTORY}</arg>
+<arg>profiler-${metrics_fname}</arg>
+<doc>Joins the given path part(s) to the given base path.</doc>
+<msg timestamp="20260507 07:49:47.800" level="TRACE">Arguments: [ '/app/' | 'profiler-full_suite' ]</msg>
+<msg timestamp="20260507 07:49:47.800" level="TRACE">Return: '/app/profiler-full_suite'</msg>
+<msg timestamp="20260507 07:49:47.800" level="INFO">${metrics_path} = /app/profiler-full_suite</msg>
+<status status="PASS" starttime="20260507 07:49:47.799" endtime="20260507 07:49:47.800"/>
+</kw>
+<if>
+<branch type="IF" condition="${CREATE_EXECUTION_METRICS}">
+<kw name="Execute Command" library="Remote">
+<arg>EnableProfilerGlobally "${metrics_path}"</arg>
+<status status="NOT RUN" starttime="20260507 07:49:47.800" endtime="20260507 07:49:47.800"/>
+</kw>
+<status status="NOT RUN" starttime="20260507 07:49:47.800" endtime="20260507 07:49:47.800"/>
+</branch>
+<status status="PASS" starttime="20260507 07:49:47.800" endtime="20260507 07:49:47.800"/>
+</if>
+<kw name="Reset Emulation" library="Remote">
+<msg timestamp="20260507 07:49:47.800" level="TRACE">Arguments: [  ]</msg>
+<msg timestamp="20260507 07:49:47.824" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260507 07:49:47.800" endtime="20260507 07:49:47.824"/>
+</kw>
+<msg timestamp="20260507 07:49:47.824" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260507 07:49:47.754" endtime="20260507 07:49:47.824"/>
+</kw>
+<msg timestamp="20260507 07:49:47.824" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260507 07:49:47.253" endtime="20260507 07:49:47.824"/>
+</kw>
+<test id="s1-t1" name="Should Pass Full Test Suite" line="15">
+<kw name="Reset Emulation" library="Remote" type="SETUP">
+<msg timestamp="20260507 07:49:47.825" level="TRACE">Arguments: [  ]</msg>
+<msg timestamp="20260507 07:49:47.826" level="DEBUG">Test timeout 20 minutes active. 1199.999 seconds left.</msg>
+<msg timestamp="20260507 07:49:47.831" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260507 07:49:47.825" endtime="20260507 07:49:47.831"/>
+</kw>
+<kw name="Create Machine">
+<msg timestamp="20260507 07:49:47.832" level="TRACE">Arguments: [  ]</msg>
+<kw name="Execute Command" library="Remote">
+<arg>$global.TEST_FILE = @${FIRMWARE}</arg>
+<msg timestamp="20260507 07:49:47.832" level="TRACE">Arguments: [ '$global.TEST_FILE = @/app/.pio/build/seeed-xiao-rp2040/firmware.elf' ]</msg>
+<msg timestamp="20260507 07:49:47.833" level="DEBUG">Test timeout 20 minutes active. 1199.992 seconds left.</msg>
+<msg timestamp="20260507 07:49:47.872" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260507 07:49:47.832" endtime="20260507 07:49:47.872"/>
+</kw>
+<kw name="Execute Command" library="Remote">
+<arg>include @${RESC}</arg>
+<msg timestamp="20260507 07:49:47.873" level="TRACE">Arguments: [ 'include @/app/test/renode-config/run_xiao.resc' ]</msg>
+<msg timestamp="20260507 07:49:47.873" level="DEBUG">Test timeout 20 minutes active. 1199.952 seconds left.</msg>
+<msg timestamp="20260507 07:50:05.725" level="TRACE">Return: "Current 'PATH' value is: /app/test/renode-config;/opt/renode/bin;/opt/renode\n\n"</msg>
+<status status="PASS" starttime="20260507 07:49:47.872" endtime="20260507 07:50:05.725"/>
+</kw>
+<kw name="Create Terminal Tester" library="Remote">
+<arg>${UART}</arg>
+<msg timestamp="20260507 07:50:05.726" level="TRACE">Arguments: [ 'sysbus.uart0' ]</msg>
+<msg timestamp="20260507 07:50:05.726" level="DEBUG">Test timeout 20 minutes active. 1182.099 seconds left.</msg>
+<msg timestamp="20260507 07:50:05.739" level="TRACE">Return: 0</msg>
+<status status="PASS" starttime="20260507 07:50:05.725" endtime="20260507 07:50:05.739"/>
+</kw>
+<msg timestamp="20260507 07:50:05.739" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260507 07:49:47.831" endtime="20260507 07:50:05.739"/>
+</kw>
+<kw name="Start Emulation" library="Remote">
+<msg timestamp="20260507 07:50:05.739" level="TRACE">Arguments: [  ]</msg>
+<msg timestamp="20260507 07:50:05.740" level="DEBUG">Test timeout 20 minutes active. 1182.085 seconds left.</msg>
+<msg timestamp="20260507 07:50:05.883" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260507 07:50:05.739" endtime="20260507 07:50:05.883"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>Claimed Alarm ID:</arg>
+<msg timestamp="20260507 07:50:05.883" level="TRACE">Arguments: [ 'Claimed Alarm ID:' ]</msg>
+<msg timestamp="20260507 07:50:05.883" level="DEBUG">Test timeout 20 minutes active. 1181.941 seconds left.</msg>
+<msg timestamp="20260507 07:50:06.580" level="TRACE">Return: {'Groups': [],
+ 'IsFailingString': False,
+ 'Line': 'Claimed Alarm ID: 0',
+ 'Timestamp': 4.901824}</msg>
+<status status="PASS" starttime="20260507 07:50:05.883" endtime="20260507 07:50:06.581"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>UART Bidirectional Communication Ready</arg>
+<msg timestamp="20260507 07:50:06.581" level="TRACE">Arguments: [ 'UART Bidirectional Communication Ready' ]</msg>
+<msg timestamp="20260507 07:50:06.581" level="DEBUG">Test timeout 20 minutes active. 1181.244 seconds left.</msg>
+<msg timestamp="20260507 07:50:06.586" level="TRACE">Return: {'Groups': [],
+ 'IsFailingString': False,
+ 'Line': 'UART Bidirectional Communication Ready',
+ 'Timestamp': 4.901824}</msg>
+<status status="PASS" starttime="20260507 07:50:06.581" endtime="20260507 07:50:06.587"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>Hello from XIAO RP2040!</arg>
+<msg timestamp="20260507 07:50:06.587" level="TRACE">Arguments: [ 'Hello from XIAO RP2040!' ]</msg>
+<msg timestamp="20260507 07:50:06.587" level="DEBUG">Test timeout 20 minutes active. 1181.237 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.068" level="TRACE">Return: {'Groups': [],
+ 'IsFailingString': False,
+ 'Line': 'Hello from XIAO RP2040!',
+ 'Timestamp': 1001.0}</msg>
+<status status="PASS" starttime="20260507 07:50:06.587" endtime="20260507 07:50:49.068"/>
+</kw>
+<kw name="Write Char On Uart" library="Remote">
+<arg>X</arg>
+<msg timestamp="20260507 07:50:49.068" level="TRACE">Arguments: [ 'X' ]</msg>
+<msg timestamp="20260507 07:50:49.068" level="DEBUG">Test timeout 20 minutes active. 1138.756 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.077" level="TRACE">Return: {'Groups': [], 'IsFailingString': False, 'Line': '', 'Timestamp': 0.0}</msg>
+<status status="PASS" starttime="20260507 07:50:49.068" endtime="20260507 07:50:49.078"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>Echo: X</arg>
+<msg timestamp="20260507 07:50:49.078" level="TRACE">Arguments: [ 'Echo: X' ]</msg>
+<msg timestamp="20260507 07:50:49.078" level="DEBUG">Test timeout 20 minutes active. 1138.747 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.088" level="TRACE">Return: {'Groups': [],
+ 'IsFailingString': False,
+ 'Line': 'Echo: X',
+ 'Timestamp': 1001.303256}</msg>
+<status status="PASS" starttime="20260507 07:50:49.078" endtime="20260507 07:50:49.088"/>
+</kw>
+<kw name="Execute Command" library="Remote">
+<arg>${ADC} FeedVoltageSampleToChannel 0 1.65 1</arg>
+<msg timestamp="20260507 07:50:49.089" level="TRACE">Arguments: [ 'sysbus.adc FeedVoltageSampleToChannel 0 1.65 1' ]</msg>
+<msg timestamp="20260507 07:50:49.089" level="DEBUG">Test timeout 20 minutes active. 1138.736 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.233" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260507 07:50:49.088" endtime="20260507 07:50:49.233"/>
+</kw>
+<kw name="Write Char On Uart" library="Remote">
+<arg>A</arg>
+<msg timestamp="20260507 07:50:49.234" level="TRACE">Arguments: [ 'A' ]</msg>
+<msg timestamp="20260507 07:50:49.234" level="DEBUG">Test timeout 20 minutes active. 1138.59 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.243" level="TRACE">Return: {'Groups': [], 'IsFailingString': False, 'Line': '', 'Timestamp': 0.0}</msg>
+<status status="PASS" starttime="20260507 07:50:49.234" endtime="20260507 07:50:49.243"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>ADC0: 2048</arg>
+<msg timestamp="20260507 07:50:49.244" level="TRACE">Arguments: [ 'ADC0: 2048' ]</msg>
+<msg timestamp="20260507 07:50:49.244" level="DEBUG">Test timeout 20 minutes active. 1138.581 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.256" level="TRACE">Return: {'Groups': [],
+ 'IsFailingString': False,
+ 'Line': 'ADC0: 2048',
+ 'Timestamp': 1004.9}</msg>
+<status status="PASS" starttime="20260507 07:50:49.243" endtime="20260507 07:50:49.256"/>
+</kw>
+<kw name="Write Char On Uart" library="Remote">
+<arg>P</arg>
+<msg timestamp="20260507 07:50:49.256" level="TRACE">Arguments: [ 'P' ]</msg>
+<msg timestamp="20260507 07:50:49.256" level="DEBUG">Test timeout 20 minutes active. 1138.568 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.260" level="TRACE">Return: {'Groups': [], 'IsFailingString': False, 'Line': '', 'Timestamp': 0.0}</msg>
+<status status="PASS" starttime="20260507 07:50:49.256" endtime="20260507 07:50:49.260"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>PWM set to: 64</arg>
+<msg timestamp="20260507 07:50:49.260" level="TRACE">Arguments: [ 'PWM set to: 64' ]</msg>
+<msg timestamp="20260507 07:50:49.260" level="DEBUG">Test timeout 20 minutes active. 1138.564 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.270" level="TRACE">Return: {'Groups': [],
+ 'IsFailingString': False,
+ 'Line': 'PWM set to: 64',
+ 'Timestamp': 1005.11876}</msg>
+<status status="PASS" starttime="20260507 07:50:49.260" endtime="20260507 07:50:49.270"/>
+</kw>
+<kw name="Verify Duty Cycle">
+<arg>0</arg>
+<arg>B</arg>
+<arg>0.25</arg>
+<msg timestamp="20260507 07:50:49.270" level="TRACE">Arguments: [ ${slice}='0' | ${channel}='B' | ${expected_dc}='0.25' ]</msg>
+<kw name="Execute Command" library="Remote">
+<var>${res}</var>
+<arg>sysbus.pwm GetDutyCycle${channel} ${slice}</arg>
+<msg timestamp="20260507 07:50:49.271" level="TRACE">Arguments: [ 'sysbus.pwm GetDutyCycleB 0' ]</msg>
+<msg timestamp="20260507 07:50:49.271" level="DEBUG">Test timeout 20 minutes active. 1138.554 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.385" level="TRACE">Return: '0.25098039215686274\n\n'</msg>
+<msg timestamp="20260507 07:50:49.385" level="INFO">${res} = 0.25098039215686274
+
+</msg>
+<status status="PASS" starttime="20260507 07:50:49.271" endtime="20260507 07:50:49.385"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>Raw Duty Cycle: ${res}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20260507 07:50:49.386" level="TRACE">Arguments: [ 'Raw Duty Cycle: 0.25098039215686274\n\n' ]</msg>
+<msg timestamp="20260507 07:50:49.386" level="DEBUG">Test timeout 20 minutes active. 1138.439 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.386" level="INFO">Raw Duty Cycle: 0.25098039215686274
+
+</msg>
+<msg timestamp="20260507 07:50:49.386" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260507 07:50:49.385" endtime="20260507 07:50:49.386"/>
+</kw>
+<kw name="Evaluate" library="BuiltIn">
+<var>${res}</var>
+<arg>"""${res}""".strip()</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<msg timestamp="20260507 07:50:49.386" level="TRACE">Arguments: [ '"""0.25098039215686274\n\n""".strip()' ]</msg>
+<msg timestamp="20260507 07:50:49.386" level="DEBUG">Test timeout 20 minutes active. 1138.438 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.387" level="TRACE">Return: '0.25098039215686274'</msg>
+<msg timestamp="20260507 07:50:49.387" level="INFO">${res} = 0.25098039215686274</msg>
+<status status="PASS" starttime="20260507 07:50:49.386" endtime="20260507 07:50:49.387"/>
+</kw>
+<kw name="Log" library="BuiltIn">
+<arg>Stripped Duty Cycle: ${res}</arg>
+<doc>Logs the given message with the given level.</doc>
+<msg timestamp="20260507 07:50:49.387" level="TRACE">Arguments: [ 'Stripped Duty Cycle: 0.25098039215686274' ]</msg>
+<msg timestamp="20260507 07:50:49.387" level="DEBUG">Test timeout 20 minutes active. 1138.437 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.387" level="INFO">Stripped Duty Cycle: 0.25098039215686274</msg>
+<msg timestamp="20260507 07:50:49.387" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260507 07:50:49.387" endtime="20260507 07:50:49.387"/>
+</kw>
+<kw name="Should Be True" library="BuiltIn">
+<arg>abs(float("${res}") - ${expected_dc}) &lt; 0.05</arg>
+<doc>Fails if the given condition is not true.</doc>
+<msg timestamp="20260507 07:50:49.388" level="TRACE">Arguments: [ 'abs(float("0.25098039215686274") - 0.25) &lt; 0.05' ]</msg>
+<msg timestamp="20260507 07:50:49.388" level="DEBUG">Test timeout 20 minutes active. 1138.437 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.388" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260507 07:50:49.387" endtime="20260507 07:50:49.388"/>
+</kw>
+<msg timestamp="20260507 07:50:49.388" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260507 07:50:49.270" endtime="20260507 07:50:49.388"/>
+</kw>
+<kw name="Write Char On Uart" library="Remote">
+<arg>I</arg>
+<msg timestamp="20260507 07:50:49.388" level="TRACE">Arguments: [ 'I' ]</msg>
+<msg timestamp="20260507 07:50:49.388" level="DEBUG">Test timeout 20 minutes active. 1138.436 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.393" level="TRACE">Return: {'Groups': [], 'IsFailingString': False, 'Line': '', 'Timestamp': 0.0}</msg>
+<status status="PASS" starttime="20260507 07:50:49.388" endtime="20260507 07:50:49.393"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>BMP280 ID: 0x58</arg>
+<msg timestamp="20260507 07:50:49.393" level="TRACE">Arguments: [ 'BMP280 ID: 0x58' ]</msg>
+<msg timestamp="20260507 07:50:49.393" level="DEBUG">Test timeout 20 minutes active. 1138.431 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.400" level="TRACE">Return: {'Groups': [],
+ 'IsFailingString': False,
+ 'Line': 'BMP280 ID: 0x58',
+ 'Timestamp': 1008.2}</msg>
+<status status="PASS" starttime="20260507 07:50:49.393" endtime="20260507 07:50:49.400"/>
+</kw>
+<kw name="Execute Command" library="Remote">
+<arg>sysbus.gpio OnGPIO 21 true</arg>
+<msg timestamp="20260507 07:50:49.401" level="TRACE">Arguments: [ 'sysbus.gpio OnGPIO 21 true' ]</msg>
+<msg timestamp="20260507 07:50:49.401" level="DEBUG">Test timeout 20 minutes active. 1138.424 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.492" level="TRACE">Return: ''</msg>
+<status status="PASS" starttime="20260507 07:50:49.401" endtime="20260507 07:50:49.492"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>GPIO Interrupt Handled</arg>
+<msg timestamp="20260507 07:50:49.493" level="TRACE">Arguments: [ 'GPIO Interrupt Handled' ]</msg>
+<msg timestamp="20260507 07:50:49.493" level="DEBUG">Test timeout 20 minutes active. 1138.331 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.498" level="TRACE">Return: {'Groups': [],
+ 'IsFailingString': False,
+ 'Line': 'GPIO Interrupt Handled',
+ 'Timestamp': 1010.523456}</msg>
+<status status="PASS" starttime="20260507 07:50:49.493" endtime="20260507 07:50:49.498"/>
+</kw>
+<kw name="Write Char On Uart" library="Remote">
+<arg>S</arg>
+<msg timestamp="20260507 07:50:49.498" level="TRACE">Arguments: [ 'S' ]</msg>
+<msg timestamp="20260507 07:50:49.498" level="DEBUG">Test timeout 20 minutes active. 1138.326 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.503" level="TRACE">Return: {'Groups': [], 'IsFailingString': False, 'Line': '', 'Timestamp': 0.0}</msg>
+<status status="PASS" starttime="20260507 07:50:49.498" endtime="20260507 07:50:49.503"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>SPI Loopback Success: 0xBC</arg>
+<msg timestamp="20260507 07:50:49.503" level="TRACE">Arguments: [ 'SPI Loopback Success: 0xBC' ]</msg>
+<msg timestamp="20260507 07:50:49.503" level="DEBUG">Test timeout 20 minutes active. 1138.321 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.517" level="TRACE">Return: {'Groups': [],
+ 'IsFailingString': False,
+ 'Line': 'SPI Loopback Success: 0xBC',
+ 'Timestamp': 1010.87204}</msg>
+<status status="PASS" starttime="20260507 07:50:49.503" endtime="20260507 07:50:49.517"/>
+</kw>
+<kw name="Write Char On Uart" library="Remote">
+<arg>j</arg>
+<msg timestamp="20260507 07:50:49.518" level="TRACE">Arguments: [ 'j' ]</msg>
+<msg timestamp="20260507 07:50:49.518" level="DEBUG">Test timeout 20 minutes active. 1138.307 seconds left.</msg>
+<msg timestamp="20260507 07:50:49.520" level="TRACE">Return: {'Groups': [], 'IsFailingString': False, 'Line': '', 'Timestamp': 0.0}</msg>
+<status status="PASS" starttime="20260507 07:50:49.517" endtime="20260507 07:50:49.520"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>JEDEC ID: EF 28 15</arg>
+<msg timestamp="20260507 07:50:49.521" level="TRACE">Arguments: [ 'JEDEC ID: EF 28 15' ]</msg>
+<msg timestamp="20260507 07:50:49.521" level="DEBUG">Test timeout 20 minutes active. 1138.304 seconds left.</msg>
+<msg timestamp="20260507 07:56:17.645" level="FAIL">InvalidOperationException: Terminal tester failed!
+
+Full report:
+([host: 05/07/2026 07:50:05, virt:       0] Attached to UART event: success)
+[host: 05/07/2026 07:50:06, virt:       4] Claimed Alarm ID: 0
+([host: 05/07/2026 07:50:06, virt: 4.901824] Line containing &gt;&gt;Claimed Alarm ID:&lt;&lt; event: success)
+[host: 05/07/2026 07:50:06, virt:       4] UART Bidirectional Communication Ready
+([host: 05/07/2026 07:50:06, virt: 4.901824] Line containing &gt;&gt;UART Bidirectional Communication Ready&lt;&lt; event: success)
+[host: 05/07/2026 07:50:49, virt:    1001] Hello from XIAO RP2040!
+([host: 05/07/2026 07:50:49, virt:    1001] Line containing &gt;&gt;Hello from XIAO RP2040!&lt;&lt; event: success)
+[host: 05/07/2026 07:50:49, virt:    1001] Echo: X
+([host: 05/07/2026 07:50:49, virt: 1001.303256] Line containing &gt;&gt;Echo: X&lt;&lt; event: success)
+[host: 05/07/2026 07:50:49, virt:    1004] ADC0: 2048
+([host: 05/07/2026 07:50:49, virt:  1004.9] Line containing &gt;&gt;ADC0: 2048&lt;&lt; event: success)
+[host: 05/07/2026 07:50:49, virt:    1005] PWM set to: 64
+([host: 05/07/2026 07:50:49, virt: 1005.11876] Line containing &gt;&gt;PWM set to: 64&lt;&lt; event: success)
+[host: 05/07/2026 07:50:49, virt:    1008] BMP280 ID: 0x58
+([host: 05/07/2026 07:50:49, virt:  1008.2] Line containing &gt;&gt;BMP280 ID: 0x58&lt;&lt; event: success)
+[host: 05/07/2026 07:50:49, virt:    1010] GPIO Interrupt Handled
+([host: 05/07/2026 07:50:49, virt: 1010.523456] Line containing &gt;&gt;GPIO Interrupt Handled&lt;&lt; event: success)
+[host: 05/07/2026 07:50:49, virt:    1010] SPI Loopback Success: 0xBC
+([host: 05/07/2026 07:50:49, virt: 1010.87204] Line containing &gt;&gt;SPI Loopback Success: 0xBC&lt;&lt; event: success)
+[host: 05/07/2026 07:50:49, virt:    1011] JEDEC ID: 00 00 00
+[host: 05/07/2026 07:51:29, virt:    2002] Hello from XIAO RP2040!
+[host: 05/07/2026 07:52:12, virt:    3003] Hello from XIAO RP2040!
+[host: 05/07/2026 07:52:52, virt:    4004] Hello from XIAO RP2040!
+[host: 05/07/2026 07:53:31, virt:    5005] Hello from XIAO RP2040!
+[host: 05/07/2026 07:54:12, virt:    6006] Hello from XIAO RP2040!
+[host: 05/07/2026 07:54:52, virt:    7007] Hello from XIAO RP2040!
+[host: 05/07/2026 07:55:30, virt:    8008] Hello from XIAO RP2040!
+[host: 05/07/2026 07:56:17, virt:    9009] Hello from XIAO RP2040!
+ [[no newline]]
+([host: 05/07/2026 07:56:17, virt:    9011] Line containing &gt;&gt;JEDEC ID: EF 28 15&lt;&lt; event: failure)
+
+</msg>
+<msg timestamp="20260507 07:56:17.645" level="DEBUG">InvalidOperationException:    at Antmicro.Renode.RobotFramework.UartKeywords.OperationFail(TerminalTester tester)
+   at Antmicro.Renode.RobotFramework.UartKeywords.DoTest[T](Nullable`1 timeout, Nullable`1 testerId, Func`3 test, Boolean expectBinaryModeTester)
+   at Antmicro.Renode.RobotFramework.UartKeywords.WaitForLineOnUart(String content, Nullable`1 timeout, Nullable`1 testerId, Boolean treatAsRegex, Boolean includeUnfinishedLine, Nullable`1 pauseEmulation, Nullable`1 matchNextLine)
+   at InvokeStub_UartKeywords.WaitForLineOnUart(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithManyArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+</msg>
+<status status="FAIL" starttime="20260507 07:50:49.521" endtime="20260507 07:56:17.645"/>
+</kw>
+<kw name="Write Char On Uart" library="Remote">
+<arg>T</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.645" endtime="20260507 07:56:17.645"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>One-shot Timer Alarm Set for 100ms</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.645" endtime="20260507 07:56:17.646"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>Timer Alarm Handled</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.646" endtime="20260507 07:56:17.646"/>
+</kw>
+<kw name="Write Char On Uart" library="Remote">
+<arg>U</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.646" endtime="20260507 07:56:17.646"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>Periodic Timer Started (100ms)</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.646" endtime="20260507 07:56:17.646"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>Timer Alarm Handled</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.646" endtime="20260507 07:56:17.646"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>Timer Alarm Handled</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.646" endtime="20260507 07:56:17.646"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>Timer Alarm Handled</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.646" endtime="20260507 07:56:17.646"/>
+</kw>
+<kw name="Write Char On Uart" library="Remote">
+<arg>U</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.646" endtime="20260507 07:56:17.646"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>Periodic Timer Stopped</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.647" endtime="20260507 07:56:17.647"/>
+</kw>
+<kw name="Write Char On Uart" library="Remote">
+<arg>B</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.647" endtime="20260507 07:56:17.647"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>PIO Blinking Started</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.647" endtime="20260507 07:56:17.647"/>
+</kw>
+<kw name="Create Led Tester" library="Remote">
+<arg>sysbus.gpio.led_green</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.647" endtime="20260507 07:56:17.647"/>
+</kw>
+<kw name="Assert Led Is Blinking" library="Remote">
+<arg>testDuration=2</arg>
+<arg>onDuration=0.5</arg>
+<arg>offDuration=0.5</arg>
+<arg>tolerance=0.1</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.647" endtime="20260507 07:56:17.647"/>
+</kw>
+<kw name="Write Char On Uart" library="Remote">
+<arg>B</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.647" endtime="20260507 07:56:17.647"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>PIO Blinking Stopped</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.647" endtime="20260507 07:56:17.647"/>
+</kw>
+<kw name="Write Char On Uart" library="Remote">
+<arg>M</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.647" endtime="20260507 07:56:17.647"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>PWM Interrupt Enabled for Slice 0</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.647" endtime="20260507 07:56:17.647"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>PWM Interrupt Handled</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.648" endtime="20260507 07:56:17.648"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>PWM Interrupt Handled</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.648" endtime="20260507 07:56:17.648"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>PWM Interrupt Handled</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.648" endtime="20260507 07:56:17.648"/>
+</kw>
+<kw name="Write Char On Uart" library="Remote">
+<arg>D</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.648" endtime="20260507 07:56:17.648"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>DMA Transfer Success: DMA TRANSFER TEST</arg>
+<arg>timeout=60</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.648" endtime="20260507 07:56:17.648"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>DMA Interrupt Handled</arg>
+<arg>timeout=60</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.648" endtime="20260507 07:56:17.648"/>
+</kw>
+<kw name="Write Char On Uart" library="Remote">
+<arg>W</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.648" endtime="20260507 07:56:17.648"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>Watchdog Enabled (500ms)</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.648" endtime="20260507 07:56:17.648"/>
+</kw>
+<kw name="Sleep" library="BuiltIn">
+<arg>0.2</arg>
+<doc>Pauses the test executed for the given time.</doc>
+<status status="NOT RUN" starttime="20260507 07:56:17.648" endtime="20260507 07:56:17.648"/>
+</kw>
+<kw name="Write Char On Uart" library="Remote">
+<arg>K</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.648" endtime="20260507 07:56:17.649"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>Watchdog Kicked</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.649" endtime="20260507 07:56:17.649"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>Watchdog Reboot Detected</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.649" endtime="20260507 07:56:17.649"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>Claimed Alarm ID:</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.649" endtime="20260507 07:56:17.649"/>
+</kw>
+<kw name="Wait For Line On Uart" library="Remote">
+<arg>UART Bidirectional Communication Ready</arg>
+<status status="NOT RUN" starttime="20260507 07:56:17.649" endtime="20260507 07:56:17.649"/>
+</kw>
+<kw name="Test Teardown" library="renode-keywords" type="TEARDOWN">
+<msg timestamp="20260507 07:56:17.651" level="TRACE">Arguments: [  ]</msg>
+<kw name="Stop Profiler" library="renode-keywords">
+<msg timestamp="20260507 07:56:17.651" level="TRACE">Arguments: [  ]</msg>
+<if>
+<branch type="IF" condition="${PROFILER_PROCESS}">
+<kw name="Terminate Process" library="Process">
+<arg>${PROFILER_PROCESS}</arg>
+<doc>Stops the process gracefully or forcefully.</doc>
+<status status="NOT RUN" starttime="20260507 07:56:17.651" endtime="20260507 07:56:17.651"/>
+</kw>
+<kw name="Set Test Variable" library="BuiltIn">
+<arg>${PROFILER_PROCESS}</arg>
+<arg>None</arg>
+<doc>Makes a variable available everywhere within the scope of the current test.</doc>
+<status status="NOT RUN" starttime="20260507 07:56:17.652" endtime="20260507 07:56:17.652"/>
+</kw>
+<status status="NOT RUN" starttime="20260507 07:56:17.651" endtime="20260507 07:56:17.652"/>
+</branch>
+<status status="PASS" starttime="20260507 07:56:17.651" endtime="20260507 07:56:17.652"/>
+</if>
+<msg timestamp="20260507 07:56:17.652" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260507 07:56:17.651" endtime="20260507 07:56:17.652"/>
+</kw>
+<kw name="Run Keyword If Test Failed" library="BuiltIn">
+<var>${failed}</var>
+<arg>Set Variable</arg>
+<arg>True</arg>
+<doc>Runs the given keyword with the given arguments, if the test failed.</doc>
+<msg timestamp="20260507 07:56:17.652" level="TRACE">Arguments: [ 'Set Variable' | 'True' ]</msg>
+<kw name="Set Variable" library="BuiltIn">
+<arg>True</arg>
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<msg timestamp="20260507 07:56:17.652" level="TRACE">Arguments: [ 'True' ]</msg>
+<msg timestamp="20260507 07:56:17.652" level="TRACE">Return: 'True'</msg>
+<status status="PASS" starttime="20260507 07:56:17.652" endtime="20260507 07:56:17.652"/>
+</kw>
+<msg timestamp="20260507 07:56:17.652" level="TRACE">Return: 'True'</msg>
+<msg timestamp="20260507 07:56:17.653" level="INFO">${failed} = True</msg>
+<status status="PASS" starttime="20260507 07:56:17.652" endtime="20260507 07:56:17.653"/>
+</kw>
+<if>
+<branch type="IF" condition="${failed}">
+<kw name="Strip String" library="String">
+<var>${message}</var>
+<arg>${TEST_MESSAGE}</arg>
+<arg>mode=right</arg>
+<doc>Remove leading and/or trailing whitespaces from the given string.</doc>
+<msg timestamp="20260507 07:56:17.653" level="TRACE">Arguments: [ 'InvalidOperationException: Terminal tester failed!\n\nFull report:\n([host: 05/07/2026 07:50:05, virt:       0] Attached to UART event: success)\n[host: 05/07/2026 07:50:06, virt:       4] Claimed Alarm ID: 0\n([host: 05/07/2026 07:50:06, virt: 4.901824] Line containing &gt;&gt;Claimed Alarm ID:&lt;&lt; event: success)\n[host: 05/07/2026 07:50:06, virt:       4] UART Bidirectional Communication Ready\n([host: 05/07/2026 07:50:06, virt: 4.901824] Line containing &gt;&gt;UART Bidirectional Communication Ready&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1001] Hello from XIAO RP2040!\n([host: 05/07/2026 07:50:49, virt:    1001] Line containing &gt;&gt;Hello from XIAO RP2040!&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1001] Echo: X\n([host: 05/07/2026 07:50:49, virt: 1001.303256] Line containing &gt;&gt;Echo: X&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1004] ADC0: 2048\n([host: 05/07/2026 07:50:49, virt:  1004.9] Line containing &gt;&gt;ADC0: 2048&lt;&lt; event: success)\n    [ Message content over the limit has been removed. ]\n...7:50:49, virt:  1008.2] Line containing &gt;&gt;BMP280 ID: 0x58&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1010] GPIO Interrupt Handled\n([host: 05/07/2026 07:50:49, virt: 1010.523456] Line containing &gt;&gt;GPIO Interrupt Handled&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1010] SPI Loopback Success: 0xBC\n([host: 05/07/2026 07:50:49, virt: 1010.87204] Line containing &gt;&gt;SPI Loopback Success: 0xBC&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1011] JEDEC ID: 00 00 00\n[host: 05/07/2026 07:51:29, virt:    2002] Hello from XIAO RP2040!\n[host: 05/07/2026 07:52:12, virt:    3003] Hello from XIAO RP2040!\n[host: 05/07/2026 07:52:52, virt:    4004] Hello from XIAO RP2040!\n[host: 05/07/2026 07:53:31, virt:    5005] Hello from XIAO RP2040!\n[host: 05/07/2026 07:54:12, virt:    6006] Hello from XIAO RP2040!\n[host: 05/07/2026 07:54:52, virt:    7007] Hello from XIAO RP2040!\n[host: 05/07/2026 07:55:30, virt:    8008] Hello from XIAO RP2040!\n[host: 05/07/2026 07:56:17, virt:    9009] Hello from XIAO RP2040!\n [[no newline]]\n([host: 05/07/2026 07:56:17, virt:    9011] Line containing &gt;&gt;JEDEC ID: EF 28 15&lt;&lt; event: failure)\n' | mode='right' ]</msg>
+<msg timestamp="20260507 07:56:17.653" level="TRACE">Return: 'InvalidOperationException: Terminal tester failed!\n\nFull report:\n([host: 05/07/2026 07:50:05, virt:       0] Attached to UART event: success)\n[host: 05/07/2026 07:50:06, virt:       4] Claimed Alarm ID: 0\n([host: 05/07/2026 07:50:06, virt: 4.901824] Line containing &gt;&gt;Claimed Alarm ID:&lt;&lt; event: success)\n[host: 05/07/2026 07:50:06, virt:       4] UART Bidirectional Communication Ready\n([host: 05/07/2026 07:50:06, virt: 4.901824] Line containing &gt;&gt;UART Bidirectional Communication Ready&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1001] Hello from XIAO RP2040!\n([host: 05/07/2026 07:50:49, virt:    1001] Line containing &gt;&gt;Hello from XIAO RP2040!&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1001] Echo: X\n([host: 05/07/2026 07:50:49, virt: 1001.303256] Line containing &gt;&gt;Echo: X&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1004] ADC0: 2048\n([host: 05/07/2026 07:50:49, virt:  1004.9] Line containing &gt;&gt;ADC0: 2048&lt;&lt; event: success)\n    [ Message content over the limit has been removed. ]\n...7:50:49, virt:  1008.2] Line containing &gt;&gt;BMP280 ID: 0x58&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1010] GPIO Interrupt Handled\n([host: 05/07/2026 07:50:49, virt: 1010.523456] Line containing &gt;&gt;GPIO Interrupt Handled&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1010] SPI Loopback Success: 0xBC\n([host: 05/07/2026 07:50:49, virt: 1010.87204] Line containing &gt;&gt;SPI Loopback Success: 0xBC&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1011] JEDEC ID: 00 00 00\n[host: 05/07/2026 07:51:29, virt:    2002] Hello from XIAO RP2040!\n[host: 05/07/2026 07:52:12, virt:    3003] Hello from XIAO RP2040!\n[host: 05/07/2026 07:52:52, virt:    4004] Hello from XIAO RP2040!\n[host: 05/07/2026 07:53:31, virt:    5005] Hello from XIAO RP2040!\n[host: 05/07/2026 07:54:12, virt:    6006] Hello from XIAO RP2040!\n[host: 05/07/2026 07:54:52, virt:    7007] Hello from XIAO RP2040!\n[host: 05/07/2026 07:55:30, virt:    8008] Hello from XIAO RP2040!\n[host: 05/07/2026 07:56:17, virt:    9009] Hello from XIAO RP2040!\n [[no newline]]\n([host: 05/07/2026 07:56:17, virt:    9011] Line containing &gt;&gt;JEDEC ID: EF 28 15&lt;&lt; event: failure)'</msg>
+<msg timestamp="20260507 07:56:17.653" level="INFO">${message} = InvalidOperationException: Terminal tester failed!
+
+Full report:
+([host: 05/07/2026 07:50:05, virt:       0] Attached to UART event: success)
+[host: 05/07/2026 07:50:06, virt:       4] Claimed Alarm I...</msg>
+<status status="PASS" starttime="20260507 07:56:17.653" endtime="20260507 07:56:17.653"/>
+</kw>
+<kw name="Set Test Message" library="BuiltIn">
+<arg>${message}</arg>
+<doc>Sets message for the current test case.</doc>
+<msg timestamp="20260507 07:56:17.654" level="TRACE">Arguments: [ 'InvalidOperationException: Terminal tester failed!\n\nFull report:\n([host: 05/07/2026 07:50:05, virt:       0] Attached to UART event: success)\n[host: 05/07/2026 07:50:06, virt:       4] Claimed Alarm ID: 0\n([host: 05/07/2026 07:50:06, virt: 4.901824] Line containing &gt;&gt;Claimed Alarm ID:&lt;&lt; event: success)\n[host: 05/07/2026 07:50:06, virt:       4] UART Bidirectional Communication Ready\n([host: 05/07/2026 07:50:06, virt: 4.901824] Line containing &gt;&gt;UART Bidirectional Communication Ready&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1001] Hello from XIAO RP2040!\n([host: 05/07/2026 07:50:49, virt:    1001] Line containing &gt;&gt;Hello from XIAO RP2040!&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1001] Echo: X\n([host: 05/07/2026 07:50:49, virt: 1001.303256] Line containing &gt;&gt;Echo: X&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1004] ADC0: 2048\n([host: 05/07/2026 07:50:49, virt:  1004.9] Line containing &gt;&gt;ADC0: 2048&lt;&lt; event: success)\n    [ Message content over the limit has been removed. ]\n...7:50:49, virt:  1008.2] Line containing &gt;&gt;BMP280 ID: 0x58&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1010] GPIO Interrupt Handled\n([host: 05/07/2026 07:50:49, virt: 1010.523456] Line containing &gt;&gt;GPIO Interrupt Handled&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1010] SPI Loopback Success: 0xBC\n([host: 05/07/2026 07:50:49, virt: 1010.87204] Line containing &gt;&gt;SPI Loopback Success: 0xBC&lt;&lt; event: success)\n[host: 05/07/2026 07:50:49, virt:    1011] JEDEC ID: 00 00 00\n[host: 05/07/2026 07:51:29, virt:    2002] Hello from XIAO RP2040!\n[host: 05/07/2026 07:52:12, virt:    3003] Hello from XIAO RP2040!\n[host: 05/07/2026 07:52:52, virt:    4004] Hello from XIAO RP2040!\n[host: 05/07/2026 07:53:31, virt:    5005] Hello from XIAO RP2040!\n[host: 05/07/2026 07:54:12, virt:    6006] Hello from XIAO RP2040!\n[host: 05/07/2026 07:54:52, virt:    7007] Hello from XIAO RP2040!\n[host: 05/07/2026 07:55:30, virt:    8008] Hello from XIAO RP2040!\n[host: 05/07/2026 07:56:17, virt:    9009] Hello from XIAO RP2040!\n [[no newline]]\n([host: 05/07/2026 07:56:17, virt:    9011] Line containing &gt;&gt;JEDEC ID: EF 28 15&lt;&lt; event: failure)' ]</msg>
+<msg timestamp="20260507 07:56:17.654" level="INFO">Set test message to:
+InvalidOperationException: Terminal tester failed!
+
+Full report:
+([host: 05/07/2026 07:50:05, virt:       0] Attached to UART event: success)
+[host: 05/07/2026 07:50:06, virt:       4] Claimed Alarm ID: 0
+([host: 05/07/2026 07:50:06, virt: 4.901824] Line containing &gt;&gt;Claimed Alarm ID:&lt;&lt; event: success)
+[host: 05/07/2026 07:50:06, virt:       4] UART Bidirectional Communication Ready
+([host: 05/07/2026 07:50:06, virt: 4.901824] Line containing &gt;&gt;UART Bidirectional Communication Ready&lt;&lt; event: success)
+[host: 05/07/2026 07:50:49, virt:    1001] Hello from XIAO RP2040!
+([host: 05/07/2026 07:50:49, virt:    1001] Line containing &gt;&gt;Hello from XIAO RP2040!&lt;&lt; event: success)
+[host: 05/07/2026 07:50:49, virt:    1001] Echo: X
+([host: 05/07/2026 07:50:49, virt: 1001.303256] Line containing &gt;&gt;Echo: X&lt;&lt; event: success)
+[host: 05/07/2026 07:50:49, virt:    1004] ADC0: 2048
+([host: 05/07/2026 07:50:49, virt:  1004.9] Line containing &gt;&gt;ADC0: 2048&lt;&lt; event: success)
+    [ Message content over the limit has been removed. ]
+...7:50:49, virt:  1008.2] Line containing &gt;&gt;BMP280 ID: 0x58&lt;&lt; event: success)
+[host: 05/07/2026 07:50:49, virt:    1010] GPIO Interrupt Handled
+([host: 05/07/2026 07:50:49, virt: 1010.523456] Line containing &gt;&gt;GPIO Interrupt Handled&lt;&lt; event: success)
+[host: 05/07/2026 07:50:49, virt:    1010] SPI Loopback Success: 0xBC
+([host: 05/07/2026 07:50:49, virt: 1010.87204] Line containing &gt;&gt;SPI Loopback Success: 0xBC&lt;&lt; event: success)
+[host: 05/07/2026 07:50:49, virt:    1011] JEDEC ID: 00 00 00
+[host: 05/07/2026 07:51:29, virt:    2002] Hello from XIAO RP2040!
+[host: 05/07/2026 07:52:12, virt:    3003] Hello from XIAO RP2040!
+[host: 05/07/2026 07:52:52, virt:    4004] Hello from XIAO RP2040!
+[host: 05/07/2026 07:53:31, virt:    5005] Hello from XIAO RP2040!
+[host: 05/07/2026 07:54:12, virt:    6006] Hello from XIAO RP2040!
+[host: 05/07/2026 07:54:52, virt:    7007] Hello from XIAO RP2040!
+[host: 05/07/2026 07:55:30, virt:    8008] Hello from XIAO RP2040!
+[host: 05/07/2026 07:56:17, virt:    9009] Hello from XIAO RP2040!
+ [[no newline]]
+([host: 05/07/2026 07:56:17, virt:    9011] Line containing &gt;&gt;JEDEC ID: EF 28 15&lt;&lt; event: failure)</msg>
+<msg timestamp="20260507 07:56:17.654" level="TRACE">Return: None</msg>
+<status status="PASS" starttime="20260507 07:56:17.654" endtime="20260507 07:56:17.654"/>
+</kw>
+<status status="PASS" starttime="20260507 07:56:17.653" endtime="20260507 07:56:17.654"/>
+</branch>
+<status status="PASS" starttime="20260507 07:56:17.653" endtime="20260507 07:56:17.654"/>
+</if>
+<kw name="Run Keyword If Timeout Occurred" library="BuiltIn">
+<var>${timed_out}</var>
+<arg>Set Variable</arg>
+<arg>True</arg>
+<doc>Runs the given keyword if either a test or a keyword timeout has occurred.</doc>
+<msg timestamp="20260507 07:56:17.654" level="TRACE">
