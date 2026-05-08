@@ -44,9 +44,10 @@ Four internal pacing timers can be used as TREQ sources instead of external DREQ
 - [x] CRC/Sniffer logic for basic checksums.
 
 ### Phase 2: Advanced Features & Refinement
-- [ ] Implement `CHAN_ABORT` logic to safely terminate in-progress sequences.
+- [x] Implement `CHAN_ABORT` logic to safely terminate in-progress sequences.
+- [x] Implement `N_CHANNELS` register for channel discovery.
 - [ ] Implement Pacing Timers (`TIMER0`-`TIMER3`) for periodic transfers.
-- [ ] Implement full interrupt masking and forcing logic (INTF0, INTF1).
+- [x] Implement full interrupt masking and forcing logic (INTF0, INTF1).
 - [ ] Add Debug registers (`DBG_CTDREQ`, `DBG_TCR`) for channel introspection.
 - [ ] Refine DREQ logic to support the credit-based scheme.
 

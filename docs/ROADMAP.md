@@ -104,7 +104,11 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 
 ## Phase 12: Advanced Simulation & Performance
 - [x] Draft `docs/DMA_CONCEPT.md` for DMA integration [2026-05-04]
-- [ ] Implement advanced DMA features (Abort, Pacing Timers, Debug Registers)
+- [ ] Implement advanced DMA features (Pacing Timers, Debug Registers)
+    - [x] Implement `N_CHANNELS` register for channel discovery [2026-05-08]
+    - [x] Implement `CHAN_ABORT` logic for halting transfers [2026-05-08]
+    - [ ] Implement `TIMER0`-`TIMER3` for periodic pacing requests
+    - [ ] Add Debug registers (`DBG_CTDREQ`, `DBG_TCR`)
 - [x] Implement DMA-based data transfer examples (CRC calculation, Block move) [2026-05-06]
 - [x] Create Robot Framework tests for basic DMA transfers and interrupts [2026-05-06]
 - [ ] Optimize Renode simulation parameters for better host performance

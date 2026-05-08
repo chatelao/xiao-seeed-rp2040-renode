@@ -403,6 +403,13 @@ void loop() {
       }
       dma_channel_unclaim(dma_chan);
       Serial1.flush();
+    } else if (incomingByte == 'Z') {
+      // Read N_CHANNELS register (DMA_BASE + 0x448)
+      volatile uint32_t *n_channels_reg = (volatile uint32_t *)(0x50000000 + 0x448);
+      uint32_t n_channels = *n_channels_reg;
+      Serial1.print("DMA Channels: ");
+      Serial1.println(n_channels);
+      Serial1.flush();
     } else {
       Serial1.print("Echo: ");
       Serial1.println(incomingByte);

@@ -1,0 +1,6 @@
+mach create "test"
+machine LoadPlatformDescription @test/renode-config/boards/seeed_xiao_rp2040.repl
+python "print('N_CHANNELS: ' + str(sysbus.ReadDoubleWord(0x50000448)))"
+python "print('FIFO_LEVELS: ' + str(sysbus.ReadDoubleWord(0x50000440)))"
+sysbus WriteDoubleWord 0x50000444 0x1
+python "print('Abort bit check: ' + str(sysbus.ReadDoubleWord(0x50000444)))"

@@ -86,6 +86,10 @@ Should Pass Full Test Suite
     Wait For Line On Uart     DMA Transfer Success: DMA TRANSFER TEST  timeout=60
     Wait For Line On Uart     DMA Interrupt Handled  timeout=60
 
+    # DMA Channels
+    Write Char On Uart        Z
+    Wait For Line On Uart     DMA Channels: 12
+
     # 13. Watchdog
     # Enable watchdog
     Write Char On Uart        W
