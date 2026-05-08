@@ -107,7 +107,7 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [ ] Implement advanced DMA features (Pacing Timers, Debug Registers)
     - [x] Implement `N_CHANNELS` register for channel discovery [2026-05-08]
     - [x] Implement `CHAN_ABORT` logic for halting transfers [2026-05-08]
-    - [ ] Implement `TIMER0`-`TIMER3` for periodic pacing requests
+    - [x] Implement `TIMER0`-`TIMER3` for periodic pacing requests [2026-05-09]
     - [ ] Add Debug registers (`DBG_CTDREQ`, `DBG_TCR`)
 - [x] Implement DMA-based data transfer examples (CRC calculation, Block move) [2026-05-06]
 - [x] Create Robot Framework tests for basic DMA transfers and interrupts [2026-05-06]

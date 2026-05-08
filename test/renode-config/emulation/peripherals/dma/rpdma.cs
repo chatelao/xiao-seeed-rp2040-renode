@@ -15,6 +15,7 @@ using Antmicro.Renode.Core.Structure.Registers;
 using Antmicro.Renode.Utilities;
 using System;
 using System.Collections.ObjectModel;
+using Antmicro.Renode.Peripherals.Timers;
 
 namespace Antmicro.Renode.Peripherals.DMA
 {
@@ -77,6 +78,18 @@ namespace Antmicro.Renode.Peripherals.DMA
       }
       engine = new RPDmaEngine(machine.GetSystemBus(this));
       this.numberOfChannels = numberOfChannels;
+
+      pacingTimers = new LimitTimer[4];
+      timerX = new uint[4];
+      timerY = new uint[4];
+      for (int i = 0; i < 4; i++)
+      {
+        int timerIdx = i;
+        // Base frequency 125MHz
+        pacingTimers[i] = new LimitTimer(machine.ClockSource, 125000000, this, $"dmaTimer{i}", limit: 1, eventEnabled: true, autoUpdate: true);
+        pacingTimers[i].LimitReached += () => OnTimerDreq(59 + timerIdx);
+      }
+
       DefineRegisters();
       this.numberOfDREQ = Enum.GetNames(typeof(DREQ)).Length;
       var irqs = new Dictionary<int, IGPIO>();
@@ -106,6 +119,12 @@ namespace Antmicro.Renode.Peripherals.DMA
       for (int i = 0; i < channels.Length; ++i)
       {
         channels[i].Reset();
+      }
+      for (int i = 0; i < 4; i++)
+      {
+        pacingTimers[i].Reset();
+        timerX[i] = 0;
+        timerY[i] = 0;
       }
       UpdateInterrupts();
     }
@@ -159,12 +178,24 @@ namespace Antmicro.Renode.Peripherals.DMA
 
     public void OnGPIO(int number, bool value)
     {
+      if (!value) return;
       // find channel for DREQ
       foreach (var channel in channels)
       {
         if (channel.transferRequestSignal == number)
         {
           channel.PacedTransfer(number);
+        }
+      }
+    }
+
+    private void OnTimerDreq(int dreq)
+    {
+      foreach (var channel in channels)
+      {
+        if (channel.transferRequestSignal == dreq)
+        {
+          channel.PacedTransfer(dreq);
         }
       }
     }
@@ -264,6 +295,16 @@ namespace Antmicro.Renode.Peripherals.DMA
 
       Registers.N_CHANNELS.Define(this)
         .WithValueField(0, 32, FieldMode.Read, valueProviderCallback: _ => (uint)channels.Length, name: "N_CHANNELS");
+
+      for (int i = 0; i < 4; i++)
+      {
+        int timerIdx = i;
+        ((Registers)((int)Registers.TIMER0 + i * 4)).Define(this)
+          .WithValueField(0, 16, valueProviderCallback: _ => timerX[timerIdx],
+            writeCallback: (_, value) => { timerX[timerIdx] = (uint)value; UpdatePacingTimer(timerIdx); }, name: $"TIMER{i}_X")
+          .WithValueField(16, 16, valueProviderCallback: _ => timerY[timerIdx],
+            writeCallback: (_, value) => { timerY[timerIdx] = (uint)value; UpdatePacingTimer(timerIdx); }, name: $"TIMER{i}_Y");
+      }
 
       Registers.INTR.Define(this)
         .WithValueField(0, 16, FieldMode.Read | FieldMode.WriteOneToClear, valueProviderCallback: (_) =>
@@ -467,10 +508,6 @@ namespace Antmicro.Renode.Peripherals.DMA
           transferCounter = 0;
           parent.channelFinished[channelNumber] = false;
           return;
-        }
-        if (transferRequestSignal >= 0x3b && transferRequestSignal <= 0x3e)
-        {
-          this.Log(LogLevel.Error, "TODO: DMA Timer triggers are not yet implemented!");
         }
         ProcessTransfer(false);
       }
@@ -711,8 +748,28 @@ namespace Antmicro.Renode.Peripherals.DMA
     private IEnumRegisterField<CalculateType> sniffCalcType;
     private IFlagRegisterField sniffOutInversed;
     private IFlagRegisterField sniffByteSwap;
+    private void UpdatePacingTimer(int i)
+    {
+      if (timerX[i] == 0 || timerY[i] == 0)
+      {
+        pacingTimers[i].Enabled = false;
+      }
+      else
+      {
+        // RP2040: pacing timer triggers every Y/X cycles
+        // LimitTimer: triggers every Limit * Divider cycles
+        // We set Divider = 1 and Limit = Y/X
+        pacingTimers[i].Divider = 1;
+        pacingTimers[i].Limit = Math.Max(1, timerY[i] / timerX[i]);
+        pacingTimers[i].Enabled = true;
+      }
+    }
+
     private IFlagRegisterField sniffOutReversed;
     private uint sniffData;
+    private readonly LimitTimer[] pacingTimers;
+    private readonly uint[] timerX;
+    private readonly uint[] timerY;
   }
 
 }
