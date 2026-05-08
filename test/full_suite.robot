@@ -90,6 +90,10 @@ Should Pass Full Test Suite
     Write Char On Uart        Z
     Wait For Line On Uart     DMA Channels: 12
 
+    # DMA Pacing
+    Write Char On Uart        Y
+    Wait For Line On Uart     DMA Pacing Success: PACED DMA
+
     # 13. Watchdog
     # Enable watchdog
     Write Char On Uart        W

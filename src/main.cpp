@@ -410,6 +410,45 @@ void loop() {
       Serial1.print("DMA Channels: ");
       Serial1.println(n_channels);
       Serial1.flush();
+    } else if (incomingByte == 'Y') {
+      // DMA Pacing Timer Test
+      const char *src_str = "PACED DMA";
+      char dst_str[16] = {0};
+
+      // Configure TIMER0 for pacing
+      // TIMER0 is at DMA_BASE + 0x420
+      // X = 1 (bits 0-15), Y = 1000 (bits 16-31)
+      volatile uint32_t *timer0_reg = (volatile uint32_t *)(0x50000000 + 0x420);
+      *timer0_reg = (1000 << 16) | 1;
+
+      int dma_chan = dma_claim_unused_channel(true);
+      dma_channel_config c = dma_channel_get_default_config(dma_chan);
+      channel_config_set_transfer_data_size(&c, DMA_SIZE_8);
+      channel_config_set_read_increment(&c, true);
+      channel_config_set_write_increment(&c, true);
+      channel_config_set_dreq(&c, 0x3b); // DREQ_TIMER0 = 59 (0x3b)
+
+      dma_channel_configure(
+          dma_chan,
+          &c,
+          dst_str,
+          src_str,
+          strlen(src_str),
+          true // Start immediately
+      );
+
+      dma_channel_wait_for_finish_blocking(dma_chan);
+
+      if (strcmp(src_str, dst_str) == 0) {
+          Serial1.print("DMA Pacing Success: ");
+          Serial1.println(dst_str);
+      } else {
+          Serial1.print("DMA Pacing Failed: Got '");
+          Serial1.print(dst_str);
+          Serial1.println("'");
+      }
+      dma_channel_unclaim(dma_chan);
+      Serial1.flush();
     } else {
       Serial1.print("Echo: ");
       Serial1.println(incomingByte);
