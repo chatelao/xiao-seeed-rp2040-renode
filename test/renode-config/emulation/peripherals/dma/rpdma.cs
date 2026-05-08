@@ -232,9 +232,9 @@ namespace Antmicro.Renode.Peripherals.DMA
         .WithValueField(0, 16, valueProviderCallback: (_) => 0,
           writeCallback: (_, value) =>
           {
-            for (int i = 0; i < 16; ++i)
+            for (int i = 0; i < channels.Length; ++i)
             {
-              if ((value & (1u << i)) == 1)
+              if ((value & (1u << i)) != 0)
               {
                 if (channels[i].Enabled)
                 {
@@ -244,6 +244,26 @@ namespace Antmicro.Renode.Peripherals.DMA
             }
           }, name: "MULTI_CHAN_TRIGGER")
         .WithReservedBits(16, 16);
+
+      Registers.FIFO_LEVELS.Define(this)
+        .WithValueField(0, 32, FieldMode.Read, valueProviderCallback: _ => 0, name: "FIFO_LEVELS");
+
+      Registers.CHAN_ABORT.Define(this)
+        .WithValueField(0, 16, valueProviderCallback: _ => 0,
+          writeCallback: (_, value) =>
+          {
+            for (int i = 0; i < channels.Length; ++i)
+            {
+              if ((value & (1u << i)) != 0)
+              {
+                channels[i].Abort();
+              }
+            }
+          }, name: "CHAN_ABORT")
+        .WithReservedBits(16, 16);
+
+      Registers.N_CHANNELS.Define(this)
+        .WithValueField(0, 32, FieldMode.Read, valueProviderCallback: _ => (uint)channels.Length, name: "N_CHANNELS");
 
       Registers.INTR.Define(this)
         .WithValueField(0, 16, FieldMode.Read | FieldMode.WriteOneToClear, valueProviderCallback: (_) =>
@@ -426,6 +446,12 @@ namespace Antmicro.Renode.Peripherals.DMA
       public override uint ReadDoubleWord(long address)
       {
         return RegistersCollection.Read((long)aliases[address]);
+      }
+
+      public void Abort()
+      {
+        Enabled = false;
+        parent.channelFinished[channelNumber] = true;
       }
 
       public void TriggerTransfer()

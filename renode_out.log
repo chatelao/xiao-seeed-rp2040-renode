@@ -1,0 +1,8 @@
+17:08:27.1081 [INFO] Loaded monitor commands from: /opt/renode/scripts/monitor.py
+Renode, version 1.16.1 (d66b0c2a-202602160923)
+
+(monitor) include @verify_dma.resc;  quit
+17:08:27.1793 [INFO] Including script(s): /app/verify_dma.resc
+There was an error executing command 'mach create $machine_name'
+No such variable: $machine_name
+(monitor)
