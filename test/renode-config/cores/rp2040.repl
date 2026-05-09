@@ -245,3 +245,11 @@ pwm: PWM.RP2040PWM @ sysbus 0x40050000 {
 
 pwm:
     IRQ -> nvic0@4
+    24 -> dma@24
+    25 -> dma@25
+    26 -> dma@26
+    27 -> dma@27
+    28 -> dma@28
+    29 -> dma@29
+    30 -> dma@30
+    31 -> dma@31

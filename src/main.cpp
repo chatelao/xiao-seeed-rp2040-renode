@@ -449,8 +449,35 @@ void loop() {
       }
       dma_channel_unclaim(dma_chan);
       Serial1.flush();
+    } else if (incomingByte == 'J') {
+      // PWM DIVMODE Test (RISE mode)
+      uint slice_num = pwm_gpio_to_slice_num(LED_PIN);
+      pwm_set_enabled(slice_num, false);
+      pwm_config config = pwm_get_default_config();
+      pwm_config_set_clkdiv(&config, 1.0f);
+      pwm_config_set_wrap(&config, 100);
+      pwm_config_set_clkdiv_mode(&config, PWM_DIV_B_RISING);
+      pwm_init(slice_num, &config, false);
+      pwm_set_counter(slice_num, 0);
+      pwm_set_enabled(slice_num, true);
+      Serial1.println("PWM RISE Mode Enabled");
+      Serial1.flush();
+    } else if (incomingByte == 'N') {
+      // Read PWM Counter
+      uint slice_num = pwm_gpio_to_slice_num(LED_PIN);
+      Serial1.printf("PWM CTR: %u\n", (unsigned int)pwm_get_counter(slice_num));
+      Serial1.flush();
+    } else if (incomingByte == 'L') {
+      // PWM Phase Adjustment Test
+      uint slice_num = pwm_gpio_to_slice_num(LED_PIN);
+      pwm_set_enabled(slice_num, false);
+      pwm_set_counter(slice_num, 0);
+      pwm_set_enabled(slice_num, true);
+      // Bit 7 is PH_ADV
+      pwm_hw->slice[slice_num].csr |= (1u << 7); // PH_ADV
+      Serial1.println("PWM Phase Advanced");
+      Serial1.flush();
     } else if (incomingByte == 'O') {
-      // DMA Debug Register Test
       uint32_t src = 0x12345678;
       uint32_t dst = 0;
       int dma_chan = dma_claim_unused_channel(true);
