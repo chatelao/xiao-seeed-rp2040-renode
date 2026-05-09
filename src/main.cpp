@@ -449,6 +449,45 @@ void loop() {
       }
       dma_channel_unclaim(dma_chan);
       Serial1.flush();
+    } else if (incomingByte == 'O') {
+      // DMA Debug Register Test
+      uint32_t src = 0x12345678;
+      uint32_t dst = 0;
+      int dma_chan = dma_claim_unused_channel(true);
+      dma_channel_config c = dma_channel_get_default_config(dma_chan);
+
+      dma_channel_configure(
+          dma_chan,
+          &c,
+          &dst,
+          &src,
+          1,
+          false // Don't start yet
+      );
+
+      // Read TRANS_COUNT and DBG_TCR before start
+      // DMA_BASE = 0x50000000
+      // CHx_TRANS_COUNT = 0x50000000 + x*0x40 + 0x08
+      // CHx_DBG_TCR = 0x50000000 + 0x804 + x*0x40 (wait, based on header it is 0x804 for CH0, then 0x844 for CH1...)
+      // The implementation in RPDMA.cs uses 0x800 + id*0x40 as base, then offset 0x04 for TCR.
+      // So CHx_DBG_TCR = 0x50000000 + 0x800 + x*0x40 + 0x04. Correct.
+      volatile uint32_t *trans_count_reg = (volatile uint32_t *)(0x50000000 + dma_chan * 0x40 + 0x08);
+      volatile uint32_t *dbg_tcr_reg = (volatile uint32_t *)(0x50000000 + 0x800 + dma_chan * 0x40 + 0x04);
+
+      uint32_t tc_before = *trans_count_reg;
+      uint32_t tcr_before = *dbg_tcr_reg;
+
+      dma_channel_start(dma_chan);
+      dma_channel_wait_for_finish_blocking(dma_chan);
+
+      uint32_t tc_after = *trans_count_reg;
+      uint32_t tcr_after = *dbg_tcr_reg;
+
+      Serial1.printf("DMA Debug: CH=%u TC_PRE=%u TCR_PRE=%u TC_POST=%u TCR_POST=%u\n",
+                     (unsigned int)dma_chan, (unsigned int)tc_before, (unsigned int)tcr_before, (unsigned int)tc_after, (unsigned int)tcr_after);
+
+      dma_channel_unclaim(dma_chan);
+      Serial1.flush();
     } else {
       Serial1.print("Echo: ");
       Serial1.println(incomingByte);
