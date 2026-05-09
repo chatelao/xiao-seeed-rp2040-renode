@@ -515,6 +515,60 @@ void loop() {
 
       dma_channel_unclaim(dma_chan);
       Serial1.flush();
+    } else if (incomingByte == 'C') {
+      // DMA Ring Buffer and Sniffer Test
+      static uint8_t ring_buffer[256] __attribute__((aligned(256)));
+      static uint8_t target_buffer[256];
+      for (int i = 0; i < 256; i++) ring_buffer[i] = i;
+      memset(target_buffer, 0, 256);
+
+      int dma_chan = dma_claim_unused_channel(true);
+      dma_channel_config c = dma_channel_get_default_config(dma_chan);
+      channel_config_set_transfer_data_size(&c, DMA_SIZE_8);
+      channel_config_set_read_increment(&c, true);
+      channel_config_set_write_increment(&c, true);
+      // Ring on read side, size 256 (log2(256) = 8)
+      channel_config_set_ring(&c, false, 8);
+      // Sniffer enable
+      channel_config_set_sniff_enable(&c, true);
+
+      // Configure sniffer for Sum
+      dma_sniffer_enable(dma_chan, DMA_SNIFF_CTRL_CALC_VALUE_SUM, true);
+      dma_hw->sniff_data = 0;
+
+      // Transfer 512 bytes (should wrap twice)
+      dma_channel_configure(
+          dma_chan,
+          &c,
+          target_buffer,
+          ring_buffer,
+          512,
+          true
+      );
+
+      dma_channel_wait_for_finish_blocking(dma_chan);
+
+      uint32_t sniff_sum = dma_hw->sniff_data;
+      Serial1.printf("DMA Ring Test: SUM=%u\n", (unsigned int)sniff_sum);
+
+      // Test sniffer global disable
+      dma_sniffer_set_output_reverse_enabled(false); // Just to access sniffer registers
+      dma_hw->sniff_ctrl &= ~DMA_SNIFF_CTRL_EN_BITS; // Global disable
+      dma_hw->sniff_data = 0;
+
+      dma_channel_configure(
+          dma_chan,
+          &c,
+          target_buffer,
+          ring_buffer,
+          10,
+          true
+      );
+      dma_channel_wait_for_finish_blocking(dma_chan);
+      Serial1.printf("DMA Sniff Disable Test: SUM=%u\n", (unsigned int)dma_hw->sniff_data);
+
+      dma_channel_unclaim(dma_chan);
+      Serial1.flush();
     } else {
       Serial1.print("Echo: ");
       Serial1.println(incomingByte);

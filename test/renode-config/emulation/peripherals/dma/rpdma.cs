@@ -569,7 +569,7 @@ namespace Antmicro.Renode.Peripherals.DMA
           RPXXXXDmaRequest request = CreateRequest(paced);
           parent.channelFinished[channelNumber] = false;
           ResponseWithCrc response;
-          if (sniffEnable.Value && (uint)parent.sniffChannel == (uint)channelNumber)
+          if (parent.sniffEnable.Value && sniffEnable.Value && (uint)parent.sniffChannel == (uint)channelNumber)
           {
             ChecksumRequest.Type checksumType = ChecksumRequest.Type.Crc32;
             switch (this.parent.sniffCalcType.Value)
