@@ -16,7 +16,7 @@ This document tracks the implementation status of RP2040 features in the Renode 
 | --- | --- | --- |
 | Address Map | ✅ | Basic system bus and peripheral mapping implemented. |
 | Processor Subsystem | ✅ | Dual Cortex-M0+ cores supported by Renode. |
-| DMA | ⚠️ | Basic channel logic and memory-to-memory transfers supported. Missing: Pacing timers and credit-based DREQ. |
+| DMA | ✅ | Channel logic, memory-to-memory, pacing timers (TIMER0-3), and debug registers implemented. |
 | Memory | ✅ | Flash and SRAM mapping supported. |
 | Bootrom | ❌ | n/a |
 | Clocks | ⚠️ | Basic clock structures defined; fixed frequencies used in simulation. |
@@ -27,7 +27,7 @@ This document tracks the implementation status of RP2040 features in the Renode 
 
 | Feature | Status | Details |
 | --- | --- | --- |
-| PIO State Machines | ⚠️ | Co-simulation with `libpiosim` supports basic program execution. |
+| PIO State Machines | ⚠️ | Co-simulation with `libpiosim` supports basic program execution; verified GPIO interaction. |
 | PIO Instruction Set | ✅ | Most instructions supported via the piosim engine. |
 | PIO IRQ / DMA | ❌ | IRQ and DMA request routing not yet implemented in Renode model. |
 
@@ -39,13 +39,13 @@ This document tracks the implementation status of RP2040 features in the Renode 
 | 4.2 UART | ✅ | Bidirectional communication, interrupt support, and Robot Framework integration. |
 | 4.3 I2C | ✅ | Verified with BMP280 sensor reading in Robot Framework. |
 | 4.4 SPI | ⚠️ | Loopback mode supported and verified. |
-| 4.5 PWM | ⚠️ | Functional slices with CSR, DIV, CTR, TOP, CC registers. Missing: double buffering, dynamic 16-bit counter, phase adjustment, and wrap IRQs. |
+| 4.5 PWM | ⚠️ | Functional slices with double buffering, dynamic 16-bit counter, and wrap IRQs. Missing: DIVMODE and phase adjustment. |
 | 4.6 Timer | ✅ | 64-bit counter, 4 alarms with IRQ support (0-3). |
 | 4.7 Watchdog | ✅ | Watchdog timer with reboot support verified. |
-| 4.8 RTC | ❌ | n/a |
-| 4.9 ADC | ⚠️ | Voltage sampling on 5 channels. Support for error bits, FIFO packing, and DREQ signaling implemented; tests still require stabilization. |
+| 4.8 RTC | ✅ | Real-time clock with alarm support verified. |
+| 4.9 ADC | ✅ | Full feature support (round-robin, error bits, FIFO packing, DREQ) verified with stabilized tests. |
 | 4.10 SSI | ❌ | n/a |
 
 ---
 
-*Last updated: 2026-05-05*
+*Last updated: 2026-05-10*
