@@ -2,31 +2,7 @@
 
 The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top goal.
 
-## Phase 1: Foundation
-- [x] Setup Project Structure (specification, src, test) [2026-04-28]
-- [x] Initialize Documentation (CONCEPT, DESIGN, ROADMAP, TECHNICAL_DEBTS) [2026-04-28]
-- [x] Define Business & Use Cases in `CONCEPT.md` [2026-04-28]
-- [x] Define High-Level Architecture in `CONCEPT.md` [2026-04-28]
-- [x] Select Technological Choices in `DESIGN.md` [2026-04-28]
-
-## Phase 2: Environment Setup
-- [x] Create `src/install.sh` for build tools [2026-04-28]
-- [x] Create `test/install.sh` for test tools [2026-04-28]
-- [x] Setup CI/CD Pipeline (Github Actions) [2026-04-28]
-- [x] Verify CI/CD Pipeline with a dummy test [2026-04-28]
-
-## Phase 3: PlatformIO & Renode Integration
-- [x] Extract necessary parts from `Renode_RP2040` repository [2026-04-30]
-- [x] Configure PlatformIO for XIAO Seeed RP2040 [2026-04-30]
-- [x] Create Renode script for XIAO Seeed RP2040 [2026-04-30]
-- [x] Verify basic PlatformIO build and Renode execution [2026-04-30]
-
 ## Phase 4: Peripheral Implementation
-### UART Support
-- [x] Verify basic UART output in Renode [2026-04-30]
-- [x] Implement UART input handling in simulation [2026-04-30]
-- [x] Add Robot Framework tests for UART bidirectional communication [2026-04-30]
-
 ### ADC Support
 - [x] Configure ADC in PlatformIO (Arduino/Pico SDK) [2026-05-01]
 - [x] Map ADC pins in Renode `.repl` file [2026-05-01]
@@ -49,24 +25,6 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Implement timer-based delays and alarms in firmware [2026-05-03]
 - [x] Create Robot Framework test for timer accuracy and periodic interrupts [2026-05-03]
 
-## Phase 5: Verification & Documentation
-- [x] Finalize test cases for UART, ADC, PWM, Interrupts, and Timer [2026-05-03]
-   - [x] Create a unified Robot Framework test suite `test/full_suite.robot` [2026-05-02]
-   - [x] Verify the unified test suite passes [2026-05-03]
-- [x] Run full CI/CD suite [2026-05-03]
-- [x] Update documentation with final design and usage instructions [2026-05-03]
-   - [x] Create `USAGE.md` with instructions for building and testing [2026-05-03]
-   - [x] Finalize `CONCEPT.md` and `DESIGN.md` [2026-05-03]
-- [x] Create `TESTCASES.md` with documented test scenarios [2026-05-04]
-
-## Phase 6: Continuous Documentation
-- [x] Initialize MkDocs documentation structure [2026-05-03]
-- [x] Create `mkdocs.yml` configuration [2026-05-03]
-- [x] Create `docs/requirements.txt` for documentation dependencies [2026-05-03]
-- [x] Create `.readthedocs.yaml` configuration [2026-05-03]
-- [x] Integrate ReadTheDocs with GitHub Actions [2026-05-03]
-- [x] Verify automatic documentation updates on ReadTheDocs [2026-05-06]
-
 ## Phase 7: I2C Peripheral Support
 - [x] Implement I2C firmware driver using Arduino Wire or Pico SDK [2026-05-04]
 - [x] Configure I2C peripherals in Renode `.repl` and `.resc` files [2026-05-04]
@@ -87,12 +45,6 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
     - [ ] Develop the BEMF zero-crossing detection algorithm and commutation state machine.
 - [ ] Create a UART-based logging system for BEMF data and a host-side tool (e.g., Python/Matplotlib) for graphical analysis.
 - [ ] Add Robot Framework test cases to verify closed-loop motor commutation and speed stability.
-
-## Phase 9: SPI Peripheral Support
-- [x] Implement SPI loopback test in firmware and verify in Renode [2026-05-04]
-- [ ] Configure SPI pins and an external SPI device in Renode `.repl`
-- [ ] Implement SPI device communication in firmware (e.g., reading WHO_AM_I)
-- [ ] Create Robot Framework tests for SPI bidirectional data transfer
 
 ## Phase 11: PIO Integration
 - [x] Draft `docs/PIO_CONCEPT.md` for PIO integration [2026-05-03]
@@ -130,14 +82,6 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Implement correct `FIFO` register bit packing including bit 15 (`ERR`) [2026-05-04]
 - [x] Align `DMARequest` (DREQ) signaling with `FCS.THRESH` and `FCS.DREQ_EN` logic [2026-05-04]
 - [x] Fix stability of ADC error detection and threshold logic tests [2026-05-05]
-
-## Phase 15: Watchdog and RTC Support
-- [x] Implement `RP2040Watchdog` Renode model for system supervisor [2026-05-05]
-- [x] Implement `RP2040RTC` Renode model for real-time clock functionality [2026-05-06]
-- [x] Create firmware examples for Watchdog timeout [2026-05-05]
-- [x] Create firmware examples for RTC alarm [2026-05-06]
-- [x] Create Robot Framework tests for Watchdog [2026-05-05]
-- [x] Create Robot Framework tests for RTC [2026-05-06]
 
 ## Phase 16: System Resets and Power Management
 - [ ] Implement `RP2040Resets` Renode model for peripheral reset control
