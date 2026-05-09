@@ -81,7 +81,39 @@ Should Pass Full Test Suite
     Wait For Line On Uart     PWM Interrupt Handled
     Wait For Line On Uart     PWM Interrupt Handled
 
-    # 12. DMA
+    # 12. PWM RISE Mode and Counter
+    Write Char On Uart        J
+    Wait For Line On Uart     PWM RISE Mode Enabled
+    Write Char On Uart        N
+    Wait For Line On Uart     PWM CTR: 0
+    # PWM Slice 0 (LED_PIN 17) B input is GPIO 1
+    # On RP2040, slice = pin >> 1. 17 >> 1 = 8? Wait.
+    # RP2040 has 8 slices (0-7). Slice 0 is GPIO 0,1. Slice 1 is GPIO 2,3...
+    # LED_PIN 17 is Slice 0? No, 17/2 = 8, but it wraps.
+    # 17 % 16 = 1. 1 >> 1 = 0. So GPIO 16,17 is Slice 0.
+    # Input for Slice 0 is GPIO 1 (A) or 1? No.
+    # GPIO 0,1 -> Slice 0
+    # GPIO 16,17 -> Slice 0
+    # For Slice 0, B input is GPIO 1 or GPIO 17.
+    # If we use LED_PIN 17, it is B pin of Slice 0.
+    # Wait, the C# model uses NumberOfSlices = 8.
+    # We added ExternalTrigger(slice, value) to be sure.
+    Execute Command           sysbus.pwm ExternalTrigger 0 true
+    Execute Command           sysbus.pwm ExternalTrigger 0 false
+    Write Char On Uart        N
+    Wait For Line On Uart     PWM CTR: 1
+    Execute Command           sysbus.pwm ExternalTrigger 0 true
+    Execute Command           sysbus.pwm ExternalTrigger 0 false
+    Write Char On Uart        N
+    Wait For Line On Uart     PWM CTR: 2
+
+    # 13. PWM Phase Adjustment
+    Write Char On Uart        L
+    Wait For Line On Uart     PWM Phase Advanced
+    Write Char On Uart        N
+    Wait For Line On Uart     PWM CTR: 1
+
+    # 14. DMA
     Write Char On Uart        D
     Wait For Line On Uart     DMA Transfer Success: DMA TRANSFER TEST  timeout=60
     Wait For Line On Uart     DMA Interrupt Handled  timeout=60
