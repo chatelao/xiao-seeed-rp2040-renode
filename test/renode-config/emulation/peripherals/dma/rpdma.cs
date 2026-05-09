@@ -162,6 +162,12 @@ namespace Antmicro.Renode.Peripherals.DMA
         return channels[id].ReadDoubleWord(offset % Channel.Size);
       }
 
+      if (offset >= 0x800 && offset < 0x800 + channels.Length * 0x40)
+      {
+        long id = (offset - 0x800) / 0x40;
+        return channels[id].ReadDebugDoubleWord(offset % 0x40);
+      }
+
       return RegistersCollection.Read(offset);
     }
 
@@ -173,6 +179,14 @@ namespace Antmicro.Renode.Peripherals.DMA
         channels[id].WriteDoubleWord(offset % Channel.Size, value);
         return;
       }
+
+      if (offset >= 0x800 && offset < 0x800 + channels.Length * 0x40)
+      {
+        long id = (offset - 0x800) / 0x40;
+        channels[id].WriteDebugDoubleWord(offset % 0x40, value);
+        return;
+      }
+
       RegistersCollection.Write(offset, value);
     }
 
@@ -453,6 +467,7 @@ namespace Antmicro.Renode.Peripherals.DMA
         ahbError.Value = false;
         InterruptRaised = false;
         transferCounter = 0;
+        dreqCounter = 0;
       }
 
       private enum Registers
@@ -487,6 +502,27 @@ namespace Antmicro.Renode.Peripherals.DMA
       public override uint ReadDoubleWord(long address)
       {
         return RegistersCollection.Read((long)aliases[address]);
+      }
+
+      public uint ReadDebugDoubleWord(long offset)
+      {
+        switch (offset)
+        {
+          case 0x00: // DBG_CTDREQ
+            return (uint)dreqCounter;
+          case 0x04: // DBG_TCR
+            return transferCount;
+          default:
+            return 0;
+        }
+      }
+
+      public void WriteDebugDoubleWord(long offset, uint value)
+      {
+        if (offset == 0x00) // DBG_CTDREQ
+        {
+          dreqCounter = 0;
+        }
       }
 
       public void Abort()
@@ -593,6 +629,7 @@ namespace Antmicro.Renode.Peripherals.DMA
           }
           else
           {
+            transferCounter = transferCount;
             parent.channelFinished[channelNumber] = true;
           }
           if (!irqQuiet.Value)
@@ -632,7 +669,7 @@ namespace Antmicro.Renode.Peripherals.DMA
           transferCounter = 0;
         }
         var request = new Request(readAddress, writeAddress, size, transferType, transferType, incrementRead.Value, incrementWrite.Value);
-        return new RPXXXXDmaRequest(request, ringSize == 0 ? 0 : 1 << ringSize, ringSelect.Value, transferCounter);
+        return new RPXXXXDmaRequest(request, ringSize == 0 ? 0 : 1 << ringSize, ringSelect.Value, (int)transferCounter);
       }
 
       private void DefineRegisters()
@@ -646,7 +683,7 @@ namespace Antmicro.Renode.Peripherals.DMA
               writeCallback: (_, value) => writeAddress = (uint)value);
 
         Registers.TRANS_COUNT.Define(this)
-          .WithValueField(0, 32, valueProviderCallback: _ => transferCount,
+          .WithValueField(0, 32, valueProviderCallback: _ => transferCount - transferCounter,
               writeCallback: (_, value) =>
               {
                 transferCount = (uint)value;
@@ -721,7 +758,8 @@ namespace Antmicro.Renode.Peripherals.DMA
       private RPDMA parent;
       private int channelNumber;
 
-      private int transferCounter;
+      private uint transferCounter;
+      private uint dreqCounter;
 
     }
 

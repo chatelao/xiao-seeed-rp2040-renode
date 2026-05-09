@@ -94,6 +94,10 @@ Should Pass Full Test Suite
     Write Char On Uart        Y
     Wait For Line On Uart     DMA Pacing Success: PACED DMA
 
+    # DMA Debug
+    Write Char On Uart        O
+    Wait For Line On Uart     DMA Debug: CH=[0-9]+ TC_PRE=1 TCR_PRE=1 TC_POST=0 TCR_POST=1  treatAsRegex=true
+
     # 13. Watchdog
     # Enable watchdog
     Write Char On Uart        W
