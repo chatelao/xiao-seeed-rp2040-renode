@@ -25,8 +25,8 @@ A custom `RPDmaEngine` extends the standard Renode DMA capabilities to support R
 
 ### Data Request (DREQ) Pacing
 The DMA controller listens for DREQ signals from other peripherals (PIO, UART, ADC, PWM, I2C, SPI).
-- **Current State:** Basic DREQ triggers are implemented via the `IGPIOReceiver` interface.
-- **Gap:** The RP2040 uses a credit-based DREQ scheme. The simulation needs to be refined to handle multiple in-flight transfers and prevent desynchronization when the CPU accesses a FIFO being serviced by DMA.
+- **Current State:** Basic rising-edge DREQ triggers are implemented via the `IGPIOReceiver` interface.
+- **Gap:** The RP2040 uses a credit-based DREQ scheme. The simulation currently approximates this by triggering a single transfer unit per DREQ edge.
 
 ### Channel Chaining
 When a channel completes, it can trigger another channel (specified in `CHAIN_TO`).
@@ -46,9 +46,9 @@ Four internal pacing timers can be used as TREQ sources instead of external DREQ
 ### Phase 2: Advanced Features & Refinement
 - [x] Implement `CHAN_ABORT` logic to safely terminate in-progress sequences.
 - [x] Implement `N_CHANNELS` register for channel discovery.
-- [ ] Implement Pacing Timers (`TIMER0`-`TIMER3`) for periodic transfers.
+- [x] Implement Pacing Timers (`TIMER0`-`TIMER3`) for periodic transfers.
 - [x] Implement full interrupt masking and forcing logic (INTF0, INTF1).
-- [ ] Add Debug registers (`DBG_CTDREQ`, `DBG_TCR`) for channel introspection.
+- [x] Add Debug registers (`DBG_CTDREQ`, `DBG_TCR`) for channel introspection.
 - [ ] Refine DREQ logic to support the credit-based scheme.
 
 ## Test Cases & Verification
