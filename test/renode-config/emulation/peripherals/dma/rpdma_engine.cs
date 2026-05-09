@@ -120,7 +120,7 @@ namespace Antmicro.Renode.Peripherals.DMA
           // Transfer Units |  1  |  2  |  3  |  4  |
           // Source         |  A  |  B  |  C  |  D  |
           // Copied         |  A  |  B  |  C  |  D  |
-          response.ReadAddress += (ulong)ReadFromMemory(sourceAddress + readOffset, buffer, request.request.Size, context, request.ringWrite == false ? request.ringSize : 0);
+          response.ReadAddress = ReadFromMemory(sourceAddress + readOffset, buffer, request.request.Size, context, request.ringWrite == false ? request.ringSize : 0);
         }
         else
         {
@@ -135,23 +135,26 @@ namespace Antmicro.Renode.Peripherals.DMA
       {
         // Read from peripherals
         var transferred = 0;
-        var offset = 0UL;
+        var currentReadAddr = sourceAddress + readOffset;
+        int ringSize = request.ringWrite == false ? request.ringSize : 0;
+        ulong mask = (ulong)ringSize - 1;
+        ulong baseAddr = currentReadAddr & ~mask;
+
         while (transferred < request.request.Size)
         {
-          var readAddress = sourceAddress + offset + readOffset;
           switch (request.request.ReadTransferType)
           {
             case TransferType.Byte:
-              buffer[transferred] = sysbus.ReadByte(readAddress, context);
+              buffer[transferred] = sysbus.ReadByte(currentReadAddr, context);
               break;
             case TransferType.Word:
-              BitConverter.GetBytes(sysbus.ReadWord(readAddress, context)).CopyTo(buffer, transferred);
+              BitConverter.GetBytes(sysbus.ReadWord(currentReadAddr, context)).CopyTo(buffer, transferred);
               break;
             case TransferType.DoubleWord:
-              BitConverter.GetBytes(sysbus.ReadDoubleWord(readAddress, context)).CopyTo(buffer, transferred);
+              BitConverter.GetBytes(sysbus.ReadDoubleWord(currentReadAddr, context)).CopyTo(buffer, transferred);
               break;
             case TransferType.QuadWord:
-              BitConverter.GetBytes(sysbus.ReadQuadWord(readAddress, context)).CopyTo(buffer, transferred);
+              BitConverter.GetBytes(sysbus.ReadQuadWord(currentReadAddr, context)).CopyTo(buffer, transferred);
               break;
             default:
               throw new ArgumentOutOfRangeException($"Requested read transfer size: {request.request.ReadTransferType} is not supported by DmaEngine");
@@ -159,13 +162,15 @@ namespace Antmicro.Renode.Peripherals.DMA
           transferred += readLengthInBytes;
           if (request.request.IncrementReadAddress)
           {
-            offset += request.request.SourceIncrementStep;
-            response.ReadAddress += request.request.SourceIncrementStep;
-            if (request.ringSize != 0 && request.ringWrite == false && offset == (ulong)request.ringSize)
+            if (ringSize != 0)
             {
-              offset = 0;
-              response.ReadAddress = request.request.Source.Address;
+                currentReadAddr = baseAddr | ((currentReadAddr + request.request.SourceIncrementStep) & mask);
             }
+            else
+            {
+                currentReadAddr += request.request.SourceIncrementStep;
+            }
+            response.ReadAddress = currentReadAddr;
           }
         }
       }
@@ -240,12 +245,13 @@ namespace Antmicro.Renode.Peripherals.DMA
       {
         if (request.request.IncrementWriteAddress)
         {
+          int ringSize = request.ringWrite == true ? request.ringSize : 0;
           if (request.request.IncrementReadAddress || !isSourceContinuousMemory)
           {
             // Transfer Units |  1  |  2  |  3  |  4  |
             // Source         |  A  |  B  |  C  |  D  |
             // Destination    |  A  |  B  |  C  |  D  |
-            WriteToMemory(destinationAddress + writeOffset, buffer, context, request.ringWrite == true ? request.ringSize : 0);
+            response.WriteAddress = WriteToMemory(destinationAddress + writeOffset, buffer, context, ringSize);
           }
           else
           {
@@ -256,26 +262,34 @@ namespace Antmicro.Renode.Peripherals.DMA
             var chunkStartOffset = 0UL;
             var chunk = new byte[writeLengthInBytes];
             Array.Copy(buffer, 0, chunk, 0, writeLengthInBytes);
+
+            ulong currentWriteAddr = destinationAddress + writeOffset;
+            ulong mask = (ulong)ringSize - 1;
+            ulong baseAddr = currentWriteAddr & ~mask;
+
             while (chunkStartOffset < (ulong)request.request.Size)
             {
-              var writeAddress = destinationAddress + chunkStartOffset;
-              ulong size = (ulong)chunk.Length;
-              if (request.ringSize != 0 && request.ringWrite == true && chunkStartOffset % (ulong)request.ringSize != 0)
+              int chunkSize = writeLengthInBytes;
+              if (ringSize != 0)
               {
-                // write just what left till full ring
-                size = (ulong)request.ringSize - chunkStartOffset % (ulong)request.ringSize;
+                  ulong offsetInRing = currentWriteAddr & mask;
+                  int bytesToBoundary = ringSize - (int)offsetInRing;
+                  chunkSize = Math.Min(writeLengthInBytes, bytesToBoundary);
               }
-              sysbus.WriteBytes(chunk, writeAddress + writeOffset, (long)size, false, context: context);
-              chunkStartOffset += size;
+
+              sysbus.WriteBytes(chunk, currentWriteAddr, (long)chunkSize, false, context: context);
+
+              if (ringSize != 0)
+              {
+                  currentWriteAddr = baseAddr | ((currentWriteAddr + (ulong)chunkSize) & mask);
+              }
+              else
+              {
+                  currentWriteAddr += (ulong)chunkSize;
+              }
+              chunkStartOffset += (ulong)chunkSize;
             }
-          }
-          if (request.ringSize != 0 && request.ringWrite == true)
-          {
-            response.WriteAddress += (ulong)request.request.Size % (ulong)request.ringSize;
-          }
-          else
-          {
-            response.WriteAddress += (ulong)request.request.Size;
+            response.WriteAddress = currentWriteAddr;
           }
         }
         else
@@ -295,22 +309,26 @@ namespace Antmicro.Renode.Peripherals.DMA
       {
         // Write to peripheral
         var transferred = 0;
-        var offset = 0UL + writeOffset;
+        var currentWriteAddr = destinationAddress + writeOffset;
+        int ringSize = request.ringWrite == true ? request.ringSize : 0;
+        ulong mask = (ulong)ringSize - 1;
+        ulong baseAddr = currentWriteAddr & ~mask;
+
         while (transferred < request.request.Size)
         {
           switch (request.request.WriteTransferType)
           {
             case TransferType.Byte:
-              sysbus.WriteByte(destinationAddress + offset, buffer[transferred], context);
+              sysbus.WriteByte(currentWriteAddr, buffer[transferred], context);
               break;
             case TransferType.Word:
-              sysbus.WriteWord(destinationAddress + offset, BitConverter.ToUInt16(buffer, transferred), context);
+              sysbus.WriteWord(currentWriteAddr, BitConverter.ToUInt16(buffer, transferred), context);
               break;
             case TransferType.DoubleWord:
-              sysbus.WriteDoubleWord(destinationAddress + offset, BitConverter.ToUInt32(buffer, transferred), context);
+              sysbus.WriteDoubleWord(currentWriteAddr, BitConverter.ToUInt32(buffer, transferred), context);
               break;
             case TransferType.QuadWord:
-              sysbus.WriteQuadWord(destinationAddress + offset, BitConverter.ToUInt64(buffer, transferred), context);
+              sysbus.WriteQuadWord(currentWriteAddr, BitConverter.ToUInt64(buffer, transferred), context);
               break;
             default:
               throw new ArgumentOutOfRangeException($"Requested write transfer size: {request.request.WriteTransferType} is not supported by DmaEngine");
@@ -318,14 +336,15 @@ namespace Antmicro.Renode.Peripherals.DMA
           transferred += writeLengthInBytes;
           if (request.request.IncrementWriteAddress)
           {
-            offset += request.request.DestinationIncrementStep;
-            response.WriteAddress += request.request.DestinationIncrementStep;
-            // since starting address must be aligned to ring size, when offset is ring size, we can just substract it from address
-            if (request.ringSize != 0 && request.ringWrite == true && (offset % (ulong)request.ringSize == 0))
+            if (ringSize != 0)
             {
-              response.WriteAddress -= (ulong)request.ringSize;
-              offset = writeOffset;
+                currentWriteAddr = baseAddr | ((currentWriteAddr + request.request.DestinationIncrementStep) & mask);
             }
+            else
+            {
+                currentWriteAddr += request.request.DestinationIncrementStep;
+            }
+            response.WriteAddress = currentWriteAddr;
           }
         }
       }
@@ -334,42 +353,61 @@ namespace Antmicro.Renode.Peripherals.DMA
       return responseWithCrc;
     }
 
-    private int ReadFromMemory(ulong sourceAddress, byte[] buffer, int size, CPU.ICPU context, int ringSize)
+    private ulong ReadFromMemory(ulong sourceAddress, byte[] buffer, int size, CPU.ICPU context, int ringSize)
     {
       if (ringSize == 0)
       {
         sysbus.ReadBytes(sourceAddress, size, buffer, 0, context: context);
-        return size;
+        return sourceAddress + (ulong)size;
       }
+
+      ulong mask = (ulong)ringSize - 1;
+      ulong baseAddr = sourceAddress & ~mask;
+      ulong currentAddr = sourceAddress;
 
       int transferred = 0;
       while (transferred < size)
       {
-        int chunkSize = Math.Min(size - transferred, ringSize);
-        sysbus.ReadBytes(sourceAddress, chunkSize, buffer, transferred, context: context);
+        ulong offsetInRing = currentAddr & mask;
+        int bytesToBoundary = ringSize - (int)offsetInRing;
+        int chunkSize = Math.Min(size - transferred, bytesToBoundary);
+
+        sysbus.ReadBytes(currentAddr, chunkSize, buffer, transferred, context: context);
+
         transferred += chunkSize;
+        currentAddr = baseAddr | ((currentAddr + (ulong)chunkSize) & mask);
       }
-      return size % ringSize;
+      return currentAddr;
     }
-    private int WriteToMemory(ulong destinationAddress, byte[] buffer, CPU.ICPU context, int ringSize)
+
+    private ulong WriteToMemory(ulong destinationAddress, byte[] buffer, CPU.ICPU context, int ringSize)
     {
       int size = buffer.Length;
       if (ringSize == 0)
       {
         sysbus.WriteBytes(buffer, destinationAddress, context: context);
-        return size;
+        return destinationAddress + (ulong)size;
       }
+
+      ulong mask = (ulong)ringSize - 1;
+      ulong baseAddr = destinationAddress & ~mask;
+      ulong currentAddr = destinationAddress;
 
       int transferred = 0;
       while (transferred < size)
       {
-        int chunkSize = Math.Min(size - transferred, ringSize);
+        ulong offsetInRing = currentAddr & mask;
+        int bytesToBoundary = ringSize - (int)offsetInRing;
+        int chunkSize = Math.Min(size - transferred, bytesToBoundary);
+
         var chunk = new byte[chunkSize];
         Array.Copy(buffer, transferred, chunk, 0, chunkSize);
-        sysbus.WriteBytes(chunk, destinationAddress, context: context);
+        sysbus.WriteBytes(chunk, currentAddr, context: context);
+
         transferred += chunkSize;
+        currentAddr = baseAddr | ((currentAddr + (ulong)chunkSize) & mask);
       }
-      return size % ringSize;
+      return currentAddr;
     }
 
 
