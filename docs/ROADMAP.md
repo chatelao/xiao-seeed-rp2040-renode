@@ -36,7 +36,7 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Integrate an existing I2C peripheral model (e.g., PCF8523 or BMP280) for verification [2026-05-04]
 - [x] Create Robot Framework tests for I2C communication and sensor reading [2026-05-04]
 
-## Phase 8: Motor Control and bEMF Support
+## Phase 8: Motor Control and bEMF Support (Brushed DC)
 - [x] Draft `docs/BEMF_LOOP.md` for bEMF loop calculation concept [2026-05-05]
 - [x] Phase 8.1: Integration of `MotorModel` Renode peripheral [2026-05-06]
     - [x] Create `MotorModel` Renode peripheral model [2026-05-06]
@@ -46,11 +46,11 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Phase 8.2: Firmware logic for high-precision ADC/PWM synchronization [2026-05-06]
     - [x] Implement synchronization using PWM wrap interrupts.
     - [x] Ensure sample timing alignment with PWM cycles.
-- [ ] Phase 8.3: BEMF zero-crossing detection logic
-    - [ ] Develop the BEMF zero-crossing detection algorithm (e.g., majority voting or filtering).
-    - [ ] Implement the 6-step commutation state machine for BLDC control.
+- [ ] Phase 8.3: BEMF-based Load Compensation Logic
+    - [ ] Develop the PID control algorithm for constant speed (load compensation).
+    - [ ] Implement bEMF feedback integration for PID tuning.
 - [ ] Create a UART-based logging system for BEMF data and a host-side tool (e.g., Python/Matplotlib) for graphical analysis.
-- [ ] Add Robot Framework test cases to verify closed-loop motor commutation and speed stability.
+- [ ] Add Robot Framework test cases to verify closed-loop speed stability and load handling.
 
 ## Phase 9: SPI Loopback Support
 - [x] Implement SPI firmware driver using Pico SDK [2026-05-06]
