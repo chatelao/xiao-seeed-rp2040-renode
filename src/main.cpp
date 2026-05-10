@@ -36,6 +36,39 @@ volatile bool syncAdcEnabled = false;
 volatile uint16_t lastSyncAdcValue = 0;
 int alarmId = -1;
 
+struct PidController {
+    volatile float kp = 0.5f;
+    volatile float ki = 0.05f;
+    volatile float kd = 0.01f;
+    volatile uint16_t target = 1000;
+    volatile float integral = 0;
+    volatile float prev_error = 0;
+    volatile bool enabled = false;
+    volatile bool telemetry = false;
+    volatile uint16_t last_output = 0;
+} pid;
+
+uint16_t update_pid(uint16_t actual) {
+    if (!pid.enabled) return 0;
+
+    float error = (float)pid.target - (float)actual;
+    pid.integral += error;
+    // Simple anti-windup
+    if (pid.integral > 1000) pid.integral = 1000;
+    if (pid.integral < -1000) pid.integral = -1000;
+
+    float derivative = error - pid.prev_error;
+    float output = (pid.kp * error) + (pid.ki * pid.integral) + (pid.kd * derivative);
+    pid.prev_error = error;
+
+    int pwm_out = (int)output;
+    if (pwm_out > 255) pwm_out = 255;
+    if (pwm_out < 0) pwm_out = 0;
+
+    pid.last_output = (uint16_t)pwm_out;
+    return pid.last_output;
+}
+
 void handleInterrupt() {
   interruptOccurred = true;
 }
@@ -46,6 +79,10 @@ void on_pwm_interrupt() {
     if (syncAdcEnabled) {
         // We assume AINSEL is already set to 1 by the 'H' command
         lastSyncAdcValue = adc_read();
+        if (pid.enabled) {
+            uint16_t output = update_pid(lastSyncAdcValue);
+            analogWrite(LED_PIN, output);
+        }
     }
 }
 
@@ -136,6 +173,15 @@ void loop() {
     dmaInterruptOccurred = false;
     Serial1.println("DMA Interrupt Handled");
     Serial1.flush();
+  }
+
+  if (pid.telemetry && pid.enabled) {
+    static unsigned long lastTelemetry = 0;
+    if (millis() - lastTelemetry > 100) {
+      Serial1.printf("TELE: T=%u A=%u E=%0.2f O=%u\n", pid.target, lastSyncAdcValue, pid.prev_error, pid.last_output);
+      Serial1.flush();
+      lastTelemetry = millis();
+    }
   }
 
   while (alarmCount > 0) {
@@ -514,6 +560,33 @@ void loop() {
                      (unsigned int)dma_chan, (unsigned int)tc_before, (unsigned int)tcr_before, (unsigned int)tc_after, (unsigned int)tcr_after);
 
       dma_channel_unclaim(dma_chan);
+      Serial1.flush();
+    } else if (incomingByte == 'p') {
+      pid.kp += 0.1f;
+      if (pid.kp > 5.0f) pid.kp = 0.0f;
+      Serial1.printf("PID Kp: %0.1f\n", pid.kp);
+      Serial1.flush();
+    } else if (incomingByte == 'i') {
+      pid.ki += 0.01f;
+      if (pid.ki > 1.0f) pid.ki = 0.0f;
+      Serial1.printf("PID Ki: %0.2f\n", pid.ki);
+      Serial1.flush();
+    } else if (incomingByte == 'd') {
+      pid.kd += 0.01f;
+      if (pid.kd > 1.0f) pid.kd = 0.0f;
+      Serial1.printf("PID Kd: %0.2f\n", pid.kd);
+      Serial1.flush();
+    } else if (incomingByte == 't') {
+      pid.target = (pid.target + 200) % 4000;
+      Serial1.printf("PID Target: %u\n", pid.target);
+      Serial1.flush();
+    } else if (incomingByte == 'l') {
+      pid.enabled = !pid.enabled;
+      Serial1.printf("PID Loop: %s\n", pid.enabled ? "Enabled" : "Disabled");
+      Serial1.flush();
+    } else if (incomingByte == 'v') {
+      pid.telemetry = !pid.telemetry;
+      Serial1.printf("PID Telemetry: %s\n", pid.telemetry ? "Enabled" : "Disabled");
       Serial1.flush();
     } else if (incomingByte == 'C') {
       // DMA Ring Buffer and Sniffer Test
