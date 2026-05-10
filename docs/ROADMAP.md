@@ -25,6 +25,11 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Implement timer-based delays and alarms in firmware [2026-05-03]
 - [x] Create Robot Framework test for timer accuracy and periodic interrupts [2026-05-03]
 
+## Phase 6: Continuous Documentation
+- [x] Setup MkDocs structure and `mkdocs.yml` [2026-05-06]
+- [x] Configure GitHub Actions for Read the Docs deployment [2026-05-06]
+- [x] Create project glossary and feature coverage documents [2026-05-10]
+
 ## Phase 7: I2C Peripheral Support
 - [x] Implement I2C firmware driver using Arduino Wire or Pico SDK [2026-05-04]
 - [x] Configure I2C peripherals in Renode `.repl` and `.resc` files [2026-05-04]
@@ -42,15 +47,24 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
     - [x] Implement synchronization using PWM wrap interrupts.
     - [x] Ensure sample timing alignment with PWM cycles.
 - [ ] Phase 8.3: BEMF zero-crossing detection logic
-    - [ ] Develop the BEMF zero-crossing detection algorithm and commutation state machine.
+    - [ ] Develop the BEMF zero-crossing detection algorithm (e.g., majority voting or filtering).
+    - [ ] Implement the 6-step commutation state machine for BLDC control.
 - [ ] Create a UART-based logging system for BEMF data and a host-side tool (e.g., Python/Matplotlib) for graphical analysis.
 - [ ] Add Robot Framework test cases to verify closed-loop motor commutation and speed stability.
+
+## Phase 9: SPI Loopback Support
+- [x] Implement SPI firmware driver using Pico SDK [2026-05-06]
+- [x] Enable SPI loopback mode in firmware 'S' command [2026-05-06]
+- [x] Create Robot Framework test for SPI loopback [2026-05-06]
 
 ## Phase 11: PIO Integration
 - [x] Draft `docs/PIO_CONCEPT.md` for PIO integration [2026-05-03]
 - [x] Implement PIO (Programmable I/O) state machine examples in firmware [2026-05-04]
 - [x] Connect PIO outputs to XIAO RP2040 pins in Renode `.repl` [2026-05-04]
-- [ ] Implement DMA requests (DREQ) and IRQ routing for PIO in Renode
+- [x] Implement DMA requests (DREQ) and IRQ routing for PIO in Renode [2026-05-23]
+    - [x] Implement `INumberedGPIOOutput` in `RP2040PIOCPU` [2026-05-23]
+    - [x] Implement signal update logic for FIFOs (DREQ) and Interrupts (IRQ) [2026-05-23]
+    - [x] Wire PIO0 and PIO1 signals in `rp2040.repl` [2026-05-23]
 - [x] Reuse `hello_pio` and `pio_blink` tests from `Renode_RP2040` [2026-05-06]
 - [x] Create Robot Framework tests for PIO driving XIAO Seeed RP2040 pins [2026-05-06]
 
@@ -84,21 +98,34 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Align `DMARequest` (DREQ) signaling with `FCS.THRESH` and `FCS.DREQ_EN` logic [2026-05-04]
 - [x] Fix stability of ADC error detection and threshold logic tests [2026-05-05]
 
+## Phase 15: Watchdog and RTC Support
+- [x] Implement `RP2040Watchdog` Renode model [2026-05-20]
+- [x] Implement `RP2040RTC` Renode model [2026-05-21]
+- [x] Add firmware commands for Watchdog ('W', 'K') and RTC ('R', 'Q') [2026-05-22]
+- [x] Create Robot Framework tests for Watchdog and RTC [2026-05-23]
+
 ## Phase 16: System Resets and Power Management
 - [ ] Implement `RP2040Resets` Renode model for peripheral reset control
+    - [ ] Implement `RESET` and `WDSEL` register logic.
+    - [ ] Wire reset signals to other peripherals in the simulation.
 - [ ] Implement `RP2040Power` Renode model for power-on reset and sleep states
+    - [ ] Implement `BOD` and `VREG` register stubs.
+    - [ ] Implement core power states and wake-up interrupt logic.
 - [ ] Create firmware examples for peripheral reset and low-power modes
 - [ ] Create Robot Framework tests for reset and power management
 
 ## Phase 17: USB Support
 - [ ] Implement `RP2040USB` Renode model for USB controller
-- [ ] Integrate USB core logic and endpoint management
-- [ ] Create firmware examples for USB Serial and HID
-- [ ] Create Robot Framework tests for USB communication
+    - [ ] Implement USB Device/Host register space and endpoint control.
+    - [ ] Integrate USB packet handling and buffer management.
+- [ ] Create firmware examples for USB Serial (CDC) and HID.
+- [ ] Create Robot Framework tests for USB enumeration and data transfer.
 
 ## Phase 10: Transition to Pico SDK (Technical Debt)
 - [ ] Setup Pico SDK build environment in `src/install.sh`
-- [ ] Port UART and GPIO drivers to native Pico SDK
-- [ ] Port ADC and PWM drivers to native Pico SDK
-- [ ] Port Timer and Interrupt handling to native Pico SDK
+- [ ] Port core drivers to native Pico SDK:
+    - [ ] UART and GPIO drivers.
+    - [ ] ADC and PWM drivers.
+    - [ ] Timer and Interrupt handling.
+    - [ ] PIO and DMA integration.
 - [ ] Verify full system functionality with native Pico SDK firmware
