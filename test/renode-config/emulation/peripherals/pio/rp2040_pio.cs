@@ -1,5 +1,7 @@
 using Antmicro.Renode.Core;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using Antmicro.Renode.Logging;
 
@@ -37,7 +39,7 @@ namespace Antmicro.Renode.Peripherals.CPU
     // parts of this class can be left unmodified;
     // to integrate an external simulator you need to
     // look for comments in the code below
-    public class RP2040PIOCPU : BaseCPU, IRP2040Peripheral, IGPIOReceiver, ITimeSink, IDisposable, IDoubleWordPeripheral, IKnownSize
+    public class RP2040PIOCPU : BaseCPU, IRP2040Peripheral, IGPIOReceiver, ITimeSink, IDisposable, IDoubleWordPeripheral, IKnownSize, INumberedGPIOOutput
     {
         private static string GetSourceFileDirectory([CallerFilePath] string sourceFilePath = "")
         {
@@ -95,28 +97,67 @@ namespace Antmicro.Renode.Peripherals.CPU
             gpio.ReevaluatePioActions.Add((uint steps) =>
             {
                 totalExecutedInstructions += PioExecute(pioId, steps);
+                UpdateSignals();
             });
             clocks.OnSystemClockChange(UpdateClocks);
 
+            var innerConnections = new Dictionary<int, IGPIO>();
+            for (int i = 0; i < 10; i++)
+            {
+                innerConnections[i] = new GPIO();
+            }
+            Connections = new ReadOnlyDictionary<int, IGPIO>(innerConnections);
+
             this.Log(LogLevel.Info, "PIO{0} successfuly created!", id);
+        }
+
+        public IReadOnlyDictionary<int, IGPIO> Connections { get; }
+
+        private void UpdateSignals()
+        {
+            // PIO Registers
+            const uint FSTAT = 0x004;
+            const uint INTS0 = 0x12c;
+            const uint INTS1 = 0x138;
+
+            uint fstat = PioReadMemory(pioId, FSTAT);
+            uint ints0 = PioReadMemory(pioId, INTS0);
+            uint ints1 = PioReadMemory(pioId, INTS1);
+
+            // Connections:
+            // 0: IRQ0, 1: IRQ1
+            // 2-5: TX DREQ (0-3), 6-9: RX DREQ (0-3)
+            Connections[0].Set((ints0 & 0xF) != 0);
+            Connections[1].Set((ints1 & 0xF) != 0);
+
+            for (int i = 0; i < 4; i++)
+            {
+                // TX FIFO Not Full (DREQ)
+                Connections[2 + i].Set((fstat & (1u << (16 + i))) == 0);
+                // RX FIFO Not Empty (DREQ)
+                Connections[6 + i].Set((fstat & (1u << (8 + i))) == 0);
+            }
         }
 
         [ConnectionRegion("XOR")]
         public virtual void WriteDoubleWordXor(long offset, uint value)
         {
             PioWriteMemory(pioId, (uint)offset, PioReadMemory(pioId, (uint)offset) ^ value);
+            UpdateSignals();
         }
 
         [ConnectionRegion("SET")]
         public virtual void WriteDoubleWordSet(long offset, uint value)
         {
             PioWriteMemory(pioId, (uint)offset, PioReadMemory(pioId, (uint)offset) | value);
+            UpdateSignals();
         }
 
         [ConnectionRegion("CLEAR")]
         public virtual void WriteDoubleWordClear(long offset, uint value)
         {
             PioWriteMemory(pioId, (uint)offset, PioReadMemory(pioId, (uint)offset) & (~value));
+            UpdateSignals();
         }
 
         [ConnectionRegion("XOR")]
@@ -162,6 +203,7 @@ namespace Antmicro.Renode.Peripherals.CPU
             instructionsExecutedThisRound = 0;
             totalExecutedInstructions = 0;
             PioReset(pioId);
+            UpdateSignals();
             // [Here goes an invocation resetting the external simulator (if needed)]
             // [This can be used to revert the internal state of the simulator to the initial form]
         }
@@ -170,7 +212,9 @@ namespace Antmicro.Renode.Peripherals.CPU
         {
             lock (this)
             {
-                return (uint)PioReadMemory(pioId, (uint)offset);
+                uint val = (uint)PioReadMemory(pioId, (uint)offset);
+                UpdateSignals();
+                return val;
             }
         }
 
@@ -179,6 +223,7 @@ namespace Antmicro.Renode.Peripherals.CPU
             lock (this)
             {
                 PioWriteMemory(pioId, (uint)offset, (uint)value);
+                UpdateSignals();
             }
         }
 
