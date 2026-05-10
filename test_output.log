@@ -1,0 +1,22 @@
+Preparing suites
+Starting suites
+Running suite on Renode pid 172862 using port 49152: test/motor_load_compensation.robot
++++++ Starting test 'motor_load_compensation.Should Compensate For Motor Load'
+!!!!! Emulation's state saved to "/app//snapshots/motor_load_compensation.Should_Compensate_For_Motor_Load.fail0.save"
+!!!!! Log saved to "/app//logs/motor_load_compensation.Should_Compensate_For_Motor_Load.fail0.log"
++++++ Finished test 'motor_load_compensation.Should Compensate For Motor Load' in 33.10 seconds with status [91mfailed[0m
+      ╔═
+      ║ '0 > 0' should be true.
+      ╚═
+Suite test/motor_load_compensation.robot failed in 33.77 seconds.
+Cleaning up suites
+Closing Renode pid 172862
+Renode pid 172862 closed
+Aggregating all robot results
+Output:  /app/robot_output.xml
+Log:     /app/log.html
+Report:  /app/report.html
+Some tests failed :( See the list of failed tests below and logs for details!
+Failed robot critical tests:
+	1. motor_load_compensation.Should Compensate For Motor Load
+------
