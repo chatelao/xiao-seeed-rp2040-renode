@@ -19,6 +19,56 @@ This document provides 10 pre-defined motor models for H0 scale locomotives, sui
 
 ---
 
+## LTspice Motor Model Concept
+
+To validate PID tuning and electrical behavior outside of Renode, you can use this LTspice equivalent circuit. It uses an **Electrical-Mechanical Analogy** where voltage on the mechanical side represents angular velocity ($\omega$) and current represents torque ($\tau$).
+
+### 1. Parameter Conversion
+Parameters from the summary table must be mapped to SPICE components:
+
+| Renode Parameter | Symbol | SPICE Component | Mapping / Formula |
+| :--- | :--- | :--- | :--- |
+| **Resistance** | $R$ | `R_arm` | $R$ (Ohms) |
+| **Inertia** | $J$ | `C_inertia` | $C = J$ (Farads) |
+| **Friction** | $B$ | `R_fric` | $R = 1/B$ (Ohms) |
+| **Kv** | $K_v$ | `Ke` | $K_e = \frac{60}{2\pi \cdot K_v}$ |
+
+### 2. SPICE Subcircuit (`H0_Motor.lib`)
+```spice
+* H0 Locomotive Motor Model
+* Pins: IN+ IN- SPEED_RAD
+.subckt H0_MOTOR 1 2 OMEGA
+.params Kv=1200 R=12.0 L=0.001 J=0.0001 B=0.0001
+.params Ke={60/(2*pi*Kv)}
+
+* --- Electrical Side ---
+R1 1 3 {R}
+L1 3 4 {L}
+* Back-EMF: V = Ke * omega
+B1 4 2 V=Ke*V(OMEGA)
+
+* --- Mechanical Side ---
+* Torque: T = Ke * I(R1)
+B2 0 OMEGA I=Ke*I(R1)
+* Inertia: T = J * d(omega)/dt
+C1 OMEGA 0 {J}
+* Viscous Friction: T = B * omega
+R2 OMEGA 0 {1/B}
+.ends H0_MOTOR
+```
+
+### 3. Usage Example: MOD_CAN
+To simulate the **MOD_CAN** model in LTspice:
+1.  Place the `H0_MOTOR` subcircuit.
+2.  Set `Kv=1200`, `R=12.0`, `J=0.0001`, `B=0.0001`.
+3.  The voltage at node `OMEGA` will be the speed in rad/s.
+4.  To get RPM, use a behavioral source: `V(RPM) = V(OMEGA) * 60 / (2*pi)`.
+
+### 4. Advanced: Modeling Vstart/Vstop
+To simulate the "stiction" ($V_{start}$), add a behavioral current source to the mechanical side that opposes motion until a torque threshold is reached.
+
+---
+
 ## Renode Configuration Snippets (.repl)
 
 ### 1. Modern 5-Pole CAN (MOD_CAN)
