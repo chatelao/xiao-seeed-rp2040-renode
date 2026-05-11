@@ -81,7 +81,9 @@ void on_pwm_interrupt() {
         lastSyncAdcValue = adc_read();
         if (pid.enabled) {
             uint16_t output = update_pid(lastSyncAdcValue);
-            analogWrite(LED_PIN, output);
+            // analogWrite on Arduino Pico handles active-low for some pins,
+            // but let's be explicit and use analogWrite here too for consistency.
+            analogWrite(LED_PIN, 255 - (int)output);
         }
     }
 }
@@ -215,7 +217,8 @@ void loop() {
     } else if (incomingByte == 'P') {
       static int pwmValue = 0;
       pwmValue = (pwmValue + 64) % 256;
-      analogWrite(LED_PIN, pwmValue);
+      // Invert for active-low LED
+      analogWrite(LED_PIN, 255 - pwmValue);
       Serial1.print("PWM set to: ");
       Serial1.println(pwmValue);
       Serial1.flush();

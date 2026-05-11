@@ -27,6 +27,7 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
             this.Resistance = 0.1;  // Ohms
             this.Inertia = 0.0001;  // kg*m^2
             this.Friction = 0.0001; // N*m*s
+            this.LoadTorque = 0.0;  // N*m
 
             this.updateThread = machine.ObtainManagedThread(UpdateAction, 1000); // 1kHz simulation
             Reset();
@@ -36,9 +37,13 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
         {
             lock(sync)
             {
+                // Invert value because LEDs (and thus motor PWM) on XIAO RP2040 are active-low
+                bool state = !value;
+                if(pwmState == state) return;
+
                 // Immediate update before changing state to capture old state physics
                 UpdateInternal();
-                pwmState = value;
+                pwmState = state;
                 // Update again to reflect new state in ADC immediately
                 UpdateInternal();
             }
@@ -63,8 +68,8 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                 double Ke = 60.0 / (2.0 * Math.PI * Kv);
                 double Vapplied = pwmState ? Vbus : 0;
 
-                // d_omega = (Ke/R * Vapplied - (Ke^2/R + Friction) * omega) / Inertia * dt
-                double acceleration = (Ke / Resistance * Vapplied - (Ke * Ke / Resistance + Friction) * omega) / Inertia;
+                // d_omega = (Ke/R * Vapplied - (Ke^2/R + Friction) * omega - LoadTorque) / Inertia * dt
+                double acceleration = (Ke / Resistance * Vapplied - (Ke * Ke / Resistance + Friction) * omega - LoadTorque) / Inertia;
                 velocity += acceleration * dt;
                 if (velocity < 0) velocity = 0;
 
@@ -76,7 +81,7 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
             double Vadc = pwmState ? Vbus : Vbemf;
 
             // Scaled for ADC (assuming 3.3V max)
-            double Vmapped = Vadc * 3.3 / Vbus;
+            double Vmapped = Vadc * 3.3 / 12.0;
             if (Vmapped > 3.3) Vmapped = 3.3;
             if (Vmapped < 0) Vmapped = 0;
 
@@ -102,6 +107,7 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
         public double Resistance { get; set; }
         public double Inertia { get; set; }
         public double Friction { get; set; }
+        public double LoadTorque { get; set; }
         public RP2040ADC Adc { get; set; }
         public int AdcChannel { get; set; }
 
