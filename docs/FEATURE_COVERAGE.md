@@ -1,38 +1,14 @@
-# XIAO Seeed RP2040 Renode Project
-
-[![Documentation Status](https://readthedocs.org/projects/xiao-seeed-rp2040-renode/badge/?version=latest)](https://xiao-seeed-rp2040-renode.readthedocs.io/en/latest/?badge=latest)
-
-## Overview
-Welcome to the XIAO Seeed RP2040 Renode project. This project provides a simulation environment for the Seeed Studio XIAO RP2040 using Renode, integrated with PlatformIO.
-
-## Documentation
-The full documentation is available at:
-**[https://xiao-seeed-rp2040-renode.readthedocs.io/](https://xiao-seeed-rp2040-renode.readthedocs.io/)**
-
-## Goal
-Create a setup for the XIAO Seeed RP2040 able to run the UART, the ADC, the PWM, the Interrupts and the Timer on Renode over PlatformIO.
-
-## Project Structure
-- `docs/`: Project documentation and specifications.
-- `examples/`: Example projects and BEMF loop implementation.
-- `src/`: Firmware source code.
-- `test/`: Renode configuration files, peripheral models, and Robot Framework tests.
-- `specification/`: Datasheets and technical specifications (converted to Markdown).
-
-## License
-This project is licensed under the MIT License - see the LICENSE file for details (if available).
-
-## Feature Coverage
+# Feature Coverage
 
 This section tracks the implementation status of RP2040 features in the Renode simulation.
 
-### Status Legend
+## Status Legend
 * ✅ **Implemented**: Feature is implemented and verified with tests.
 * ⚠️ **Partial**: Feature is partially implemented or has known limitations.
 * ❌ **Not Implemented**: Feature is not yet implemented or is a stub.
 * **n/a**: Details not applicable for non-implemented parts.
 
-### System Description
+## System Description
 
 | Feature | Status | Details |
 | --- | --- | --- |
@@ -45,7 +21,7 @@ This section tracks the implementation status of RP2040 features in the Renode s
 | GPIO / Pads | ✅ | Digital IO and interrupt support verified on selected pins (e.g., GPIO 21). |
 | Resets | ❌ | n/a |
 
-### PIO (Programmable I/O)
+## PIO (Programmable I/O)
 
 | Feature | Status | Details |
 | --- | --- | --- |
@@ -53,7 +29,7 @@ This section tracks the implementation status of RP2040 features in the Renode s
 | PIO Instruction Set | ✅ | Most instructions supported via the piosim engine. |
 | PIO IRQ / DMA | ✅ | IRQ and DMA request routing implemented and wired in `rp2040.repl`. |
 
-### Peripherals
+## Peripherals
 
 | Feature | Status | Details |
 | --- | --- | --- |
@@ -68,7 +44,5 @@ This section tracks the implementation status of RP2040 features in the Renode s
 | ADC | ✅ | Full feature support (round-robin, error bits, FIFO packing, DREQ) verified with stabilized tests. |
 | Motor Model | ✅ | Brushed DC physics model, PWM/ADC synchronization, and BEMF-based PID control for load compensation. |
 | SSI | ❌ | n/a |
-
----
 
 *Last updated: 2026-05-25*
