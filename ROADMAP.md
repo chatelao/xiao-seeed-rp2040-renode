@@ -50,9 +50,8 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
     - [x] Phase 8.3.1: Implement PID controller structure and UART tuning commands ('p', 'i', 'd', 't', 'l'). [2026-05-24]
     - [x] Phase 8.3.2: Implement real-time telemetry output via UART ('v'). [2026-05-24]
     - [x] Phase 8.3.3: Extend `MotorModel` Renode peripheral with a `LoadTorque` property for simulation. [2026-05-25]
-    - [ ] Phase 8.3.4: Create Robot Framework tests for closed-loop speed stability under varying load.
+    - [x] Phase 8.3.4: Create Robot Framework tests for closed-loop speed stability under varying load. [2026-05-25]
 - [ ] Create a UART-based logging system for BEMF data and a host-side tool (e.g., Python/Matplotlib) for graphical analysis.
-- [ ] Add Robot Framework test cases to verify closed-loop speed stability and load handling.
 
 ## Phase 9: SPI Loopback Support
 - [x] Implement SPI firmware driver using Pico SDK [2026-05-06]

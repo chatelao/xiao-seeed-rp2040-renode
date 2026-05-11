@@ -1,0 +1,12 @@
+$machine_name?="seeed_xiao_rp2040"
+$platform_file?=$ORIGIN/pid_load_compensation.repl
+$board_initialization_file=$ORIGIN/renode-config/boards/initialize_custom_board.resc
+include $ORIGIN/renode-config/tests/prepare.resc
+
+# Set realistic motor parameters for observable load compensation
+sysbus.motor Resistance 10.0
+sysbus.motor Friction 0.0001
+sysbus.motor Inertia 0.001
+sysbus.motor Kv 100
+
+showAnalyzer sysbus.uart0
