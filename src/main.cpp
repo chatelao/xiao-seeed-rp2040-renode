@@ -81,7 +81,7 @@ void on_pwm_interrupt() {
         lastSyncAdcValue = adc_read();
         if (pid.enabled) {
             uint16_t output = update_pid(lastSyncAdcValue);
-            analogWrite(LED_PIN, output);
+            pwm_set_gpio_level(LED_PIN, (uint32_t)output * 5000 / 255);
         }
     }
 }
