@@ -4,18 +4,18 @@ This document provides 10 pre-defined motor models for H0 scale locomotives, sui
 
 ## Summary Table
 
-| Model ID | Description | Kv (RPM/V) | Resistance (Ω) | Inertia (kg·m²) | Friction (N·m·s) | Typical Behavior |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **MOD_CAN** | Modern 5-Pole CAN | 1200 | 12.0 | 0.0001 | 0.0001 | Balanced, efficient, standard modern loco. |
-| **VIN_OPEN** | Vintage Open-Frame | 1500 | 5.0 | 0.0002 | 0.0005 | High torque, high stall current, noisy. |
-| **COR_PREC** | Coreless Precision | 2000 | 25.0 | 0.00001 | 0.00005 | Low inertia, very fast response, fragile. |
-| **FLY_FRGT** | Flywheel Freight | 1000 | 10.0 | 0.001 | 0.0001 | Smooth starting, long coasting (momentum). |
-| **SWT_LOW** | Low-Speed Switcher | 800 | 15.0 | 0.0001 | 0.0002 | High torque at low speeds, low top speed. |
-| **EXP_HI** | High-Speed Express | 1800 | 14.0 | 0.00015 | 0.0001 | Optimized for high-speed passenger runs. |
-| **WORN_VIN** | Worn-out Vintage | 1300 | 18.0 | 0.0002 | 0.002 | High internal friction, sluggish response. |
-| **SML_N** | Small (N-Style) | 2500 | 35.0 | 0.00005 | 0.0001 | Low torque, high RPM, used in small shays. |
-| **HVY_DFLY** | Heavy Dual-Flywheel | 1100 | 8.0 | 0.005 | 0.0002 | Massive momentum, very slow to stop. |
-| **TOY_STD** | Low-Cost Toy Motor | 2200 | 20.0 | 0.00008 | 0.0003 | Lower efficiency, erratic at low voltages. |
+| Model ID | Description | Kv (RPM/V) | Resistance (Ω) | Inertia (kg·m²) | Friction (N·m·s) | Vstart (V) | Vstop (V) | Typical Behavior |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **MOD_CAN** | Modern 5-Pole CAN | 1200 | 12.0 | 0.0001 | 0.0001 | 1.5 | 0.8 | Balanced, efficient, standard modern loco. |
+| **VIN_OPEN** | Vintage Open-Frame | 1500 | 5.0 | 0.0002 | 0.0005 | 3.0 | 1.5 | High torque, high stall current, noisy. |
+| **COR_PREC** | Coreless Precision | 2000 | 25.0 | 0.00001 | 0.00005 | 0.5 | 0.2 | Low inertia, very fast response, fragile. |
+| **FLY_FRGT** | Flywheel Freight | 1000 | 10.0 | 0.001 | 0.0001 | 2.0 | 1.0 | Smooth starting, long coasting (momentum). |
+| **SWT_LOW** | Low-Speed Switcher | 800 | 15.0 | 0.0001 | 0.0002 | 1.2 | 0.6 | High torque at low speeds, low top speed. |
+| **EXP_HI** | High-Speed Express | 1800 | 14.0 | 0.00015 | 0.0001 | 2.0 | 1.2 | Optimized for high-speed passenger runs. |
+| **WORN_VIN** | Worn-out Vintage | 1300 | 18.0 | 0.0002 | 0.002 | 4.5 | 2.5 | High internal friction, sluggish response. |
+| **SML_N** | Small (N-Style) | 2500 | 35.0 | 0.00005 | 0.0001 | 2.5 | 1.5 | Low torque, high RPM, used in small shays. |
+| **HVY_DFLY** | Heavy Dual-Flywheel | 1100 | 8.0 | 0.005 | 0.0002 | 2.5 | 1.2 | Massive momentum, very slow to stop. |
+| **TOY_STD** | Low-Cost Toy Motor | 2200 | 20.0 | 0.00008 | 0.0003 | 3.5 | 2.0 | Lower efficiency, erratic at low voltages. |
 
 ---
 
@@ -29,6 +29,8 @@ motor: Peripherals.Motor.MotorModel @ sysbus
     Resistance: 12.0
     Inertia: 0.0001
     Friction: 0.0001
+    Vstart: 1.5
+    Vstop: 0.8
     Vbus: 12.0
     Adc: adc
     AdcChannel: 1
@@ -42,6 +44,8 @@ motor: Peripherals.Motor.MotorModel @ sysbus
     Resistance: 5.0
     Inertia: 0.0002
     Friction: 0.0005
+    Vstart: 3.0
+    Vstop: 1.5
     Vbus: 12.0
     Adc: adc
     AdcChannel: 1
@@ -55,6 +59,8 @@ motor: Peripherals.Motor.MotorModel @ sysbus
     Resistance: 25.0
     Inertia: 0.00001
     Friction: 0.00005
+    Vstart: 0.5
+    Vstop: 0.2
     Vbus: 12.0
     Adc: adc
     AdcChannel: 1
@@ -68,6 +74,8 @@ motor: Peripherals.Motor.MotorModel @ sysbus
     Resistance: 10.0
     Inertia: 0.001
     Friction: 0.0001
+    Vstart: 2.0
+    Vstop: 1.0
     Vbus: 12.0
     Adc: adc
     AdcChannel: 1
@@ -81,6 +89,8 @@ motor: Peripherals.Motor.MotorModel @ sysbus
     Resistance: 15.0
     Inertia: 0.0001
     Friction: 0.0002
+    Vstart: 1.2
+    Vstop: 0.6
     Vbus: 12.0
     Adc: adc
     AdcChannel: 1
@@ -94,6 +104,8 @@ motor: Peripherals.Motor.MotorModel @ sysbus
     Resistance: 14.0
     Inertia: 0.00015
     Friction: 0.0001
+    Vstart: 2.0
+    Vstop: 1.2
     Vbus: 12.0
     Adc: adc
     AdcChannel: 1
@@ -107,6 +119,8 @@ motor: Peripherals.Motor.MotorModel @ sysbus
     Resistance: 18.0
     Inertia: 0.0002
     Friction: 0.002
+    Vstart: 4.5
+    Vstop: 2.5
     Vbus: 12.0
     Adc: adc
     AdcChannel: 1
@@ -120,6 +134,8 @@ motor: Peripherals.Motor.MotorModel @ sysbus
     Resistance: 35.0
     Inertia: 0.00005
     Friction: 0.0001
+    Vstart: 2.5
+    Vstop: 1.5
     Vbus: 12.0
     Adc: adc
     AdcChannel: 1
@@ -133,6 +149,8 @@ motor: Peripherals.Motor.MotorModel @ sysbus
     Resistance: 8.0
     Inertia: 0.005
     Friction: 0.0002
+    Vstart: 2.5
+    Vstop: 1.2
     Vbus: 12.0
     Adc: adc
     AdcChannel: 1
@@ -146,6 +164,8 @@ motor: Peripherals.Motor.MotorModel @ sysbus
     Resistance: 20.0
     Inertia: 0.00008
     Friction: 0.0003
+    Vstart: 3.5
+    Vstop: 2.0
     Vbus: 12.0
     Adc: adc
     AdcChannel: 1
