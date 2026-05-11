@@ -37,13 +37,9 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
         {
             lock(sync)
             {
-                // Invert value because LEDs (and thus motor PWM) on XIAO RP2040 are active-low
-                bool state = !value;
-                if(pwmState == state) return;
-
                 // Immediate update before changing state to capture old state physics
                 UpdateInternal();
-                pwmState = state;
+                pwmState = value;
                 // Update again to reflect new state in ADC immediately
                 UpdateInternal();
             }
