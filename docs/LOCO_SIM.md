@@ -32,6 +32,8 @@ For beginners, here is what each term represents:
 - **$\frac{d\omega}{dt}$ (Angular Acceleration):** How fast the motor's speed is increasing or decreasing.
 - **$B$ (Viscous Friction):** Internal friction that increases as the motor spins faster.
 - **$\tau_{load}$ (Load Torque):** External forces resisting the motor, such as a locomotive pulling heavy cars or climbing a steep grade.
+- **$V_{start}$ (Start Voltage):** The minimum voltage required to overcome static friction (stiction) and start the motor turning from a standstill.
+- **$V_{stop}$ (Stop Voltage):** The voltage level below which the motor's internal friction and load will cause it to stop turning. Usually lower than $V_{start}$ due to the transition from static to kinetic friction.
 
 ### Equation Breakdown
 
@@ -123,6 +125,8 @@ Standard H0 motors (like those from Mabuchi, Mashima, or modern CAN motors) typi
 | Parameter | Value Range |
 | --- | --- |
 | Operating Voltage | 0 - 12V / 14V DC |
+| Start Voltage ($V_{start}$) | 0.5V - 4.5V |
+| Stop Voltage ($V_{stop}$) | 0.2V - 2.5V |
 | No-load Speed | 8,000 - 15,000 RPM |
 | Stall Current | 0.5A - 2.0A |
 | Terminal Resistance | 5 - 25 Ohms |

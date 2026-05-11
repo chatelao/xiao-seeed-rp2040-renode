@@ -28,6 +28,8 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
             this.Inertia = 0.0001;  // kg*m^2
             this.Friction = 0.0001; // N*m*s
             this.LoadTorque = 0.0;  // N*m
+            this.Vstart = 0.0;      // Volts
+            this.Vstop = 0.0;       // Volts
 
             this.updateThread = machine.ObtainManagedThread(UpdateAction, 1000); // 1kHz simulation
             Reset();
@@ -63,6 +65,15 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                 double omega = velocity;
                 double Ke = 60.0 / (2.0 * Math.PI * Kv);
                 double Vapplied = pwmState ? Vbus : 0;
+
+                if (velocity <= 0.01 && Vapplied < Vstart)
+                {
+                    Vapplied = 0;
+                }
+                else if (velocity > 0.01 && Vapplied < Vstop)
+                {
+                    Vapplied = 0;
+                }
 
                 // d_omega = (Ke/R * Vapplied - (Ke^2/R + Friction) * omega - LoadTorque) / Inertia * dt
                 double acceleration = (Ke / Resistance * Vapplied - (Ke * Ke / Resistance + Friction) * omega - LoadTorque) / Inertia;
@@ -104,6 +115,8 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
         public double Inertia { get; set; }
         public double Friction { get; set; }
         public double LoadTorque { get; set; }
+        public double Vstart { get; set; }
+        public double Vstop { get; set; }
         public RP2040ADC Adc { get; set; }
         public int AdcChannel { get; set; }
 
