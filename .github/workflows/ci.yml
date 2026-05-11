@@ -69,3 +69,24 @@ jobs:
     - name: Run BEMF Loop Test
       run: |
         ./test/renode/renode-test test/bemf_loop.robot
+
+  spice-verification:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install ngspice
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ngspice
+
+    - name: Run SPICE Verification
+      run: |
+        chmod +x test/run_spice_tests.sh
+        ./test/run_spice_tests.sh
