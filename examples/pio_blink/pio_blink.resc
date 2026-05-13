@@ -1,0 +1,8 @@
+$machine_name?="seeed_xiao_rp2040"
+$platform_file?=$ORIGIN/pio_blink.repl
+$board_initialization_file=$ORIGIN/../../test/renode-config/boards/initialize_custom_board.resc
+include $ORIGIN/../../test/renode-config/tests/prepare.resc
+
+showAnalyzer sysbus.uart0
+# Log GPIO changes to verify blinking
+logLevel 3 sysbus.gpio
