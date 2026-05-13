@@ -57,6 +57,18 @@ jobs:
       run: |
         pio run -d examples/bemf_loop
 
+    - name: Build DMA Pacing Example
+      run: |
+        pio run -d examples/dma_pacing
+
+    - name: Build I2C Sensor Example
+      run: |
+        pio run -d examples/i2c_sensor
+
+    - name: Build PIO Blink Example
+      run: |
+        pio run -d examples/pio_blink
+
     - name: Build Documentation
       run: |
         pip install -r docs/requirements.txt
@@ -69,6 +81,18 @@ jobs:
     - name: Run BEMF Loop Test
       run: |
         ./test/renode/renode-test test/bemf_loop.robot
+
+    - name: Run DMA Pacing Test
+      run: |
+        ./test/renode/renode-test test/dma_pacing.robot
+
+    - name: Run I2C Sensor Test
+      run: |
+        ./test/renode/renode-test test/i2c_sensor.robot
+
+    - name: Run PIO Blink Test
+      run: |
+        ./test/renode/renode-test test/pio_blink.robot
 
   spice-verification:
     runs-on: ubuntu-latest

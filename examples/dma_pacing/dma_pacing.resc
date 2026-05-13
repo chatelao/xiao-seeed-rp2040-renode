@@ -1,0 +1,6 @@
+$machine_name?="seeed_xiao_rp2040"
+$platform_file?=$ORIGIN/dma_pacing.repl
+$board_initialization_file=$ORIGIN/../../test/renode-config/boards/initialize_custom_board.resc
+include $ORIGIN/../../test/renode-config/tests/prepare.resc
+
+showAnalyzer sysbus.uart0
