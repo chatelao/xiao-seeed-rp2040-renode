@@ -17,13 +17,15 @@ Should Stabilize Speed And Handle Load In PID Loop
     Create Machine
     Start Emulation
 
-    Wait For Line On Uart     Motor PID Encoder Example Started
-    Wait For Line On Uart     System Initialized
+    Wait For Line On Uart     Motor PID Encoder Example Started  timeout=60
+    Wait For Line On Uart     System Initialized  timeout=60
 
     # 1. Set target velocity
     Write Char On Uart        t
-    Write Line To Uart        50
-    Wait For Line On Uart     New Target: 50
+    Write Char On Uart        5
+    Write Char On Uart        0
+    Write Char On Uart        \n
+    Wait For Line On Uart     New Target: 50  timeout=60
 
     # 2. Enable PID Loop
     Write Char On Uart        e

@@ -12,3 +12,6 @@ encoder: Miscellaneous.QuadratureEncoder @ sysbus
     Resolution: 100
     A -> gpio@21
     B -> gpio@22
+
+pwm:
+    0 -> motor@0
