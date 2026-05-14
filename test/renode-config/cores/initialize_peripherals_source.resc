@@ -64,6 +64,8 @@ include $ORIGIN/../emulation/externals/pcf8523.cs
 
 include $ORIGIN/../emulation/externals/bmp280.cs
 
+include $ORIGIN/../emulation/externals/QuadratureEncoder.cs
+
 include $ORIGIN/../emulation/externals/motor_model.cs
 
 include $ORIGIN/../emulation/externals/i_segment_display.cs
