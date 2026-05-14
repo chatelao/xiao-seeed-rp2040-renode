@@ -1,0 +1,20 @@
+:name: XIAO RP2040 Motor Encoder PID
+:description: This script runs the Motor PID Encoder example on the Seeed XIAO RP2040.
+
+$name?="XIAO-RP2040"
+
+using sysbus
+mach create $name
+
+machine LoadPlatformDescription @examples/motor_pid_encoder/motor_encoder.repl
+
+$bin?=@.pio/build/seeed-xiao-rp2040/firmware.elf
+
+showAnalyzer sysbus.uart0
+
+macro reset
+"""
+    sysbus LoadELF $bin
+"""
+
+runMacro $reset

@@ -96,6 +96,11 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
             {
                 Adc.SetDefaultVoltageOnChannel(AdcChannel, Vmapped);
             }
+
+            if (Encoder != null)
+            {
+                Encoder.Velocity = velocity;
+            }
         }
 
         public void Reset()
@@ -119,6 +124,9 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
         public double Vstop { get; set; }
         public RP2040ADC Adc { get; set; }
         public int AdcChannel { get; set; }
+        public QuadratureEncoder Encoder { get; set; }
+
+        public double Velocity => velocity;
 
         private readonly IMachine machine;
         private readonly IManagedThread updateThread;

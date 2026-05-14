@@ -1,0 +1,16 @@
+using "test/renode-config/boards/seeed_xiao_rp2040.repl"
+
+motor: Peripherals.Motor.MotorModel @ sysbus
+    kv: 1000
+    resistance: 10
+    inductance: 0.001
+    inertia: 0.0001
+    voltageInput: pwm0.slice0_chA
+    Adc: adc
+    AdcChannel: 1
+    Encoder: encoder
+
+encoder: Peripherals.Miscellaneous.QuadratureEncoder @ sysbus
+    Resolution: 100
+    A -> gpio0@21
+    B -> gpio0@22
