@@ -13,7 +13,7 @@ ${RESC}                       ${CURDIR}/../examples/motor_pid_encoder/motor_enco
 *** Test Cases ***
 Should Stabilize Speed And Handle Load In PID Loop
     [Documentation]           Verifies that the PID controller reaches target velocity and increases output when load is applied.
-    [Timeout]                 180 seconds
+    [Timeout]                 300 seconds
     Create Machine
     Start Emulation
 

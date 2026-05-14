@@ -10,8 +10,10 @@ motor: Miscellaneous.MotorModel @ sysbus
 
 encoder: Miscellaneous.QuadratureEncoder @ sysbus
     Resolution: 100
-    A -> gpio@21
-    B -> gpio@22
+
+encoder:
+    0 -> gpio@2
+    1 -> gpio@3
 
 pwm:
     0 -> motor@0

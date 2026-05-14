@@ -24,7 +24,7 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
             this.B = new GPIO();
             this.Resolution = 1000; // pulses per revolution (PPR)
 
-            this.updateThread = machine.ObtainManagedThread(UpdateAction, 10000); // 10kHz simulation for high speed pulses
+            this.updateThread = machine.ObtainManagedThread(UpdateAction, 1000); // 1kHz simulation for performance
             Reset();
         }
 
