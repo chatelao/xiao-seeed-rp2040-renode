@@ -51,6 +51,6 @@ Should Stabilize Speed And Handle Load In PID Loop
 
 *** Keywords ***
 Create Machine
-    Execute Command           $bin = @${FIRMWARE}
+    Execute Command           $global.TEST_FILE = @${FIRMWARE}
     Execute Script            ${RESC}
     Create Terminal Tester    ${UART}

@@ -1,4 +1,4 @@
-using "test/renode-config/boards/seeed_xiao_rp2040.repl"
+using "../../test/renode-config/boards/seeed_xiao_rp2040.repl"
 
 motor: Peripherals.Motor.MotorModel @ sysbus
     kv: 1000

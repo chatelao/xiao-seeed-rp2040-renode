@@ -7,6 +7,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using Antmicro.Renode.Core;
 using Antmicro.Renode.Logging;
 using Antmicro.Renode.Time;
@@ -51,7 +52,6 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
                     {
                         // Position changed, update outputs
                         // Gray code sequence for quadrature: 00 -> 01 -> 11 -> 10 -> ...
-                        // We can use a simple lookup or bit manipulation
                         UpdateOutputs(currentIntPos);
                         lastIntPos = currentIntPos;
                     }
@@ -62,22 +62,14 @@ namespace Antmicro.Renode.Peripherals.Miscellaneous
 
         private void UpdateOutputs(int pos)
         {
-            // Standard quadrature sequence:
-            // Pos % 4 | A | B
-            // --------|---|---
-            //    0    | 0 | 0
-            //    1    | 1 | 0
-            //    2    | 1 | 1
-            //    3    | 0 | 1
-
             int step = pos % 4;
             if (step < 0) step += 4;
 
             bool nextA = (step == 1 || step == 2);
             bool nextB = (step == 2 || step == 3);
 
-            if (A.State != nextA) A.Set(nextA);
-            if (B.State != nextB) B.Set(nextB);
+            if (A.IsSet != nextA) A.Set(nextA);
+            if (B.IsSet != nextB) B.Set(nextB);
         }
 
         public void Reset()
