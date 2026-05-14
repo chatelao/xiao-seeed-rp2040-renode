@@ -668,6 +668,30 @@ void loop() {
 
       dma_channel_unclaim(dma_chan);
       Serial1.flush();
+    } else if (incomingByte == 'r') {
+      // Command 'r': Test RESETS peripheral (using 'r' for resets to avoid conflict with 'X')
+      volatile uint32_t *resets_base = (volatile uint32_t *)0x4000c000;
+      volatile uint32_t *reset_reg = resets_base + 0;
+      volatile uint32_t *reset_done_reg = resets_base + 2;
+
+      uint32_t initial_reset = *reset_reg;
+      uint32_t initial_done = *reset_done_reg;
+
+      // Clear reset for all (0x01ffffff are all bits that can be 1)
+      *reset_reg = 0;
+      uint32_t cleared_reset = *reset_reg;
+      uint32_t cleared_done = *reset_done_reg;
+
+      // Set reset for all
+      *reset_reg = 0x01ffffff;
+      uint32_t set_reset = *reset_reg;
+      uint32_t set_done = *reset_done_reg;
+
+      Serial1.printf("RESETS Test: INIT_R=0x%08X INIT_D=0x%08X CLR_R=0x%08X CLR_D=0x%08X SET_R=0x%08X SET_D=0x%08X\n",
+                     (unsigned int)initial_reset, (unsigned int)initial_done,
+                     (unsigned int)cleared_reset, (unsigned int)cleared_done,
+                     (unsigned int)set_reset, (unsigned int)set_done);
+      Serial1.flush();
     } else {
       // Default: Echo character back to UART
       Serial1.print("Echo: ");

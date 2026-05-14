@@ -94,10 +94,12 @@ piocpu1:
 
 // raspberrypi,rp2040 overlay
 
+resets: Resets.RP2040Resets @ sysbus 0x4000c000
+    address: 0x4000c000
+
 sysbus:
     init:
         ApplySVD @https://dl.antmicro.com/projects/renode/svd/RP2040.svd.gz
-        Tag <0x4000C008 4> "RESET_DONE" 0xFFFFFFFF
         Tag <0x40024004 4> "XOSC_STATUS" 0xFFFFFFFF
         Tag <0x40028000 4> "PLL_SYS_CS" 0xFFFFFFFF
         Tag <0x4002C000 4> "PLL_USB_CS" 0xFFFFFFFF
