@@ -19,7 +19,7 @@ This section tracks the implementation status of RP2040 features in the Renode s
 | Bootrom | ❌ | n/a |
 | Clocks | ⚠️ | Basic clock structures defined; fixed frequencies used in simulation. |
 | GPIO / Pads | ✅ | Digital IO and interrupt support verified on selected pins (e.g., GPIO 21). |
-| Resets | ❌ | n/a |
+| Resets | ⚠️ | `RESET`, `WDSEL`, and `RESET_DONE` registers implemented. |
 
 ## PIO (Programmable I/O)
 

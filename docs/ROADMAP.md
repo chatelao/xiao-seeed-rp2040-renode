@@ -107,8 +107,8 @@ The final plan to implement the `CONCEPT.md` and `DESIGN.md` to achieve the top 
 - [x] Create Robot Framework tests for Watchdog and RTC [2026-05-23]
 
 ## Phase 16: System Resets and Power Management
-- [ ] Implement `RP2040Resets` Renode model for peripheral reset control
-    - [ ] Implement `RESET` and `WDSEL` register logic.
+- [x] Implement `RP2040Resets` Renode model for peripheral reset control [2026-05-14]
+    - [x] Implement `RESET` and `WDSEL` register logic.
     - [ ] Wire reset signals to other peripherals in the simulation.
 - [ ] Implement `RP2040Power` Renode model for power-on reset and sleep states
     - [ ] Implement `BOD` and `VREG` register stubs.
