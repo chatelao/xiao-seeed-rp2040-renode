@@ -25,7 +25,7 @@ This section tracks the implementation status of RP2040 features in the Renode s
 
 | Feature | Status | Details |
 | --- | --- | --- |
-| PIO State Machines | ⚠️ | Co-simulation with `libpiosim` supports basic program execution; verified GPIO interaction. |
+| PIO State Machines | ✅ | Co-simulation with `libpiosim` supports basic program execution; verified GPIO interaction. |
 | PIO Instruction Set | ✅ | Most instructions supported via the piosim engine. |
 | PIO IRQ / DMA | ✅ | IRQ and DMA request routing implemented and wired in `rp2040.repl`. |
 
