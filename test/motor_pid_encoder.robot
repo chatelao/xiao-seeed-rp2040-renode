@@ -21,7 +21,8 @@ Should Stabilize Speed And Handle Load In PID Loop
     Wait For Line On Uart     System Initialized
 
     # 1. Set target velocity
-    Write Line On Uart        t 50
+    Write Char On Uart        t
+    Write Line To Uart        50
     Wait For Line On Uart     New Target: 50
 
     # 2. Enable PID Loop
