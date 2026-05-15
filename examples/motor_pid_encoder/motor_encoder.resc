@@ -6,12 +6,17 @@ $platform_file=$ORIGIN/motor_encoder.repl
 $board_initialization_file=$ORIGIN/../../test/renode-config/boards/initialize_custom_board.resc
 include $ORIGIN/../../test/renode-config/tests/prepare.resc
 
-# Increase PIO performance to handle encoder pulses better
-piocpu0 PerformanceInMips 20
+# Increase performance for simulation
+cpu0 PerformanceInMips 100
+piocpu0 PerformanceInMips 100
 
-# Suppress noisy logs for performance
+# Relax quantum for better host performance
+emulation SetGlobalQuantum "0.001"
+
+# Suppress noisy logs
 logLevel 3 sysbus.pwm
 logLevel 3 sysbus.gpio
 logLevel 3 sysbus.adc
+logLevel 3 sysbus.pads
 
 showAnalyzer sysbus.uart0

@@ -37,6 +37,7 @@ void setup() {
     gpio_set_function(MOTOR_PWM_PIN, GPIO_FUNC_PWM);
     slice_num = pwm_gpio_to_slice_num(MOTOR_PWM_PIN);
     pwm_config config = pwm_get_default_config();
+    pwm_config_set_clkdiv(&config, 100.0f); // Slow down for simulation visibility
     pwm_config_set_wrap(&config, 1000);
     pwm_init(slice_num, &config, true);
     pwm_set_gpio_level(MOTOR_PWM_PIN, 0);
