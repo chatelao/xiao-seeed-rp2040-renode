@@ -3,15 +3,15 @@ using "../../test/renode-config/boards/seeed_xiao_rp2040.repl"
 motor: Miscellaneous.MotorModel @ sysbus
     Kv: 1000
     Resistance: 10
-    Inertia: 0.0001
+    Inertia: 0.001
     Adc: adc
     AdcChannel: 1
     Encoder: encoder
 
 encoder: Miscellaneous.QuadratureEncoder @ sysbus
-    Resolution: 100
-    A -> gpio@21
-    B -> gpio@22
+    Resolution: 10
+    0 -> gpio@21
+    1 -> gpio@22
 
 pwm:
     0 -> motor@0
