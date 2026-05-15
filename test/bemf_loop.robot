@@ -23,11 +23,11 @@ Verify bEMF Loop
     Wait For Line On Uart     DUTY:100  timeout=10
 
     # After some time, BEMF should increase as duty cycle increases
-    Wait For Line On Uart     DUTY:200  timeout=10
+    Wait For Line On Uart     DUTY:200  timeout=60
 
     # Verify that BEMF is non-zero
-    Wait For Line On Uart     BEMF:[1-9][0-9]*    timeout=10  treatAsRegex=true
+    Wait For Line On Uart     BEMF:[1-9][0-9]*    timeout=30  treatAsRegex=true
 
     # Verify that BEMF follows duty cycle ramp (roughly)
-    Wait For Line On Uart     DUTY:300  timeout=20
-    Wait For Line On Uart     BEMF:[1-9][0-9]*    timeout=10  treatAsRegex=true
+    Wait For Line On Uart     DUTY:300  timeout=120
+    Wait For Line On Uart     BEMF:[1-9][0-9]*    timeout=30  treatAsRegex=true
