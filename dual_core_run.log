@@ -1,0 +1,25 @@
+Preparing suites
+Starting suites
+Running suite on Renode pid 52844 using port 49152: test/dual_core.robot
++++++ Starting test 'dual_core.Should Verify Dual Core Operation'
+!!!!! Test timed out after 60.0s: dual_core.Should Verify Dual Core Operation
+----- Skipped flushing emulation log and saving state due to the timeout, restarting Renode...
+Closing Renode pid 52844
+Renode pid 52844 closed
+----- ...done, running remaining tests on Renode pid 60466 using the same port 49152
++++++ Finished test 'dual_core.Should Verify Dual Core Operation' in 63.31 seconds with status [91mfailed[0m
+      ╔═
+      ║ Test timeout 1 minute exceeded.
+      ╚═
+Suite test/dual_core.robot failed in 63.96 seconds.
+Cleaning up suites
+Closing Renode pid 60466
+Renode pid 60466 closed
+Aggregating all robot results
+Output:  /app/robot_output.xml
+Log:     /app/log.html
+Report:  /app/report.html
+Some tests failed :( See the list of failed tests below and logs for details!
+Failed robot critical tests:
+	1. dual_core.Should Verify Dual Core Operation
+------

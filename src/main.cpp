@@ -19,6 +19,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <SPI.h>
+#include "pico/multicore.h"
+#include "hardware/sync.h"
 #include "hardware/dma.h"
 #include "hardware/timer.h"
 #include "hardware/adc.h"
@@ -94,6 +96,23 @@ uint16_t update_pid(uint16_t actual) {
 
     pid.last_output = (uint16_t)pwm_out;
     return pid.last_output;
+}
+
+/**
+ * @brief Setup function for Core 1.
+ */
+void setup1() {
+  // Core 1 initialization if needed
+}
+
+/**
+ * @brief Loop function for Core 1.
+ */
+void loop1() {
+  // Wait for data from Core 0 via FIFO
+  uint32_t data = multicore_fifo_pop_blocking();
+  // Increment and send back
+  multicore_fifo_push_blocking(data + 1);
 }
 
 /**
@@ -691,6 +710,26 @@ void loop() {
                      (unsigned int)initial_reset, (unsigned int)initial_done,
                      (unsigned int)cleared_reset, (unsigned int)cleared_done,
                      (unsigned int)set_reset, (unsigned int)set_done);
+      Serial1.flush();
+    } else if (incomingByte == 'x') {
+      // Command 'x': Dual Core Verification Test
+      Serial1.printf("CPUID: %u\n", (unsigned int)get_core_num());
+
+      // Test FIFO communication with Core 1
+      uint32_t test_val = 100;
+      multicore_fifo_push_blocking(test_val);
+      uint32_t echo_val = multicore_fifo_pop_blocking();
+      Serial1.printf("FIFO Echo: %u\n", (unsigned int)echo_val);
+
+      // Test Spinlock
+      uint lock_num = 31;
+      spin_lock_claim(lock_num);
+      spin_lock_t *lock = spin_lock_instance(lock_num);
+      spin_lock_unsafe_blocking(lock);
+      // If we are here, we acquired the lock
+      spin_unlock_unsafe(lock);
+      spin_lock_unclaim(lock_num);
+      Serial1.println("Spinlock Test Passed");
       Serial1.flush();
     } else {
       // Default: Echo character back to UART
