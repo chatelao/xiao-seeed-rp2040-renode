@@ -1,0 +1,26 @@
+Preparing suites
+Starting suites
+Running suite on Renode pid 379197 using port 49152: test/bemf_loop.robot
++++++ Starting test 'bemf_loop.Verify bEMF Loop'
++++++ Finished test 'bemf_loop.Verify bEMF Loop' in 99.20 seconds with status [92mOK[0m
+Suite test/bemf_loop.robot finished successfully in 99.89 seconds.
+Running suite on Renode pid -1 using port 49152: test/pio_blink.robot
++++++ Starting test 'pio_blink.Verify PIO Blink Example'
++++++ Finished test 'pio_blink.Verify PIO Blink Example' in 25.55 seconds with status [92mOK[0m
+Suite test/pio_blink.robot finished successfully in 26.37 seconds.
+Running suite on Renode pid -1 using port 49152: test/dma_pacing.robot
++++++ Starting test 'dma_pacing.Verify DMA Pacing Example'
++++++ Finished test 'dma_pacing.Verify DMA Pacing Example' in 0.97 seconds with status [92mOK[0m
+Suite test/dma_pacing.robot finished successfully in 1.39 seconds.
+Running suite on Renode pid -1 using port 49152: test/i2c_sensor.robot
++++++ Starting test 'i2c_sensor.Verify I2C Sensor Example'
++++++ Finished test 'i2c_sensor.Verify I2C Sensor Example' in 0.84 seconds with status [92mOK[0m
+Suite test/i2c_sensor.robot finished successfully in 1.34 seconds.
+Cleaning up suites
+Closing Renode pid 379197
+Renode pid 379197 closed
+Aggregating all robot results
+Output:  /app/robot_output.xml
+Log:     /app/log.html
+Report:  /app/report.html
+Tests finished successfully :)

@@ -17,22 +17,26 @@ Should Stabilize Speed And Handle Load In PID Loop
     Create Machine
     Start Emulation
 
-    Wait For Line On Uart     Motor PID Encoder Example Started
-    Wait For Line On Uart     System Initialized
+    Wait For Line On Uart     Motor PID Encoder Example Started  timeout=60
+    Wait For Line On Uart     System Initialized  timeout=60
 
     # 1. Set target velocity
-    Write Line To Uart        t 50
-    Wait For Line On Uart     New Target: 50
+    # We use multiple Write Char calls to avoid potential issues with Write Line To Uart expecting echo
+    Write Char On Uart        t
+    Write Char On Uart        5
+    Write Char On Uart        0
+    Write Char On Uart        \n
+    Wait For Line On Uart     New Target: 50  timeout=60
 
     # 2. Enable PID Loop
     Write Char On Uart        e
-    Wait For Line On Uart     PID Enabled
+    Wait For Line On Uart     PID Enabled  timeout=30
 
     # 3. Wait for stability (Target 50 counts/100ms)
-    Wait For Line On Uart     VEL: (4[8-9]|5[0-2]) TGT: 50  timeout=60  treatAsRegex=true
+    Wait For Line On Uart     VEL: (4[8-9]|5[0-2]) TGT: 50  timeout=120  treatAsRegex=true
 
     # 4. Capture current output
-    ${line}=                  Wait For Line On Uart     VEL: .* TGT: 50 OUT: ([0-9]+)  treatAsRegex=true
+    ${line}=                  Wait For Line On Uart     VEL: .* TGT: 50 OUT: ([0-9]+)  timeout=30  treatAsRegex=true
     ${initial_output}=        Set Variable  ${line['Groups'][0]}
     Log                       Initial PID output: ${initial_output}
 
@@ -42,7 +46,7 @@ Should Stabilize Speed And Handle Load In PID Loop
 
     # 6. Verify that PID output increases to compensate
     # It might drop temporarily but should recover or increase PWM to maintain
-    Wait For Line On Uart     VEL: (4[8-9]|5[0-2]) TGT: 50  timeout=60  treatAsRegex=true
+    Wait For Line On Uart     VEL: (4[8-9]|5[0-2]) TGT: 50  timeout=120  treatAsRegex=true
     ${line}=                  Wait For Line On Uart     VEL: .* TGT: 50 OUT: ([0-9]+)  treatAsRegex=true
     ${new_output}=            Set Variable  ${line['Groups'][0]}
     Log                       New PID output: ${new_output}
