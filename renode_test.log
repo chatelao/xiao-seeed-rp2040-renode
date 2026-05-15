@@ -1,0 +1,23 @@
+Preparing suites
+Starting suites
+Running suite on Renode pid 151884 using port 49152: test/motor_pid_encoder.robot
++++++ Starting test 'motor_pid_encoder.Should Stabilize Speed And Handle Load In PID Loop'
+!!!!! Emulation's state saved to "/app//snapshots/motor_pid_encoder.Should_Stabilize_Speed_And_Handle_Load_In_PID_Loop.fail0.save"
+!!!!! Log saved to "/app//logs/motor_pid_encoder.Should_Stabilize_Speed_And_Handle_Load_In_PID_Loop.fail0.log"
++++++ Finished test 'motor_pid_encoder.Should Stabilize Speed And Handle Load In PID Loop' in 22.13 seconds with status [91mfailed[0m
+      ╔═
+      ║ No keyword with name 'Write Line On Uart' found. Did you mean:
+      ║     Remote.Write Line To Uart
+      ╚═
+Suite test/motor_pid_encoder.robot failed in 22.8 seconds.
+Cleaning up suites
+Closing Renode pid 151884
+Renode pid 151884 closed
+Aggregating all robot results
+Output:  /app/robot_output.xml
+Log:     /app/log.html
+Report:  /app/report.html
+Some tests failed :( See the list of failed tests below and logs for details!
+Failed robot critical tests:
+	1. motor_pid_encoder.Should Stabilize Speed And Handle Load In PID Loop
+------
