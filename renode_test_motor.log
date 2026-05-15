@@ -1,4 +1,25 @@
 Preparing suites
 Starting suites
-Running suite on Renode pid 705283 using port 49152: test/motor_pid_encoder.robot
+Running suite on Renode pid 773887 using port 49152: test/motor_pid_encoder.robot
 +++++ Starting test 'motor_pid_encoder.Should Stabilize Speed And Handle Load In PID Loop'
+!!!!! Test timed out after 600.0s: motor_pid_encoder.Should Stabilize Speed And Handle Load In PID Loop
+----- Skipped flushing emulation log and saving state due to the timeout, restarting Renode...
+Closing Renode pid 773887
+Renode pid 773887 closed
+----- ...done, running remaining tests on Renode pid 896365 using the same port 49152
++++++ Finished test 'motor_pid_encoder.Should Stabilize Speed And Handle Load In PID Loop' in 603.46 seconds with status [91mfailed[0m
+      ╔═
+      ║ Test timeout 10 minutes exceeded.
+      ╚═
+Suite test/motor_pid_encoder.robot failed in 604.14 seconds.
+Cleaning up suites
+Closing Renode pid 896365
+Renode pid 896365 closed
+Aggregating all robot results
+Output:  /app/robot_output.xml
+Log:     /app/log.html
+Report:  /app/report.html
+Some tests failed :( See the list of failed tests below and logs for details!
+Failed robot critical tests:
+	1. motor_pid_encoder.Should Stabilize Speed And Handle Load In PID Loop
+------

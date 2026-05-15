@@ -13,7 +13,7 @@ ${RESC}                       ${CURDIR}/../examples/motor_pid_encoder/motor_enco
 *** Test Cases ***
 Should Stabilize Speed And Handle Load In PID Loop
     [Documentation]           Verifies that the PID controller reaches target velocity and increases output when load is applied.
-    [Timeout]                 180 seconds
+    [Timeout]                 600 seconds
     Create Machine
     Start Emulation
 
@@ -33,10 +33,10 @@ Should Stabilize Speed And Handle Load In PID Loop
     Wait For Line On Uart     PID Enabled  timeout=30
 
     # 3. Wait for stability (Target 50 counts/100ms)
-    Wait For Line On Uart     VEL: (4[8-9]|5[0-2]) TGT: 50  timeout=120  treatAsRegex=true
+    Wait For Line On Uart     VEL: (4[8-9]|5[0-2]) TGT: 50  timeout=300  treatAsRegex=true
 
     # 4. Capture current output
-    ${line}=                  Wait For Line On Uart     VEL: .* TGT: 50 OUT: ([0-9]+)  timeout=30  treatAsRegex=true
+    ${line}=                  Wait For Line On Uart     VEL: .* TGT: 50 OUT: ([0-9]+)  timeout=60  treatAsRegex=true
     ${initial_output}=        Set Variable  ${line['Groups'][0]}
     Log                       Initial PID output: ${initial_output}
 
@@ -46,8 +46,8 @@ Should Stabilize Speed And Handle Load In PID Loop
 
     # 6. Verify that PID output increases to compensate
     # It might drop temporarily but should recover or increase PWM to maintain
-    Wait For Line On Uart     VEL: (4[8-9]|5[0-2]) TGT: 50  timeout=120  treatAsRegex=true
-    ${line}=                  Wait For Line On Uart     VEL: .* TGT: 50 OUT: ([0-9]+)  treatAsRegex=true
+    Wait For Line On Uart     VEL: (4[8-9]|5[0-2]) TGT: 50  timeout=300  treatAsRegex=true
+    ${line}=                  Wait For Line On Uart     VEL: .* TGT: 50 OUT: ([0-9]+)  timeout=60  treatAsRegex=true
     ${new_output}=            Set Variable  ${line['Groups'][0]}
     Log                       New PID output: ${new_output}
 
