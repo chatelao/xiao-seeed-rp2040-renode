@@ -1,53 +1,22 @@
 :name: XIAO RP2040 Motor Encoder PID
 :description: This script runs the Motor PID Encoder example on the Seeed XIAO RP2040.
 
-$name?="XIAO-RP2040"
+$machine_name?="seeed_xiao_rp2040"
+$platform_file=$ORIGIN/motor_encoder.repl
+$board_initialization_file=$ORIGIN/../../test/renode-config/boards/initialize_custom_board.resc
+include $ORIGIN/../../test/renode-config/tests/prepare.resc
 
-using sysbus
-mach create $name
+# Increase performance for simulation
+cpu0 PerformanceInMips 100
+piocpu0 PerformanceInMips 100
 
-# Load necessary C# scripts
-include $ORIGIN/../../test/renode-config/emulation/peripherals/rp2040_peripheral_base.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/gpio/rp2040_gpio.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/gpio/rp2040_pads.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/gpio/rp2040_qspi_pads.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/clocks/rp2040_xosc.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/clocks/rp2040_rosc.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/clocks/rp2040_pll.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/clocks/rp2040_clocks.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/adc/rp2040_adc.cs
-include $ORIGIN/../../test/renode-config/emulation/externals/QuadratureEncoder.cs
-include $ORIGIN/../../test/renode-config/emulation/externals/motor_model.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/memory/memory_alias.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/timer/rp2040_timer.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/pio/rp2040_pio.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/spi/rp2040_spi.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/spi/rp2040_xip_ssi.cs
-include $ORIGIN/../../test/renode-config/emulation/externals/w25q16.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/sio/rp2040_sio.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/adc/rp2040_adc.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/pwm/rp2040_pwm.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/uart/rp2040_uart.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/dma/rpdma_engine.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/dma/rpdma.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/watchdog/rp2040_watchdog.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/rtc/rp2040_rtc.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/i2c/rp2040_i2c.cs
-include $ORIGIN/../../test/renode-config/emulation/externals/bmp280.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/psm/rp2040_psm.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/resets/rp2040_resets.cs
-include $ORIGIN/../../test/renode-config/emulation/peripherals/power/power.cs
+# Relax quantum for better host performance
+emulation SetGlobalQuantum "0.001"
 
-# Load base platform
-machine LoadPlatformDescription $ORIGIN/../../test/renode-config/boards/seeed_xiao_rp2040.repl
-
-# Add our custom motor and encoder to the sysbus
-machine LoadPlatformDescriptionFromString "encoder: Miscellaneous.QuadratureEncoder @ sysbus { Resolution: 100; A -> gpio@21; B -> gpio@22 }"
-machine LoadPlatformDescriptionFromString "motor: Miscellaneous.MotorModel @ sysbus { Adc: adc; AdcChannel: 1; Encoder: encoder }"
-machine LoadPlatformDescriptionFromString "pwm: { 0 -> motor@0 }"
-
-$bin?=$ORIGIN/.pio/build/seeed-xiao-rp2040/firmware.elf
+# Suppress noisy logs
+logLevel 3 sysbus.pwm
+logLevel 3 sysbus.gpio
+logLevel 3 sysbus.adc
+logLevel 3 sysbus.pads
 
 showAnalyzer sysbus.uart0
-
-# sysbus LoadELF $bin

@@ -69,6 +69,10 @@ jobs:
       run: |
         pio run -d examples/pio_blink
 
+    - name: Build Motor PID Encoder Example
+      run: |
+        pio run -d examples/motor_pid_encoder
+
     - name: Build Documentation
       run: |
         pip install -r docs/requirements.txt
@@ -93,6 +97,10 @@ jobs:
     - name: Run PIO Blink Test
       run: |
         ./test/renode/renode-test test/pio_blink.robot
+
+    - name: Run Motor PID Encoder Test
+      run: |
+        ./test/renode/renode-test test/motor_pid_encoder.robot
 
   spice-verification:
     runs-on: ubuntu-latest

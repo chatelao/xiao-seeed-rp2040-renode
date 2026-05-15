@@ -5,8 +5,8 @@
 
 // Pin configuration
 const int MOTOR_PWM_PIN = 16;
-const int ENCODER_PIN_A = 21; // D6
-const int ENCODER_PIN_B = 22; // D7 (Assumed next to D6)
+const int ENCODER_PIN_A = 2; // D8
+const int ENCODER_PIN_B = 3; // D10
 
 // PID Controller
 struct PidController {
@@ -25,18 +25,19 @@ uint slice_num;
 
 void setup() {
     Serial1.begin(115200);
-    while (!Serial1);
     Serial1.println("Motor PID Encoder Example Started");
 
     // Initialize PIO Quadrature Encoder
     // Note: quadrature_encoder.pio must be loaded at origin 0
     uint offset = pio_add_program_at_offset(pio, &quadrature_encoder_program, 0);
-    quadrature_encoder_program_init(pio, sm, ENCODER_PIN_A, 0);
+    // Use a non-zero max_step_rate (10kHz) to reduce simulation overhead in Renode
+    quadrature_encoder_program_init(pio, sm, ENCODER_PIN_A, 10000);
 
     // Initialize PWM
     gpio_set_function(MOTOR_PWM_PIN, GPIO_FUNC_PWM);
     slice_num = pwm_gpio_to_slice_num(MOTOR_PWM_PIN);
     pwm_config config = pwm_get_default_config();
+    pwm_config_set_clkdiv(&config, 100.0f); // Slow down for simulation visibility
     pwm_config_set_wrap(&config, 1000);
     pwm_init(slice_num, &config, true);
     pwm_set_gpio_level(MOTOR_PWM_PIN, 0);

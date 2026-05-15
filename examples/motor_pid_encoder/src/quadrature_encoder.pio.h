@@ -87,16 +87,11 @@ static inline void quadrature_encoder_program_init(PIO pio, uint sm, uint pin, i
 }
 static inline int32_t quadrature_encoder_get_count(PIO pio, uint sm)
 {
-    uint ret;
-    int n;
-    // if the FIFO has N entries, we fetch them to drain the FIFO,
-    // plus one entry which will be guaranteed to not be stale
-    n = pio_sm_get_rx_fifo_level(pio, sm) + 1;
-    while (n > 0) {
-        ret = pio_sm_get_blocking(pio, sm);
-        n--;
+    static uint32_t last_ret = 0;
+    while (!pio_sm_is_rx_fifo_empty(pio, sm)) {
+        last_ret = pio_sm_get(pio, sm);
     }
-    return ret;
+    return (int32_t)last_ret;
 }
 
 #endif
