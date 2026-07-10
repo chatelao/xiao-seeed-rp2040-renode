@@ -7,4 +7,5 @@ motor: Miscellaneous.MotorModel
     Vbus: 12.0
 
 pwm:
-    0 -> motor@0
+    1 -> motor@0
+    2 -> motor@0

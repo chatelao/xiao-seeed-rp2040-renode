@@ -16,18 +16,22 @@ Verify bEMF Loop
     Execute Script            ${RESC}
     Create Terminal Tester    ${UART}
 
-    Wait For Line On Uart     bEMF Feedback Loop Example Started  timeout=30
+    Wait For Line On Uart     Bidirectional bEMF Loop Example Started  timeout=60
 
     # Wait for a few log lines and verify the format and values
-    # DUTY:100 BEMF:0 (initially)
-    Wait For Line On Uart     DUTY:100  timeout=10
+    # DIR:F DUTY:100 bEMF_A:0 (initially)
+    Wait For Line On Uart     DIR:F DUTY:100  timeout=30
 
     # After some time, BEMF should increase as duty cycle increases
-    Wait For Line On Uart     DUTY:200  timeout=60
+    Wait For Line On Uart     DIR:F DUTY:200  timeout=120
 
-    # Verify that BEMF is non-zero
-    Wait For Line On Uart     BEMF:[1-9][0-9]*    timeout=30  treatAsRegex=true
+    # Verify that BEMF_A is non-zero
+    Wait For Line On Uart     bEMF_A:[1-9][0-9]*    timeout=60  treatAsRegex=true
 
     # Verify that BEMF follows duty cycle ramp (roughly)
-    Wait For Line On Uart     DUTY:300  timeout=120
-    Wait For Line On Uart     BEMF:[1-9][0-9]*    timeout=30  treatAsRegex=true
+    Wait For Line On Uart     DIR:F DUTY:300  timeout=300
+    Wait For Line On Uart     bEMF_A:[1-9][0-9]*    timeout=60  treatAsRegex=true
+
+    # Direction Swap
+    Wait For Line On Uart     Direction: REVERSE  timeout=600
+    Wait For Line On Uart     DIR:R DUTY:100  timeout=60
