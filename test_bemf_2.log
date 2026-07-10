@@ -1,0 +1,20 @@
+Required `robotframework` version is `6.1`, while the one available in your system is `7.4.2`. Tests may still work, but this version of Robot is not officially supported. Please install the required version using `pip install robotframework==6.1` before running the tests
+Preparing suites
+Starting suites
+Running suite on Renode pid 266098 using port 49152: test/bemf_loop.robot
+!!!!! Emulation's state saved to "/app//snapshots/bemf_loop.Verify_bEMF_Loop.fail0.save"
+!!!!! Log saved to "/app//logs/bemf_loop.Verify_bEMF_Loop.fail0.log"
+Suite test/bemf_loop.robot failed in 736.6 seconds.
+Renode has unexpectedly died when running sequentially! Trying to respawn before continuing...
+Cleaning up suites
+Closing Renode pid 419721
+Renode pid 419721 closed
+Aggregating all robot results
+Output:  /app/robot_output.xml
+Log:     /app/log.html
+Report:  /app/report.html
+Some tests failed :( See the list of failed tests below and logs for details!
+Failed robot critical tests:
+	1. bemf_loop.Verify bEMF Loop
+------
+Renode crashed during testing and caused a failure

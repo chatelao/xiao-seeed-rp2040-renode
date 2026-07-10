@@ -26,7 +26,7 @@ uint slice_num;
 void setup() {
     Serial1.begin(115200);
     // while (!Serial1); // Removed for CI stability
-    delay(1000);
+    delay(100);
     Serial1.println("Motor PID Encoder Example Started");
 
     // Initialize PIO Quadrature Encoder

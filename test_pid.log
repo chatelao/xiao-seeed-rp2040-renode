@@ -1,0 +1,13 @@
+Required `robotframework` version is `6.1`, while the one available in your system is `7.4.2`. Tests may still work, but this version of Robot is not officially supported. Please install the required version using `pip install robotframework==6.1` before running the tests
+Preparing suites
+Starting suites
+Running suite on Renode pid 70148 using port 49153: test/motor_pid_encoder.robot
+Suite test/motor_pid_encoder.robot finished successfully in 47.8 seconds.
+Cleaning up suites
+Closing Renode pid 70148
+Renode pid 70148 closed
+Aggregating all robot results
+Output:  /app/robot_output.xml
+Log:     /app/log.html
+Report:  /app/report.html
+Tests finished successfully :)

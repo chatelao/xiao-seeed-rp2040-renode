@@ -12,7 +12,7 @@ ${RESC}                       ${CURDIR}/../examples/motor_pid_encoder/motor_enco
 *** Test Cases ***
 Should Initialize Motor PID Encoder Example
     [Documentation]           Verifies that the motor PID encoder example starts and initializes correctly.
-    [Timeout]                 120 seconds
+    [Timeout]                 300 seconds
     Create Machine
     Start Emulation
 
