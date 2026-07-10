@@ -6,6 +6,6 @@ motor: Miscellaneous.MotorModel
     Kv: 1000
     Vbus: 12.0
 
-gpio:
+pwm:
     1 -> motor@0
     2 -> motor@0

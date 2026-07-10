@@ -43,8 +43,7 @@ void on_pwm_wrap() {
 
 void setup() {
     Serial1.begin(115200);
-    // while (!Serial1); // Removed for CI stability
-    delay(1000);
+    delay(100);
     Serial1.println("Bidirectional bEMF Loop Example Started");
 
     // Initialize LEDs
@@ -79,10 +78,13 @@ void setup() {
     pwm_init(slice_a, &config, true);
     pwm_init(slice_b, &config, true);
 
-    // Initial state: Forward, low speed
+    // Initial state: Forward, duty 100
     pwm_set_gpio_level(MOTOR_PWM_A_PIN, 100);
     pwm_set_gpio_level(MOTOR_PWM_B_PIN, 0);
     digitalWrite(LED_A_PIN, LOW); // LED A on
+
+    Serial1.println("DIR:F DUTY:100 bEMF_A:0 bEMF_B:0 SHUT:0");
+    Serial1.flush();
 }
 
 void loop() {
@@ -138,6 +140,7 @@ void loop() {
         Serial1.print(last_bemf_b);
         Serial1.print(" SHUT:");
         Serial1.println(last_shut);
+        Serial1.flush();
 
         last_log = millis();
     }
